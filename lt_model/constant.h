@@ -1,0 +1,1 @@
+#define CAUSE_WIDTH 24
