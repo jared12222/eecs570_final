@@ -1,0 +1,1 @@
+export LD_LIBRARY_PATH=/home/wftseng/systemc-2.3.2/lib-linux64:$LD_LIBRARY_PATH
