@@ -20,7 +20,7 @@ class uc_queue_arbiter : public sc_module {
         void unit_clause_compute();
 
         int unit_var;
-        int var[NUMBER_OF_VAR];
+        int var[NUMBER_OF_VAR * 2];
 };
 
 #endif

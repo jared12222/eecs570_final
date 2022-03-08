@@ -25,8 +25,14 @@ unit_clause_compute(){
         for(int i=0; i<NUMBER_OF_VAR; ++i)
             wait(engine_finish_each_unit_clause[i]);
         
+        int temp = 0;
         for(int i=0; i<NUMBER_OF_VAR; ++i){
-            
+            temp = input_from_clause_queue->nb_read();
+            if(temp != 0 && temp > 0){
+                var[temp]++;
+            }else if(temp != 0 && temp < 0){
+                var[-1*temp-NUMBER_OF_VAR+1]++;
+            }
         }
     }
 }

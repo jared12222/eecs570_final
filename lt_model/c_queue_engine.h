@@ -39,7 +39,8 @@ class clause_queue_engine : public sc_module {
         int current_itr_count;
         
         int unit_clause;
-        int new_gen_unit_clause[NUMBER_OF_VAR*2]; //0~NUMBER_OF_VAR-1 is pos, NUMBER_OF_VAR~2*NUMBER_OF_VAR-1 is neg
+        int new_gen_unit_clause;
+        //int new_gen_unit_clause[NUMBER_OF_VAR*2]; //0~NUMBER_OF_VAR-1 is pos, NUMBER_OF_VAR~2*NUMBER_OF_VAR-1 is neg
         
         sc_bv<CAUSE_WIDTH> fetch_data_from_queue;
 };

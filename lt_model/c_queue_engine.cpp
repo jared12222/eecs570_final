@@ -3,7 +3,8 @@
 clause_queue_engine::clause_queue_engine(const sc_module_name& )
 {
     current_itr_count = 0;
-    memset(new_gen_unit_clause, 0, sizeof(int) * NUMBER_OF_VAR * 2);
+    new_gen_unit_clause = 0;
+    //memset(new_gen_unit_clause, 0, sizeof(int) * NUMBER_OF_VAR * 2);
     SC_THREAD(load_clause_from_latency_buffer);
     SC_THREAD(engine_compute);
 }
@@ -40,6 +41,10 @@ void clause_queue_engine::engine_compute()
                 clause_queue.push(fetch_data_from_queue);
             }
         }
+        if(new_gen_unit_clause != 0){
+            output_to_unit_clause->write(new_gen_unit_clause);
+            new_gen_unit_clause = 0;
+        }
         //cout<<"get_queue_value = "<<get_queue_value()<<endl;
         
         finish_1st_iter.notify();  //for unit test purpose
@@ -62,12 +67,13 @@ bool clause_queue_engine::elimination(sc_bv<CAUSE_WIDTH> &clause, int unit_claus
     // check if there is unit clause and send to fifo between engine and unit clause arbiter
     int temp;
     if(contain_unit_clause(clause)){
-        temp = return_unit_clause(clause);
-        if(temp >= 0)
-            new_gen_unit_clause[temp]++;
-        else
-            new_gen_unit_clause[-1*temp+NUMBER_OF_VAR]++;
-        output_to_unit_clause->write(choose_next_unit_clause(clause));
+        new_gen_unit_clause = return_unit_clause(clause);
+        // temp = return_unit_clause(clause);
+        // if(temp >= 0)
+        //     new_gen_unit_clause[temp]++;
+        // else
+        //     new_gen_unit_clause[-1*temp+NUMBER_OF_VAR]++;
+        // output_to_unit_clause->write(choose_next_unit_clause(clause));
     }
     //***************************************************************************************
 
@@ -109,23 +115,23 @@ int clause_queue_engine::return_unit_clause(sc_bv<CAUSE_WIDTH> clause){
     return 0;
 }
 
-int clause_queue_engine::choose_next_unit_clause(sc_bv<CAUSE_WIDTH> clause){
-    int max = 0;
-    int idx = 0;
+// int clause_queue_engine::choose_next_unit_clause(sc_bv<CAUSE_WIDTH> clause){
+//     int max = 0;
+//     int idx = 0;
 
-    for(int i=0; i<NUMBER_OF_VAR*2; ++i){
-        if(new_gen_unit_clause[i] > max){
-            max = new_gen_unit_clause[i];
-            idx = i;
-        }
-    }
-    memset(new_gen_unit_clause, 0, sizeof(int) * NUMBER_OF_VAR * 2);
+//     for(int i=0; i<NUMBER_OF_VAR*2; ++i){
+//         if(new_gen_unit_clause[i] > max){
+//             max = new_gen_unit_clause[i];
+//             idx = i;
+//         }
+//     }
+//     memset(new_gen_unit_clause, 0, sizeof(int) * NUMBER_OF_VAR * 2);
     
-    if(idx<NUMBER_OF_VAR)
-        return idx;
-    else
-        return -1*(idx-NUMBER_OF_VAR);
-}
+//     if(idx<NUMBER_OF_VAR)
+//         return idx;
+//     else
+//         return -1*(idx-NUMBER_OF_VAR);
+// }
 
 sc_bv<CAUSE_WIDTH> clause_queue_engine::get_queue_value(){
     sc_bv<CAUSE_WIDTH> res;
