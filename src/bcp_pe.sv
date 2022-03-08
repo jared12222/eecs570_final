@@ -8,10 +8,14 @@
     UNSAT   | F    | T        | X
     IMPLY   | F    | F        | T
     OTHER   | F    | F        | F
+
+    literals
+    match w/ negation => set to 0
+    match   => SAT (dont care)
 */
 module bcp_pe (
     input  logic [$clog2(`LIT_INDEX_MAX):0] litDec, // New decision literal
-    input signed ; logic [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] clause, // input clause
+    input  signed logic [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] clause, // input clause
     
     // implication (unit clause)
     output logic imply,
