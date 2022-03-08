@@ -41,10 +41,13 @@ void clause_queue_engine::engine_compute()
                 clause_queue.push(fetch_data_from_queue);
             }
         }
-        if(new_gen_unit_clause != 0){
-            output_to_unit_clause->write(new_gen_unit_clause);
-            new_gen_unit_clause = 0;
-        }
+        //whether there is new gen unit clause, send to fifo (value=0 means no new gen unit clause)
+        output_to_unit_clause->write(new_gen_unit_clause);
+        new_gen_unit_clause = 0;
+        // if(new_gen_unit_clause != 0){
+        //     output_to_unit_clause->write(new_gen_unit_clause);
+        //     new_gen_unit_clause = 0;
+        // }
         //cout<<"get_queue_value = "<<get_queue_value()<<endl;
         
         finish_1st_iter.notify();  //for unit test purpose
