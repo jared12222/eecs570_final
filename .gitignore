@@ -1,0 +1,9 @@
+simv
+src/uc/DVEfiles
+src/uc/csrc
+*.synopsys_dve_rebuild.tcl
+*.vpd
+*.key
+*.out
+*.old
+*.daidir
