@@ -9,9 +9,9 @@ int sc_main(int argc, char *argv[]){
 	test_clause_queue_engine test_clause_queue_engine_1("test_clause_queue_engine_1");
 	cout<<"*************************"<<endl;
 	cout<<"* Start unit testing... *"<<endl;
-	cout<<"*************************"<<endl;
+	cout<<"*************************"<<endl<<endl;;
 	sc_start();
-	cout<<"*************************"<<endl;
+	cout<<endl<<"*************************"<<endl;
 	cout<<"** End unit testing... **"<<endl;
 	cout<<"*************************"<<endl;
 	return 0;

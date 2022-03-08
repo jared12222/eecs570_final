@@ -13,12 +13,13 @@ class test_clause_queue_engine : public sc_module {
 
         sc_fifo<int > test_input_unit_clause_queue;
         sc_fifo<sc_bv<CAUSE_WIDTH> > test_input_clause_queue;
-        sc_fifo<sc_bv<CAUSE_WIDTH> > test_output_queue;
+        sc_fifo<int > test_output_unit_clause_queue;
 
         clause_queue_engine *clause_queue_engine_1 = new clause_queue_engine("clause_queue_engine_1");
         
         void test_engine_compute();
         sc_bv<CAUSE_WIDTH> golden_output_1, golden_output_2;
+        int golden_unit_clause_output;
 };
 
 
