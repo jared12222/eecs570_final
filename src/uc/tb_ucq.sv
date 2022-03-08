@@ -1,4 +1,4 @@
-`define UCQ_SIZE 8
+`define UCQ_SIZE 4
 `define UC_LENGTH 512
 `define DEBUG
 
@@ -17,8 +17,8 @@ logic full;
 logic [$clog2(`UC_LENGTH)-1:0] ucq2eng;
 
 `ifdef DEBUG
-logic [$clog2(`UCQ_SIZE)-1:0][$clog2(`UC_LENGTH)-1:0] entry_r;
-logic [$clog2(`UCQ_SIZE)-1:0][$clog2(`UC_LENGTH)-1:0] entry_w;
+logic [`UCQ_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r;
+logic [`UCQ_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w;
 logic [$clog2(`UCQ_SIZE):0] head_r;
 logic [$clog2(`UCQ_SIZE):0] head_w;
 logic [$clog2(`UCQ_SIZE):0] tail_r;
@@ -79,10 +79,19 @@ initial begin
     reset_sys();
 
     @(negedge clk);
-    push_data(5);
+    push_data(2);
     
     @(negedge clk);
-    push_data(9);
+    push_data(4);
+
+    @(negedge clk);
+    push_data(6);
+
+    @(negedge clk);
+    push_data(8);
+
+    @(negedge clk);
+    push_data(10);
 
     @(negedge clk);
     pop_data();
