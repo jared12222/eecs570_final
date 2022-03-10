@@ -4,7 +4,7 @@ CXX = g++
 FLAGS = -I/home/wftseng/systemc-2.3.2/include -std=c++11
 LIBS = -L/home/wftseng/systemc-2.3.2/lib-linux64 -lsystemc
 #LIBS = -L $(SYSTEMC_HOME)/lib-macosx64 -lsystemc
-OBJS = test_c_queue_engine.o c_queue_engine.o test_uc_queue_arbiter.o uc_queue_arbiter.o constant.o
+OBJS = test_clause_engine.o clause_engine.o test_uc_queue_arbiter.o uc_queue_arbiter.o constant.o
 OBJS_DIR = $(addprefix obj/,$(OBJS))
 
 test_main: $(OBJS_DIR)
@@ -13,8 +13,8 @@ test_main: $(OBJS_DIR)
 obj/%.o: %.cpp
 	$(CXX) $(FLAGS) -o $@ -c $^
 
-obj/c_queue_engine.o: ../c_queue_engine.cpp
-	$(CXX) $(FLAGS) -o ./obj/c_queue_engine.o -c ../c_queue_engine.cpp
+obj/clause_engine.o: ../clause_engine.cpp
+	$(CXX) $(FLAGS) -o ./obj/clause_engine.o -c ../clause_engine.cpp
 
 obj/uc_queue_arbiter.o: ../uc_queue_arbiter.cpp
 	$(CXX) $(FLAGS) -o ./obj/uc_queue_arbiter.o -c ../uc_queue_arbiter.cpp
