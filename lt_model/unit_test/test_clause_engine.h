@@ -3,7 +3,6 @@
 
 #include "/home/wftseng/eecs570_final/lt_model/clause_engine.h"
 #include "/home/wftseng/eecs570_final/lt_model/constant.h"
-#include <systemc.h>
 
 class test_clause_engine : public sc_module {
     public:

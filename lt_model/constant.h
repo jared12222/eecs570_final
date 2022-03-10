@@ -11,4 +11,6 @@
 #define NUMBER_OF_ENGINE 2
 #define NUMBER_OF_VAR 100 //need to add 1 since the var start from 1
 
+#define TEST
+
 #endif

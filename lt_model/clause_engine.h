@@ -21,7 +21,7 @@ class clause_engine : public sc_module {
         sc_port<sc_fifo_out_if<int> > output_to_unit_clause_fifo_port;
         sc_port<sc_fifo_out_if<sc_bv<CAUSE_WIDTH>> > output_to_clause_fifo_port;
 
-        sc_event finish_1st_iter;
+        //sc_event finish_1st_iter;
 
         void engine_compute();
         
