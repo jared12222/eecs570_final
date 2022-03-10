@@ -17,7 +17,8 @@ class test_uc_queue_arbiter : public sc_module {
 
         void test_uc_arbiter();
 
-        int golden_output_1;
+        int golden_unit_clause_output_engine[2];
+        int golden_output_unit_clause_number;
 };
 
 #endif
