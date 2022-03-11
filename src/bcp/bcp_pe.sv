@@ -14,14 +14,14 @@
     match   => SAT (dont care)
 */
 module bcp_pe (
-    input  logic [$clog2(`LIT_INDEX_MAX):0] litDec, // New decision literal
-    input  signed logic [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] clause, // input clause
+    input  [$clog2(`LIT_INDEX_MAX):0] litDec, // New decision literal
+    input  [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] clause, // input clause
     
     // implication (unit clause)
     output logic imply,
-    output signed logic [$clog2(`LIT_INDEX_MAX):0] imply_idx,
+    output logic signed [$clog2(`LIT_INDEX_MAX):0] imply_idx,
     
-    output signed logic [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] pr_clause, // output pruned clause
+    output logic signed [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] pr_clause, // output pruned clause
 
     output logic done, // the clause is satisfied
     output logic conflict // if all literal are assigned, set if the clause cannot satisfy
@@ -31,26 +31,32 @@ module bcp_pe (
     always_comb begin
         // Initialization
         done = 'b0;
-        found = 'b0;
         imply = 'b0;
         imply_idx = 'bx;
-        nonzero = 'b0;
 
         // Determine if clause satisfy : Comparing literals indexes
-        lit_match = 'b0;
         for (int i=0; i < `CLA_LENGTH ; i=i+1 ) begin
-            if (litDec == clause[i]) begin
-                pr_clause[i] = 'b0;
-                done = 'b1;
+            if (litDec != 'b0) begin
+                if (litDec == clause[i] && litDec != 'b0) begin
+                    pr_clause[i] = 'b0;
+                    done = 'b1;
+                end
+                else if (-litDec == clause[i]) begin
+                    pr_clause[i] = 'b0;
+                end
+                else pr_clause = clause[i];
+
+                if (pr_clause[i] != 'b0)
+                    nonzero[i] = 'b1;
+                else
+                    nonzero[i] = 'b0;
             end
-            else if (-litDec == clause[i]) begin
-                pr_clause[i] = 'b0;
-            end
-            else pr_clause = clause[i];
-            nonzero[i] = (pr_clause[i] == 'b0) 'b1 : 'b0;
         end
 
-        conflict = (pr_clause == 'b0) 'b1 : 'b0;
+        if (pr_clause == 'b0)
+            conflict = 'b1;
+        else
+            conflict = 'b0;
 
         for (int i=0; i < `CLA_LENGTH; i=i+1) begin
             if(nonzero == (1 << i)) begin
