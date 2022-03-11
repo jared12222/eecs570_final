@@ -1,6 +1,7 @@
 #include "test_clause_engine.h"
 #include "test_uc_queue_arbiter.h"
 #include "test_clause_switch.h"
+#include "test_latency_buffer_arbiter.h"
 // #include "test_dual_port_fifo.h"
 #include <iostream>
 
@@ -12,6 +13,7 @@ int sc_main(int argc, char *argv[]){
 	test_clause_engine test_clause_engine_1("test_clause_engine_1");
 	test_uc_queue_arbiter test_uc_queue_arbiter_1("test_uc_queue_arbiter_1");
 	test_clause_switch test_clause_switch_1("test_clause_switch_1");
+	test_latency_buffer_arbiter test_latency_buffer_arbiter_1("test_latency_buffer_arbiter_1");
 	// test_dual_fifo test_dual_fifo_1("test_dual_fifo_1");
 	cout<<"*************************"<<endl;
 	cout<<"* Start unit testing... *"<<endl;
