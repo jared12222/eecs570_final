@@ -3,7 +3,6 @@
 
 #include "constant.h"
 
-using namespace std;
 using namespace sc_core;
 using namespace std;
 
@@ -17,7 +16,7 @@ class latency_buffer_arbiter : public sc_module {
         sc_port<sc_fifo_out_if<sc_bv<CAUSE_WIDTH>>, NUMBER_OF_ENGINE > output_to_clause_fifo_port;
 
         void latency_buffer_arbiter_compute();
-
+        sc_in<bool> clk;
     private:
         sc_bv<CAUSE_WIDTH> temp[NUMBER_OF_ENGINE];
 };

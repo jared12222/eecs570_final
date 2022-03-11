@@ -4,8 +4,6 @@
 #include "constant.h"
 #include <queue> 
 
-
-using namespace std;
 using namespace sc_core;
 using namespace std;
 
@@ -30,6 +28,9 @@ class clause_engine : public sc_module {
         bool contain_unit_clause(sc_bv<CAUSE_WIDTH> clause);
         int return_unit_clause(sc_bv<CAUSE_WIDTH> clause);
 
+        sc_event engine_finish_each_unit_clause_event;
+        //sc_port<sc_signal_in_if<bool>> clk;
+        sc_in<bool> clk;
     private:
         int current_itr_count;
         

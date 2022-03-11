@@ -1,4 +1,5 @@
 /lt_model/obj/*
+/lt_model/bin/*
 /lt_model/unit_test/bin/*
 /lt_model/unit_test/test_dual_port_fifo*
 /lt_model/unit_test/obj/*

@@ -6,6 +6,8 @@ uc_queue_arbiter::uc_queue_arbiter(const sc_module_name& )
 
     // SC_THREAD(load_unit_clause_from_latency_buffer);
     SC_THREAD(unit_clause_compute);
+    sensitive<<clk.pos();
+    dont_initialize();
 }
 
 // void uc_queue_arbiter::load_unit_clause_from_latency_buffer()
@@ -17,36 +19,34 @@ uc_queue_arbiter::uc_queue_arbiter(const sc_module_name& )
 
 void uc_queue_arbiter::unit_clause_compute(){
     // wait(finish_load_data_from_latency_buffer);
+    // int i=5;
     while(1){
-        
+        // cout<<"start uc clause arbiter"<<endl;
+        wait();
+        // cout<<"before uc clause arbiter"<<endl;
         int temp = 0;
-        if(input_from_latency_buffer_port->num_available() == 1){
-            temp = input_from_latency_buffer_port->read();
-            unit_queue.push(temp);
+        if(input_from_latency_buffer_port->nb_read(temp)){
+            for(int i=0; i<NUMBER_OF_ENGINE; ++i)
+                output_to_clause_engine_fifo_port[i]->write(temp);
         }
-
-        unit_var = unit_queue.front();
-        unit_queue.pop();
-
-        for(int i=0; i<NUMBER_OF_ENGINE; ++i)
-            output_to_clause_engine_fifo_port[i]->write(unit_var);
        
-        
-        for(int i=0; i<NUMBER_OF_ENGINE; ++i)
-            and_list &= engine_finish_each_unit_clause_event[i];
-        wait(and_list);
         
         int number_unit_clause_in_engine;
         for(int i=0; i<NUMBER_OF_ENGINE; ++i){
-            number_unit_clause_in_engine = input_from_clause_engine_fifo_port[i]->num_available();
-            for(int j=0; j<number_unit_clause_in_engine; ++j){
-                temp = input_from_clause_engine_fifo_port[i]->read();
-                if(previous_unit_clause.find(temp) == previous_unit_clause.end()){
+            if(input_from_clause_engine_fifo_port[i]->nb_read(temp)){
+                if(temp != 0 && previous_unit_clause.find(temp) == previous_unit_clause.end()){
                     previous_unit_clause.insert(temp);
-                    unit_queue.push(temp);
+                    //unit_queue.push(temp);
+                    for(int i=0; i<NUMBER_OF_ENGINE; ++i)
+                        output_to_clause_engine_fifo_port[i]->write(temp);
                 }
             }
         }
+        
+        // if(unit_queue.size() == 0){
+        //     no_data_in_queue.notify();
+        // }
+        // cout<<"suposed to close uc clause engine"<<endl;
     }
 }
 

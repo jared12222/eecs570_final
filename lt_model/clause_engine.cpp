@@ -4,30 +4,53 @@ clause_engine::clause_engine(const sc_module_name& )
 {
     current_itr_count = 0;
     new_gen_unit_clause = 0;
-
+    unit_clause = 0;
+    
     SC_THREAD(engine_compute);
+    sensitive<<clk.pos();
+    dont_initialize();
 }
 
 
 
 void clause_engine::engine_compute() 
-{
+{   
+    // int i=5;
     while(1){
         
-       
-        unit_clause = input_from_unit_clause_fifo_port->read();
-        current_itr_count = input_from_clause_fifo_port->num_available();
+        wait();
+
+        fetch_data_from_fifo = input_from_clause_fifo_port->read();
         
-        for(int i=0; i<current_itr_count; ++i){
-            fetch_data_from_fifo = input_from_clause_fifo_port->read();
-            if(!elimination(fetch_data_from_fifo, unit_clause)){
-                output_to_clause_fifo_port->write(fetch_data_from_fifo);
-            }
-            output_to_unit_clause_fifo_port->write(new_gen_unit_clause);
-            new_gen_unit_clause = 0;
+        if(fetch_data_from_fifo == 0){
+            // if(input_from_unit_clause_fifo_port->nb_read(unit_clause)){
+            //     cout<<"can't determine"<<endl;
+            // }
+            unit_clause = input_from_unit_clause_fifo_port->read();
+            output_to_clause_fifo_port->write(fetch_data_from_fifo);
+            continue;
         }
+        if(!elimination(fetch_data_from_fifo, unit_clause)){
+            output_to_clause_fifo_port->write(fetch_data_from_fifo);
+        }
+        output_to_unit_clause_fifo_port->write(new_gen_unit_clause);
+        new_gen_unit_clause = 0;
         
-        //whether there is new gen unit clause, send to fifo (value=0 means no new gen unit clause)
+        
+
+        // if(input_from_clause_fifo_port->nb_read(fetch_data_from_fifo)){
+        //     if(fetch_data_from_fifo == 0){
+        //         if(!input_from_unit_clause_fifo_port->nb_read(unit_clause)){
+        //             cout<<"error in reading unit clause"<<endl;
+        //             exit(-1);
+        //         }
+        //         if(!elimination(fetch_data_from_fifo, unit_clause)){
+        //             output_to_clause_fifo_port->write(fetch_data_from_fifo);
+        //         }
+        //         output_to_unit_clause_fifo_port->write(new_gen_unit_clause);
+        //         new_gen_unit_clause = 0;
+        //     }
+        // }
     }
 }
 

@@ -30,6 +30,10 @@ class uc_queue_arbiter : public sc_module {
         queue<int> unit_queue;
         int unit_var;
         unordered_set<int> previous_unit_clause;
+
+        sc_event no_data_in_queue,arbitrary;
+
+        sc_in<bool> clk;
 };
 
 #endif
