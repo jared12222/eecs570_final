@@ -1,17 +1,15 @@
 `define STEP #10
-`define LIT_INDEX_MAX 1024
-`define CLA_LENGTH 3
 
 module tb_bcp();
     
     // signals
-    logic [$clog2(`LIT_INDEX_MAX):0] litDec; // New decision literal
-    logic signed [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] clause; // input clause
+    lit_t litDec; // New decision literal
+    cla_t clause; // input clause
         
     logic imply;
-    logic signed [$clog2(`LIT_INDEX_MAX):0] imply_idx;
+    lit_t imply_idx;
         
-    logic signed [`CLA_LENGTH-1:0][$clog2(`LIT_INDEX_MAX):0] pr_clause; // output pruned clause
+    cla_t pr_clause; // output pruned clause
     
     logic done; // the clause is satisfied
     logic conflict; // if all literal are assigned, set if the clause cannot satisfy
@@ -28,30 +26,44 @@ module tb_bcp();
         .conflict(conflict)
     );
 
+    function printstate();
+        $write("--------------\n");
+        $write("litDec: %d\n", litDec);
+        $write("clause:");
+        for(int i = `CLA_LENGTH-1; i >= 0; i--) begin
+            $write(" %d", clause[i]);
+        end
+        $write("\nimply: %b\nimply_idx: %d\ndone: %b\nconflict: %b\n", imply, imply_idx, done, conflict);
+        $write("pr_clause: ");
+        for(int i = `CLA_LENGTH-1; i >= 0; i--) begin
+            $write(" %d", pr_clause[i]);
+        end
+
+        // Inner state, comment when synthesis
+        $write("\nbcp_pe.nonzero: %b\n", DUT.nonzero);
+        $write("\n--------------\n");
+    endfunction
+
     initial begin
     // SAT test case
         // Implication
         for(int i = 0; i < `CLA_LENGTH-1; i=i+1) begin
-            clause = 'b0;
-            do begin
-                clause[i] = $random%`LIT_INDEX_MAX;
-            end while(clause[i] != 'b0);
 
             for(int j = i+1; j < `CLA_LENGTH; j=j+1) begin
+                clause = 'b0;
+                clause[i] = $random%`LIT_INDEX_MAX;
+                clause[j] = $random%`LIT_INDEX_MAX;
                 
-                do begin
-                    clause[j] = $random%`LIT_INDEX_MAX;
-                end while(clause[j] != 'b0);
-                
-                litDec = clause[i];
+                litDec = -clause[i];
                 /*assert(
                     imply === 'b1 &&
                     imply_idx === clause[i] &&
                     done === 'b0 &&
                     conflict === 'b0
                 );*/
-                `STEP; 
-                litDec = clause[j];
+                `STEP;
+                printstate();
+                litDec = -clause[j];
                 /*assert(
                     imply === 'b1 &&
                     imply_idx === clause[j] &&
@@ -59,6 +71,7 @@ module tb_bcp();
                     conflict === 'b0
                 );*/
                 `STEP;
+                printstate();
             end
         end
         
@@ -66,10 +79,10 @@ module tb_bcp();
         for(int i = 0; i < `CLA_LENGTH; i=i+1) begin
             clause = 'b0;
             
-            do begin
-                clause[i] = $random%`LIT_INDEX_MAX;
-            end while(clause[i] != 'b0);
-            litDec = clause[i];
+            clause[i] = $random%`LIT_INDEX_MAX;
+            // do begin
+            // end while(clause[i] != 'b0);
+            litDec = -clause[i];
 
             /*assert(
                 imply === 'b0 &&
@@ -77,12 +90,13 @@ module tb_bcp();
                 conflict === 'b1
             );*/
             `STEP;
+            printstate();
         end
         
         // SAT
-        do begin
-            clause = $random;
-        end while (clause != 'b0);
+        clause = $random;
+        // do begin
+        // end while (clause != 'b0);
         for(int i = 0; i < `CLA_LENGTH; i=i+1) begin
             litDec = clause[i];
             if (clause[i] != 'b0) begin
@@ -92,6 +106,7 @@ module tb_bcp();
                     conflict === 'b0
                 );*/
                 `STEP;
+                printstate();
             end
             else begin
 		/*
@@ -101,8 +116,11 @@ module tb_bcp();
                     conflict === 'b0
                 );*/
                 `STEP;
+                printstate();
             end
         end
+        $display("Reach end! Expect finish.");
         $finish;
+        $display("Finish exe!");
     end
 endmodule

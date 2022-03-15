@@ -1,5 +1,6 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L
 
+HEADERS = sys_def.sv
 TESTBENCH = tb_bcp.sv
 SIMFILES  = bcp_pe.sv
 
@@ -18,7 +19,7 @@ simv:	$(HEADERS) $(SIMFILES) $(TESTBENCH)
 
 .PHONY: sim
 
-dve:	sim
+dve:	simv
 	./simv -gui &
 
 dve_syn: syn_simv 
