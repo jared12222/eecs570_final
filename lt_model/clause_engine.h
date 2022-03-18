@@ -22,6 +22,7 @@ class clause_engine : public sc_module {
         //sc_event finish_1st_iter;
 
         void engine_compute();
+        void engine_condition_check();
         
         bool elimination(sc_bv<CAUSE_WIDTH> &clause, int unit_clause);
 
@@ -31,6 +32,9 @@ class clause_engine : public sc_module {
         sc_event engine_finish_each_unit_clause_event;
         //sc_port<sc_signal_in_if<bool>> clk;
         sc_in<bool> clk;
+
+        sc_out<bool> clause_engine_done_with_clause_port;
+        sc_out<bool> clause_engine_done_with_unit_clause_port;
     private:
         int current_itr_count;
         
@@ -38,6 +42,8 @@ class clause_engine : public sc_module {
         int new_gen_unit_clause;
         
         sc_bv<CAUSE_WIDTH> fetch_data_from_fifo;
+
+        bool consective_zero_clause;
 };
 
 #endif

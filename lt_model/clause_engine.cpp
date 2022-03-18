@@ -5,9 +5,12 @@ clause_engine::clause_engine(const sc_module_name& )
     current_itr_count = 0;
     new_gen_unit_clause = 0;
     unit_clause = 0;
-    
+    consective_zero_clause = false;
+
     SC_THREAD(engine_compute);
     sensitive<<clk.pos();
+    SC_THREAD(engine_condition_check);
+    sensitive<<clk.neg();
     dont_initialize();
 }
 
@@ -20,14 +23,32 @@ void clause_engine::engine_compute()
         
         wait();
 
+        // if (input_from_clause_fifo_port->num_available() == 0){
+        //     clause_engine_done_with_clause_port = true;
+        //     cout<<"clause block timestamp = "<<sc_time_stamp()<<endl;
+        // }else{
+        //     clause_engine_done_with_clause_port = false;
+        // }
+
         fetch_data_from_fifo = input_from_clause_fifo_port->read();
         
         if(fetch_data_from_fifo == 0){
             // if(input_from_unit_clause_fifo_port->nb_read(unit_clause)){
             //     cout<<"can't determine"<<endl;
             // }
-            unit_clause = input_from_unit_clause_fifo_port->read();
+            // if (input_from_unit_clause_fifo_port->num_available() == 0){
+            //     clause_engine_done_with_unit_clause_port = true;
+            // }else{
+            //     clause_engine_done_with_unit_clause_port = false;
+            // }
+            
             output_to_clause_fifo_port->write(fetch_data_from_fifo);
+            // unit_clause = input_from_unit_clause_fifo_port->read();
+            if(!input_from_unit_clause_fifo_port->nb_read(unit_clause)){
+                clause_engine_done_with_unit_clause_port = true;
+            }else{
+                clause_engine_done_with_unit_clause_port = false;
+            }
             continue;
         }
         if(!elimination(fetch_data_from_fifo, unit_clause)){
@@ -50,6 +71,31 @@ void clause_engine::engine_compute()
         //         output_to_unit_clause_fifo_port->write(new_gen_unit_clause);
         //         new_gen_unit_clause = 0;
         //     }
+        // }
+    }
+}
+
+void clause_engine::engine_condition_check(){
+    int i=0;
+    while(1){
+        wait();
+        // cout<<"clause block timestamp = "<<sc_time_stamp()<<" fetch = "<<fetch_data_from_fifo<<endl;
+
+        if(i++>PREEMPTION_CYCLE){
+            if (fetch_data_from_fifo == 0 && consective_zero_clause){
+                clause_engine_done_with_clause_port = true;
+            }
+            if(fetch_data_from_fifo == 0){
+                 consective_zero_clause = true;
+            }else{
+                consective_zero_clause = false;
+            }
+        }
+
+        // if (input_from_unit_clause_fifo_port->num_available() == 0){
+        //     clause_engine_done_with_unit_clause_port = true;
+        // }else{
+        //     clause_engine_done_with_unit_clause_port = false;
         // }
     }
 }

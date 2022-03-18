@@ -34,6 +34,8 @@ class uc_queue_arbiter : public sc_module {
         sc_event no_data_in_queue,arbitrary;
 
         sc_in<bool> clk;
+
+        sc_out<bool> conflict_in_uc_arbiter_port;
 };
 
 #endif

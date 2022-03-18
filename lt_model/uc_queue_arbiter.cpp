@@ -34,6 +34,13 @@ void uc_queue_arbiter::unit_clause_compute(){
         int number_unit_clause_in_engine;
         for(int i=0; i<NUMBER_OF_ENGINE; ++i){
             if(input_from_clause_engine_fifo_port[i]->nb_read(temp)){
+                // conflict case
+                if(previous_unit_clause.find(-1*temp) != previous_unit_clause.end()){
+                    conflict_in_uc_arbiter_port = true;
+                }else{
+                    conflict_in_uc_arbiter_port = false;
+                }
+
                 if(temp != 0 && previous_unit_clause.find(temp) == previous_unit_clause.end()){
                     previous_unit_clause.insert(temp);
                     //unit_queue.push(temp);

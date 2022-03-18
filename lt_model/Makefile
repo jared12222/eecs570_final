@@ -4,7 +4,7 @@ CXX = g++
 FLAGS = -I/home/wftseng/systemc-2.3.2/include -std=c++11
 LIBS = -L/home/wftseng/systemc-2.3.2/lib-linux64 -lsystemc
 #LIBS = -L $(SYSTEMC_HOME)/lib-macosx64 -lsystemc
-OBJS = clause_engine.o uc_queue_arbiter.o clause_switch.o latency_buffer_arbiter.o top.o
+OBJS = clause_engine.o uc_queue_arbiter.o clause_switch.o latency_buffer_arbiter.o controller.o top.o
 OBJS_DIR = $(addprefix obj/,$(OBJS))
 
 bin/main: $(OBJS_DIR)
