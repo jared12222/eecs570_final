@@ -1,8 +1,10 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L
 
-TESTBENCH = tb_ucq.sv
-SIMFILES  = uc_queue.sv
-INCLUDES  = queue.sv
+TESTBENCH = tb_uca.sv
+SIMFILES  = uc_arbiter.sv
+
+INCLUDES  = uc_queue.sv
+INCLUDES += queue.sv
 
 all:    simv
 	./simv | tee program.out
