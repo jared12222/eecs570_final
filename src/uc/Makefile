@@ -2,6 +2,7 @@ VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint
 
 TESTBENCH = tb_ucq.sv
 SIMFILES  = uc_queue.sv
+INCLUDES  = queue.sv
 
 all:    simv
 	./simv | tee program.out
@@ -13,7 +14,7 @@ all:    simv
 sim:	simv
 	./simv | tee program.out
 
-simv:	$(HEADERS) $(SIMFILES) $(TESTBENCH)
+simv:	$(HEADERS) $(INCLUDES) $(SIMFILES) $(TESTBENCH)
 	$(VCS) $^ -o simv
 
 .PHONY: sim

@@ -16,16 +16,17 @@ logic empty;
 logic full;
 logic [$clog2(`UC_LENGTH)-1:0] ucq2eng;
 
-`ifdef DEBUG
-logic [`UCQ_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r;
-logic [`UCQ_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w;
-logic [$clog2(`UCQ_SIZE):0] head_r;
-logic [$clog2(`UCQ_SIZE):0] head_w;
-logic [$clog2(`UCQ_SIZE):0] tail_r;
-logic [$clog2(`UCQ_SIZE):0] tail_w;
+`ifndef DEBUG
+logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r;
+logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w;
+
+logic [$clog2(QUEUE_SIZE):0] head_r;
+logic [$clog2(QUEUE_SIZE):0] head_w;
+logic [$clog2(QUEUE_SIZE):0] tail_r;
+logic [$clog2(QUEUE_SIZE):0] tail_w;
 `endif
 
-uc_queue ucq (
+uc_queue uc_queue (
     .clk(clk),
     .rst(rst),
     .push(push),
@@ -57,9 +58,9 @@ task reset_sys();
     rst = 0; 
 endtask
 
-task push_data(input int data);
-    push = 1;
-    uca2ucq = data;
+task push_data(input int d);
+    push    = 1;
+    uca2ucq = d;
     @(negedge clk);
     push = 0;
     uca2ucq = 0;
@@ -72,9 +73,9 @@ task pop_data();
 endtask
 
 initial begin
-    clk  = 0;
-    push = 0;
-    pop  = 0;
+    clk     = 0;
+    push    = 0;
+    pop     = 0;
     uca2ucq = 0;
     reset_sys();
 
