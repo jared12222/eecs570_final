@@ -1,14 +1,16 @@
-`define	output_cnt 			4
-`define clause_width 		4
-`define element_cnt 		1024
-`define element_bit_cnt 	$clog2(`element_cnt) + 1
+//description: input a clause and output a clause every cycle; take full signal from queues as signal for arbitration
+
+`define	output_cnt 			4                      		//how many queues connected
+`define clause_width 		4 							//how many variables can be contain in the clause representation 
+`define element_cnt 		1024 						//how many variables do the system support
+`define element_bit_cnt 	($clog2(`element_cnt) + 1)
 
 
 module C_arbiter(
 	input 												clock,
 	input 												reset,
 	input	[`clause_width * `element_bit_cnt -1:0] 	clause_in,
-	input	[`clause_width - 1:0] 						full_in,
+	input	[`output_cnt - 1:0] 						full_in,
 
 	output 	logic	[`output_cnt - 1:0] 						grant_out,
 	output 	logic 	[`clause_width * `element_bit_cnt -1:0] 	clause_out
@@ -29,9 +31,9 @@ module C_arbiter(
 		double_grant 	= double_request & ~(double_request - base);
 		grant_out 		= double_grant[`output_cnt - 1:0] |  double_grant[2 * `output_cnt - 1:`output_cnt];
 		clause_out 		= clause_in;
-		next_base = base;
-		if (|request) begin
-			next_base = {grant_out[`output_cnt - 2:0], grant_out[`output_cnt - 1]};
+		next_base = base;			//deal with condition of no request
+		if (|request) begin 
+			next_base = {grant_out[`output_cnt - 2:0], grant_out[`output_cnt - 1]};		//round robin
 		end
 
 	end
@@ -46,4 +48,3 @@ module C_arbiter(
 	end
 
 endmodule
-
