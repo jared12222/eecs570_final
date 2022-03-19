@@ -24,7 +24,7 @@ module uc_arbiter (
 typedef enum logic [1:0] {
 	IDLE  = 2'b00,
 	READY = 2'b01,
-	NEXT  = 2'b10,
+	PROC  = 2'b10,
     DONE  = 2'b11
 } uc_arb_t;
 
@@ -43,11 +43,11 @@ logic [$clog2(`UC_LENGTH)-1:0] data;
 
 // Index should be [`UC_LENGTH-1:0]
 // But truncated on purpose for the sake of easier debugging
-logic [$clog2(`UC_LENGTH)-1:0][1:0] conflict_table_r;
-logic [$clog2(`UC_LENGTH)-1:0][1:0] conflict_table_w;
-logic [$clog2(`UC_LENGTH)-1:0]      conflict_detect;
-logic [$clog2(`UC_LENGTH)-2:0]      uc_idx;
-logic                               uc_polarity;
+logic [`UC_LENGTH-1:0][1:0]    conflict_table_r;
+logic [`UC_LENGTH-1:0][1:0]    conflict_table_w;
+logic [$clog2(`UC_LENGTH)-1:0] conflict_detect;
+logic [$clog2(`UC_LENGTH)-2:0] uc_idx;
+logic                          uc_polarity;
 
 assign engmask = engmask_r;
 assign uc_polarity = data[$clog2(`UC_LENGTH)-1];
@@ -93,10 +93,10 @@ always_comb begin
                 next_state = DONE;
             end
             else begin
-                next_state = NEXT;
+                next_state = PROC;
             end
         end
-        NEXT: begin
+        PROC: begin
             if(eng2uca_empty == 'b1 | engmask_r == 'b0) begin
                 next_state = READY;
             end
