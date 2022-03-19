@@ -13,6 +13,7 @@ module uc_arbiter_wrapper (
     input  logic [`NUM_ENGINE-1:0]eng2uca_empty,
     input  logic eng2uca_rd,
     output logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng,
+    output logic uca2eng_pop,
     output logic conflict
 );
 
@@ -37,9 +38,18 @@ uc_arbiter uca(
 );
 
 always_comb begin
-    eng2uca_mout_d     = eng2uca_min[$clog2(engmask)];
-    eng2uca_mout_valid = eng2uca_valid[$clog2(engmask)];
+    uca2eng_pop = 'b0;
     eng2uca_mout_empty = eng2uca_empty[$clog2(engmask)];
+    
+    if(!eng2uca_mout_empty) begin
+        uca2eng_pop        = 'b1;
+        eng2uca_mout_d     = eng2uca_min[$clog2(engmask)];
+        eng2uca_mout_valid = eng2uca_valid[$clog2(engmask)];
+    end
+    else begin
+        eng2uca_mout_d = 'b0;
+        eng2uca_mout_valid = 'b0;
+    end
 end
 
 endmodule
