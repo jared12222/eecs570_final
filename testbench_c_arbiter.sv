@@ -2,7 +2,7 @@
 `define	output_cnt 			4
 `define clause_width 		4
 `define element_cnt 		1024
-`define element_bit_cnt 	$clog2(element_cnt) + 1
+`define element_bit_cnt 	($clog2(`element_cnt) + 1)
 module  testbench_c_arbiter ();
 
 	logic												clock;
@@ -40,35 +40,77 @@ module  testbench_c_arbiter ();
 		$display("cycle 1");
 		clause_in 	= 44'b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111;
 		full_in 	= 4'b1111;
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 2");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 3");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 4");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 5");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 6");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 7");
 		full_in = 4'b1001;
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 8");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 9");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
 		@(negedge clock);
 		$display("cycle 10");
+		$display("request: %b", ~full_in);
 		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
+		@(negedge clock);
+		$display("cycle 11");
+		$display("request: %b", ~full_in);
+		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
+		@(negedge clock);
+		$display("cycle 12");
+		full_in = 4'b0000;
+		$display("request: %b", ~full_in);
+		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
+		@(negedge clock);
+		$display("cycle 13");
+		$display("request: %b", ~full_in);
+		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
+		@(negedge clock);
+		$display("cycle 14");
+		$display("request: %b", ~full_in);
+		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
+		@(negedge clock);
+		$display("cycle 15");
+		$display("request: %b", ~full_in);
+		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
+		@(negedge clock);
+		$display("cycle 16");
+		$display("request: %b", ~full_in);
+		$display("grant: %b", grant_out);
+		$display("output: %b", clause_out);
 		#10
 		$finish;
 
