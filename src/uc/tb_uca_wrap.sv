@@ -14,10 +14,11 @@ module tb_uca();
     logic mem2uca_done;
     logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca;
     logic signed [`NUM_ENGINE-1:0][$clog2(`UC_LENGTH)-1:0] eng2uca_min;
-    logic [`NUM_ENGINE-1:0]eng2uca_valid;
-    logic [`NUM_ENGINE-1:0]eng2uca_empty;
-    logic eng2uca_rd;
+    logic [`NUM_ENGINE-1:0] eng2uca_valid;
+    logic [`NUM_ENGINE-1:0] eng2uca_empty;
+    logic [`NUM_ENGINE-1:0] uca2eng_full;
     logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng;
+    logic uca2eng_pop;
     logic conflict;
 
 uc_arbiter_wrapper dut(
@@ -29,8 +30,9 @@ uc_arbiter_wrapper dut(
     .eng2uca_min(eng2uca_min),
     .eng2uca_valid(eng2uca_valid),
     .eng2uca_empty(eng2uca_empty),
-    .eng2uca_rd(eng2uca_rd),
+    .uca2eng_full(uca2eng_full),
     .uca2eng(uca2eng),
+    .uca2eng_pop(uca2eng_pop),
     .conflict(conflict)
 );
 
@@ -61,10 +63,10 @@ task eng_load_head();
     @(negedge clk);
     for(int i=1; i<`NUM_ENGINE+1; i++) begin
         if (i%2 == 'b0) begin
-            eng2uca_min[i]   = (i+1);
+            eng2uca_min[i-1] = (i+1);
         end
         else begin
-            eng2uca_min[i]   = -1*i;
+            eng2uca_min[i-1] = -1*i;
         end
         eng2uca_valid[i] = 'b1;
         eng2uca_empty[i] = 'b0;
@@ -87,10 +89,10 @@ endtask
 //     end
 // endtask
 
-task eng_read();
-    @(negedge clk);
-    eng2uca_rd = 'b1;
-endtask
+// task eng_read();
+//     @(negedge clk);
+//     eng2uca_rd = 'b1;
+// endtask
 
 initial begin
     clk = 0;
@@ -104,7 +106,7 @@ initial begin
     eng2uca_valid = 0;
     eng2uca_empty = 0;
     eng2uca_min   = 0;
-    eng2uca_rd    = 0;
+    uca2eng_full  = 0;
 
     reset_sys();
 
@@ -117,11 +119,11 @@ initial begin
         @(negedge clk);
     end
 
-    repeat(10) begin
-        eng_read();
-    end
+    // repeat(10) begin
+    //     eng_read();
+    // end
 
-    repeat(10) begin
+    repeat(20) begin
         @(negedge clk);
     end
 

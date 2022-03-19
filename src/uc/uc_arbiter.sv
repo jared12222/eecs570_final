@@ -11,10 +11,10 @@ module uc_arbiter (
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
     input  logic signed [$clog2(`UC_LENGTH)-1:0] eng2uca,
-    input  logic eng2uca_rd,
+    input  logic [`NUM_ENGINE-1:0] uca2eng_full,
     output logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng,
-    output logic [`NUM_ENGINE-1:0]        engmask,
-    output logic                          conflict
+    output logic [`NUM_ENGINE-1:0] engmask,
+    output logic                   conflict
 );
 
 // TODO
@@ -67,6 +67,15 @@ uc_queue uc_queue (
 );
 
 always_comb begin
+    pop        = 'b0;
+    if(&uca2eng_full == 'b0) begin
+        if(empty == 'b0) begin
+            pop = 'b1;
+        end        
+    end
+end
+
+always_comb begin
     for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
         conflict_table_w[i] = conflict_table_r[i];
     end
@@ -74,7 +83,6 @@ always_comb begin
     next_state = curr_state;
     data       = eng2uca;
     push       = 'b0;
-    pop        = 'b0;
     conflict   = 'b0;
 
     case (curr_state)
@@ -117,14 +125,6 @@ always_comb begin
             conflict = 'b1;
         end
     endcase
-
-    // Pop data from inner buffer to output if not empty
-    // Might not be able to pop and must stall if engine RCV FIFO is full
-    if(eng2uca_rd == 'b1) begin
-        if(empty == 'b0) begin
-            pop = 'b1;
-        end
-    end
 end
 
 

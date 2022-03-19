@@ -9,9 +9,9 @@ module uc_arbiter_wrapper (
     input  logic mem2uca_done,
     input  logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca,
     input  logic signed [`NUM_ENGINE-1:0][$clog2(`UC_LENGTH)-1:0] eng2uca_min,
-    input  logic [`NUM_ENGINE-1:0]eng2uca_valid,
-    input  logic [`NUM_ENGINE-1:0]eng2uca_empty,
-    input  logic eng2uca_rd,
+    input  logic [`NUM_ENGINE-1:0] eng2uca_valid,
+    input  logic [`NUM_ENGINE-1:0] eng2uca_empty,
+    input  logic [`NUM_ENGINE-1:0] uca2eng_full,
     output logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng,
     output logic uca2eng_pop,
     output logic conflict
@@ -31,7 +31,7 @@ uc_arbiter uca(
     .eng2uca_valid(eng2uca_mout_valid),
     .eng2uca_empty(eng2uca_mout_empty),
     .eng2uca(eng2uca_mout_d),
-    .eng2uca_rd(eng2uca_rd),
+    .uca2eng_full(uca2eng_full),
     .uca2eng(uca2eng),
     .engmask(engmask),
     .conflict(conflict)
