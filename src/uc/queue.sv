@@ -1,5 +1,5 @@
 `define UCQ_SIZE 4
-`define UC_LENGTH 512
+`define UC_LENGTH 1024
 `define DEBUG
 
 // uca: Unit Clause Arbiter
@@ -14,13 +14,13 @@ module queue #(
     input  logic rst,
     input  logic push,
     input  logic pop,
-    input  logic [$clog2(DATA_LEN)-1:0] data,
+    input  logic signed [$clog2(DATA_LEN):0] data,
     output logic empty,
     output logic full,
-    output logic [$clog2(DATA_LEN)-1:0] head
+    output logic signed [$clog2(DATA_LEN):0] head
     `ifdef DEBUG
-    ,output logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r
-    ,output logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w
+    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH):0] entry_r
+    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH):0] entry_w
     ,output logic [$clog2(QUEUE_SIZE):0] head_r
     ,output logic [$clog2(QUEUE_SIZE):0] head_w
     ,output logic [$clog2(QUEUE_SIZE):0] tail_r

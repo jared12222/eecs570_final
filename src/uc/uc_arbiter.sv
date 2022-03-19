@@ -1,5 +1,4 @@
 `define UC_LENGTH 1024
-`define UCA_SIZE 8
 `define NUM_ENGINE 4
 `define MAX_UC 64
 
@@ -8,11 +7,11 @@ module uc_arbiter (
     input  logic rst,
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
-    input  logic [$clog2(`UC_LENGTH)-1:0] mem2uca,
+    input  logic signed [$clog2(`UC_LENGTH):0] mem2uca,
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
-    input  logic [$clog2(`UC_LENGTH)-1:0] eng2uca,
-    output logic [$clog2(`UC_LENGTH)-1:0] uca2ucq,
+    input  logic signed [$clog2(`UC_LENGTH):0] eng2uca,
+    output logic signed [$clog2(`UC_LENGTH):0] uca2ucq,
     output logic [`NUM_ENGINE-1:0]        engmask,
     output logic                          conflict
 );
@@ -27,10 +26,6 @@ typedef enum logic [1:0] {
 	NEXT  = 2'b10,
     DONE  = 2'b11
 } uc_arb_t;
-
-
-logic [$clog2(`UCA_SIZE)-1:0][$clog2(`UC_LENGTH):0] buffer_r;
-logic [$clog2(`UCA_SIZE)-1:0][$clog2(`UC_LENGTH):0] buffer_w;
 
 logic [`NUM_ENGINE-1:0] engmask_r;
 logic [`NUM_ENGINE-1:0] engmask_w;
@@ -51,7 +46,8 @@ logic [$clog2(`UC_LENGTH)-1:0]      conflict_detect;
 logic [$clog2(`UC_LENGTH)-1:0]      uc_idx;
 logic                               uc_polarity;
 
-assign engmask     = engmask_r;
+assign engmask = engmask_r;
+assign {uc_polarity, uc_idx} = data;
 
 uc_queue uc_queue (
     .clk(clk),
@@ -65,21 +61,15 @@ uc_queue uc_queue (
 );
 
 always_comb begin
-    for(int i=0; i<$clog2(`UCA_SIZE); i++) begin
-        buffer_w[i] = buffer_r[i];
-    end
     for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
         conflict_table_w[i] = conflict_table_r[i];
     end
     engmask_w  = engmask_r;
     next_state = curr_state;
-    data       = 'b0;
+    data       = eng2uca;
     push       = 'b0;
     pop        = 'b0;
     conflict   = 'b0;
-
-    uc_idx      = 'b0;
-    uc_polarity = 'b0;
 
     case (curr_state)
         IDLE: begin
@@ -105,7 +95,6 @@ always_comb begin
             else begin
                 push = 'b1;
                 data = eng2uca;
-                {uc_polarity, uc_idx} = eng2uca;
                 conflict_table_w[uc_idx][uc_polarity] = 'b1;
                 /*
                 0: Not registered
@@ -131,9 +120,6 @@ end
 
 always_ff @(posedge clk or negedge rst) begin
     if (rst) begin
-        for(int i=0; i<$clog2(`UCA_SIZE); i++) begin
-            buffer_r[i] <= 'b0;
-        end
         for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
             conflict_table_r[i] <= 'b0;
             conflict_detect[i]  <= 'b0;
@@ -142,9 +128,6 @@ always_ff @(posedge clk or negedge rst) begin
         curr_state <= IDLE;
     end
     else begin
-        for(int i=0; i<$clog2(`UCA_SIZE); i++) begin
-            buffer_r[i] <= buffer_w[i];
-        end
         for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
             conflict_table_r[i] <= conflict_table_w[i];
             conflict_detect[i]  <= &conflict_table_w[i];
