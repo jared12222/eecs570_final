@@ -1,10 +1,11 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L
 
-TESTBENCH = tb_uca.sv
-SIMFILES  = uc_arbiter.sv
+TESTBENCH = tb_uca_wrap.sv
+SIMFILES  = uc_arbiter_wrapper.sv
 
 INCLUDES  = uc_queue.sv
 INCLUDES += queue.sv
+INCLUDES += uc_arbiter.sv
 
 all:    simv
 	./simv | tee program.out

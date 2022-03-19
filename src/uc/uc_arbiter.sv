@@ -41,6 +41,8 @@ logic push;
 logic pop;
 logic [$clog2(`UC_LENGTH)-1:0] data;
 
+// Index should be [`UC_LENGTH-1:0]
+// But truncated on purpose for the sake of easier debugging
 logic [$clog2(`UC_LENGTH)-1:0][1:0] conflict_table_r;
 logic [$clog2(`UC_LENGTH)-1:0][1:0] conflict_table_w;
 logic [$clog2(`UC_LENGTH)-1:0]      conflict_detect;
@@ -95,12 +97,12 @@ always_comb begin
             end
         end
         NEXT: begin
-            if(eng2uca_empty == 'b1) begin
+            if(eng2uca_empty == 'b1 | engmask_r == 'b0) begin
                 next_state = READY;
             end
             else begin
-                push = 'b1;
                 data = eng2uca;
+                push = 'b1;
                 conflict_table_w[uc_idx][uc_polarity] = 'b1;
                 /*
                 0: Not registered
