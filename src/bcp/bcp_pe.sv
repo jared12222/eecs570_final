@@ -1,4 +1,4 @@
-// Index of literal is represented in 2's complement and width of index is log2(LIT_INDEX_MAX)+1, zero reserved for pruning
+// Index of literal is represented in 2's complement and width of index is log2(LIT_IDX_MAX)+1, zero reserved for pruning
 /* Truth table
             | done | conflict | imply
     SAT     | T    | X        | X    
@@ -16,6 +16,7 @@ module bcp_pe (
     input  lit_t litDec, // New decision literal
     input  cla_t clause, // input clause
     input  ENG_P_FULL,
+    input  UCQ_in_full,
     input  UCQ_out_empty,
     input  CLQ_empty,
     
@@ -36,7 +37,7 @@ module bcp_pe (
     logic stall;
     lit_t uc;
 
-    assign stall = (clause == 'b0 && UCQ_out_empty) | ENG_P_FULL | CLQ_empty;
+    assign stall = (clause == 'b0 && UCQ_out_empty) | ENG_P_FULL | CLQ_empty | UCQ_in_full;
     assign UCQ_out_pop = (clause == 'b0 && !stall) ? 1 : 0;
     assign CLQ_pop = !stall;
     assign ENG_P_push = !stall && !done;

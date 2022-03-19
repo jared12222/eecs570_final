@@ -3,18 +3,18 @@ module uc_arbiter_wrapper (
     input  logic rst,
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
-    input  logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca,
-    input  logic signed [`NUM_ENGINE-1:0][$clog2(`UC_LENGTH)-1:0] eng2uca_min,
+    input  logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca,
+    input  logic signed [`NUM_ENGINE-1:0][$clog2(`LIT_IDX_MAX):0] eng2uca_min,
     input  logic [`NUM_ENGINE-1:0] eng2uca_valid,
     input  logic [`NUM_ENGINE-1:0] eng2uca_empty,
     input  logic [`NUM_ENGINE-1:0] uca2eng_full,
-    output logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng,
+    output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
     output logic uca2eng_pop,
     output logic conflict
 );
 
 logic [`NUM_ENGINE-1:0] engmask;
-logic [$clog2(`UC_LENGTH)-1:0] eng2uca_mout_d;
+logic [$clog2(`LIT_IDX_MAX):0] eng2uca_mout_d;
 logic eng2uca_mout_valid;
 logic eng2uca_mout_empty;
 

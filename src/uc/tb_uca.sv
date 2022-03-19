@@ -7,17 +7,17 @@ module tb_uca();
     logic rst;
     logic mem2uca_valid;
     logic mem2uca_done;
-    logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca;
+    logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca;
     logic eng2uca_valid;
     logic eng2uca_empty;
     logic eng2uca_rd;
-    logic signed [$clog2(`UC_LENGTH)-1:0] eng2uca;
-    logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng;
+    logic signed [$clog2(`LIT_IDX_MAX):0] eng2uca;
+    logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng;
     logic [`NUM_ENGINE-1:0]               engmask;
     logic                                 conflict;
     
     // Simulated mux control
-    logic signed [`NUM_ENGINE-1:0][$clog2(`UC_LENGTH)-1:0] sender;
+    logic signed [`NUM_ENGINE-1:0][$clog2(`LIT_IDX_MAX):0] sender;
 
 uc_arbiter dut(
     .clk(clk),

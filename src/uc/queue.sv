@@ -15,8 +15,8 @@ module queue #(
     output logic full,
     output logic signed [$clog2(DATA_LEN)-1:0] qout
     `ifdef DEBUG
-    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r
-    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w
+    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`LIT_IDX_MAX):0] entry_r
+    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`LIT_IDX_MAX):0] entry_w
     ,output logic [$clog2(QUEUE_SIZE):0] head_r
     ,output logic [$clog2(QUEUE_SIZE):0] head_w
     ,output logic [$clog2(QUEUE_SIZE):0] tail_r
@@ -27,8 +27,8 @@ module queue #(
 );
 
 `ifndef DEBUG
-logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r;
-logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w;
+logic [QUEUE_SIZE-1:0][$clog2(`LIT_IDX_MAX):0] entry_r;
+logic [QUEUE_SIZE-1:0][$clog2(`LIT_IDX_MAX):0] entry_w;
 
 logic [$clog2(QUEUE_SIZE):0] head_r;
 logic [$clog2(QUEUE_SIZE):0] head_w;

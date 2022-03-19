@@ -7,14 +7,14 @@ logic clk;
 logic rst;
 logic push;
 logic pop;
-logic [$clog2(`UC_LENGTH):0] uca2ucq;
+logic [$clog2(`LIT_IDX_MAX):0] uca2ucq;
 logic empty;
 logic full;
-logic [$clog2(`UC_LENGTH):0] ucq2eng;
+logic [$clog2(`LIT_IDX_MAX):0] ucq2eng;
 
 `ifndef DEBUG
-logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r;
-logic [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w;
+logic [QUEUE_SIZE-1:0][$clog2(`LIT_IDX_MAX):0] entry_r;
+logic [QUEUE_SIZE-1:0][$clog2(`LIT_IDX_MAX):0] entry_w;
 
 logic [$clog2(QUEUE_SIZE):0] head_r;
 logic [$clog2(QUEUE_SIZE):0] head_w;

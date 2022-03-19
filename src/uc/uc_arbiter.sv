@@ -3,12 +3,12 @@ module uc_arbiter (
     input  logic rst,
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
-    input  logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca,
+    input  logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca,
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
-    input  logic signed [$clog2(`UC_LENGTH)-1:0] eng2uca,
+    input  logic signed [$clog2(`LIT_IDX_MAX):0] eng2uca,
     input  logic [`NUM_ENGINE-1:0] uca2eng_full,
-    output logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng,
+    output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
     output logic [`NUM_ENGINE-1:0] engmask,
     output logic                   conflict
 );
@@ -35,21 +35,21 @@ logic empty;
 logic full;
 logic push;
 logic pop;
-logic [$clog2(`UC_LENGTH)-1:0] data;
+logic [$clog2(`LIT_IDX_MAX):0] data;
 
-// Index should be [`UC_LENGTH-1:0]
+// Index should be [`LIT_IDX_MAX-1:0]
 // But truncated on purpose for the sake of easier debugging
-logic [`UC_LENGTH-1:0][1:0]    conflict_table_r;
-logic [`UC_LENGTH-1:0][1:0]    conflict_table_w;
-logic [$clog2(`UC_LENGTH)-1:0] conflict_detect;
-logic [$clog2(`UC_LENGTH)-2:0] uc_idx;
+logic [`LIT_IDX_MAX-1:0][1:0]    conflict_table_r;
+logic [`LIT_IDX_MAX-1:0][1:0]    conflict_table_w;
+logic [$clog2(`LIT_IDX_MAX):0] conflict_detect;
+logic [$clog2(`LIT_IDX_MAX)-2:0] uc_idx;
 logic                          uc_polarity;
 
 assign engmask = engmask_r;
-assign uc_polarity = data[$clog2(`UC_LENGTH)-1];
+assign uc_polarity = data[$clog2(`LIT_IDX_MAX)];
 assign uc_idx = uc_polarity? 
-    ~data[$clog2(`UC_LENGTH)-2:0] + 1 : 
-    data[$clog2(`UC_LENGTH)-2:0];
+    ~data[$clog2(`LIT_IDX_MAX)-1:0] + 1 : 
+    data[$clog2(`LIT_IDX_MAX)-1:0];
 
 uc_queue uc_queue (
     .clk(clk),
@@ -72,7 +72,7 @@ always_comb begin
 end
 
 always_comb begin
-    for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
+    for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
         conflict_table_w[i] = conflict_table_r[i];
     end
     engmask_w  = engmask_r;
@@ -126,7 +126,7 @@ end
 
 always_ff @(posedge clk or negedge rst) begin
     if (rst) begin
-        for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
+        for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
             conflict_table_r[i] <= 'b0;
             conflict_detect[i]  <= 'b0;
         end
@@ -134,7 +134,7 @@ always_ff @(posedge clk or negedge rst) begin
         curr_state <= IDLE;
     end
     else begin
-        for(int i=0; i<$clog2(`UC_LENGTH); i++) begin
+        for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
             conflict_table_r[i] <= conflict_table_w[i];
             conflict_detect[i]  <= &conflict_table_w[i];
         end
