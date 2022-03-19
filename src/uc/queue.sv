@@ -1,4 +1,3 @@
-`define UCQ_SIZE 4
 `define UC_LENGTH 1024
 `define DEBUG
 
@@ -14,17 +13,19 @@ module queue #(
     input  logic rst,
     input  logic push,
     input  logic pop,
-    input  logic signed [$clog2(DATA_LEN):0] data,
+    input  logic signed [$clog2(DATA_LEN)-1:0] data,
     output logic empty,
     output logic full,
-    output logic signed [$clog2(DATA_LEN):0] head
+    output logic signed [$clog2(DATA_LEN)-1:0] qout
     `ifdef DEBUG
-    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH):0] entry_r
-    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH):0] entry_w
+    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_r
+    ,output logic signed [QUEUE_SIZE-1:0][$clog2(`UC_LENGTH)-1:0] entry_w
     ,output logic [$clog2(QUEUE_SIZE):0] head_r
     ,output logic [$clog2(QUEUE_SIZE):0] head_w
     ,output logic [$clog2(QUEUE_SIZE):0] tail_r
     ,output logic [$clog2(QUEUE_SIZE):0] tail_w
+    ,output logic [$clog2(DATA_LEN)-1:0] qout_r
+    ,output logic [$clog2(DATA_LEN)-1:0] qout_w
     `endif
 );
 
@@ -36,9 +37,12 @@ logic [$clog2(QUEUE_SIZE):0] head_r;
 logic [$clog2(QUEUE_SIZE):0] head_w;
 logic [$clog2(QUEUE_SIZE):0] tail_r;
 logic [$clog2(QUEUE_SIZE):0] tail_w;
+
+logic [$clog2(DATA_LEN)-1:0] qout_r;
+logic [$clog2(DATA_LEN)-1:0] qout_w;
 `endif
 
-assign head = head_r;
+assign qout = qout_r;
 
 always_comb begin
     
@@ -66,7 +70,7 @@ always_comb begin
     empty = tail_r == head_r;
 
     // Init output
-    head_w = head_r;
+    qout_w = qout_r;
 
     // Process input stimuli
     case({push, pop})
@@ -78,13 +82,13 @@ always_comb begin
         end
         'b01: begin
             if (!empty) begin
-                head_w = entry_r[head_r];
+                qout_w = entry_r[head_r];
                 head_w = head_r+'b1;
             end
         end
         'b11: begin
             // Pop
-            head_w = entry_r[head_r];
+            qout_w = entry_r[head_r];
             head_w = head_r+'b1;
             // Push
             entry_w[tail_r] = data;
@@ -101,17 +105,17 @@ always_ff @(posedge clk) begin
         for(int i=0; i<QUEUE_SIZE; i++) begin
             entry_r[i] <= 0;
         end
-        head_r     <= 'b0;
+        qout_r     <= 'b0;
         tail_r     <= 'b0;
-        head_r  <= 'b0;
+        head_r     <= 'b0;
     end
     else begin
         for(int i=0; i<QUEUE_SIZE; i++) begin
             entry_r[i] <= entry_w[i];
         end
-        head_r     <= head_w;
+        qout_r     <= qout_w;
         tail_r     <= tail_w;
-        head_r  <= head_w;
+        head_r     <= head_w;
     end
 end
 

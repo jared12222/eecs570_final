@@ -1,4 +1,4 @@
-`define UCQ_SIZE 4
+`define UCQ_SIZE 16
 `define UC_LENGTH 1024
 `define DEBUG
 `define NUM_ENGINE 4
@@ -12,11 +12,12 @@ module tb_uca();
     logic rst;
     logic mem2uca_valid;
     logic mem2uca_done;
-    logic signed [$clog2(`UC_LENGTH):0] mem2uca;
+    logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca;
     logic eng2uca_valid;
     logic eng2uca_empty;
-    logic signed [$clog2(`UC_LENGTH):0] eng2uca;
-    logic signed [$clog2(`UC_LENGTH):0] uca2ucq;
+    logic eng2uca_rd;
+    logic signed [$clog2(`UC_LENGTH)-1:0] eng2uca;
+    logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng;
     logic [`NUM_ENGINE-1:0]               engmask;
     logic                                 conflict;
     
@@ -32,7 +33,8 @@ uc_arbiter dut(
     .eng2uca_valid(eng2uca_valid),
     .eng2uca_empty(eng2uca_empty),
     .eng2uca(eng2uca),
-    .uca2ucq(uca2ucq),
+    .eng2uca_rd(eng2uca_rd),
+    .uca2eng(uca2eng),
     .engmask(engmask),
     .conflict(conflict)
 );
@@ -53,7 +55,7 @@ task mem_send(int len);
     for(int i=0; i<len; i++) begin
         @(negedge clk);
         mem2uca_valid = 1;
-        mem2uca       = i;
+        mem2uca       = (i+1)*10;
     end
     @(negedge clk);
     mem2uca_valid = 0;
@@ -76,6 +78,11 @@ task eng_send();
     end
 endtask
 
+task eng_read();
+    @(negedge clk);
+    eng2uca_rd = 'b1;
+endtask
+
 initial begin
     clk = 0;
     
@@ -88,6 +95,7 @@ initial begin
     eng2uca_valid = 0;
     eng2uca_empty = 0;
     eng2uca       = 0;
+    eng2uca_rd    = 0;
 
     sender[0] = 2;
     sender[1] = 4;
@@ -99,13 +107,14 @@ initial begin
     // Send Unit clauses from memory
     mem_send(5);
 
-    // repeat(5) begin
-    //     @(negedge clk);
-    // end
     eng_send();
     eng_send();
     eng_send();
     eng_send();
+
+    repeat(10) begin
+        eng_read();
+    end
 
     repeat(10) begin
         @(negedge clk);

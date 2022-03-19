@@ -7,11 +7,12 @@ module uc_arbiter (
     input  logic rst,
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
-    input  logic signed [$clog2(`UC_LENGTH):0] mem2uca,
+    input  logic signed [$clog2(`UC_LENGTH)-1:0] mem2uca,
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
-    input  logic signed [$clog2(`UC_LENGTH):0] eng2uca,
-    output logic signed [$clog2(`UC_LENGTH):0] uca2ucq,
+    input  logic signed [$clog2(`UC_LENGTH)-1:0] eng2uca,
+    input  logic eng2uca_rd,
+    output logic signed [$clog2(`UC_LENGTH)-1:0] uca2eng,
     output logic [`NUM_ENGINE-1:0]        engmask,
     output logic                          conflict
 );
@@ -38,16 +39,19 @@ logic empty;
 logic full;
 logic push;
 logic pop;
-logic [$clog2(`UC_LENGTH):0] data;
+logic [$clog2(`UC_LENGTH)-1:0] data;
 
 logic [$clog2(`UC_LENGTH)-1:0][1:0] conflict_table_r;
 logic [$clog2(`UC_LENGTH)-1:0][1:0] conflict_table_w;
 logic [$clog2(`UC_LENGTH)-1:0]      conflict_detect;
-logic [$clog2(`UC_LENGTH)-1:0]      uc_idx;
+logic [$clog2(`UC_LENGTH)-2:0]      uc_idx;
 logic                               uc_polarity;
 
 assign engmask = engmask_r;
-assign {uc_polarity, uc_idx} = data;
+assign uc_polarity = data[$clog2(`UC_LENGTH)-1];
+assign uc_idx = uc_polarity? 
+    ~data[$clog2(`UC_LENGTH)-2:0] + 1 : 
+    data[$clog2(`UC_LENGTH)-2:0];
 
 uc_queue uc_queue (
     .clk(clk),
@@ -57,7 +61,7 @@ uc_queue uc_queue (
     .uca2ucq(data),
     .empty(empty),
     .full(full),
-    .ucq2eng(uca2ucq)
+    .ucq2eng(uca2eng)
 );
 
 always_comb begin
@@ -74,6 +78,8 @@ always_comb begin
     case (curr_state)
         IDLE: begin
             engmask_w  = 'b0;
+            push       = mem2uca_valid ? 'b1 : 'b0;
+            data       = mem2uca;
             next_state = mem2uca_done ? READY : IDLE;
         end
         READY: begin
@@ -112,8 +118,10 @@ always_comb begin
 
     // Pop data from inner buffer to output if not empty
     // Might not be able to pop and must stall if engine RCV FIFO is full
-    if(empty != 'b0) begin
-        pop = 'b1;
+    if(eng2uca_rd == 'b1) begin
+        if(empty == 'b0) begin
+            pop = 'b1;
+        end
     end
 end
 
