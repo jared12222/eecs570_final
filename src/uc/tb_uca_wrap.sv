@@ -1,8 +1,3 @@
-`define UCQ_SIZE 16
-`define UC_LENGTH 1024
-`define DEBUG
-`define NUM_ENGINE 4
-
 // Clock speed
 real PERIOD = 10.0;
 

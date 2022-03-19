@@ -1,7 +1,3 @@
-`define UC_LENGTH 1024
-`define NUM_ENGINE 4
-`define MAX_UC 64
-
 module uc_arbiter_wrapper (
     input  logic clk,
     input  logic rst,

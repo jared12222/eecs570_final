@@ -1,6 +1,3 @@
-`define UC_LENGTH 1024
-`define DEBUG
-
 // uca: Unit Clause Arbiter
 // ucq: Unit Clause Queue
 // eng: Process Engine

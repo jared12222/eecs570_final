@@ -3,6 +3,8 @@ VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint
 TESTBENCH = tb_uca_wrap.sv
 SIMFILES  = uc_arbiter_wrapper.sv
 
+HEADERS   = ../sys_def.sv
+
 INCLUDES  = uc_queue.sv
 INCLUDES += queue.sv
 INCLUDES += uc_arbiter.sv
