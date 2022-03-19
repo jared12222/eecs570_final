@@ -11,8 +11,13 @@
     match   => SAT (dont care)
 */
 module bcp_pe (
+    input  clk,
+    input  rst_n,
     input  lit_t litDec, // New decision literal
     input  cla_t clause, // input clause
+    input  ENG_P_FULL,
+    input  UCQ_out_empty,
+    input  CLQ_empty,
     
     // implication (unit clause)
     output logic imply,
@@ -21,9 +26,20 @@ module bcp_pe (
     output cla_t pr_clause, // output pruned clause
 
     output logic done, // the clause is satisfied
-    output logic conflict // if all literal are assigned, set if the clause cannot satisfy
+    output logic conflict, // if all literal are assigned, set if the clause cannot satisfy
+    
+    output logic UCQ_out_pop,
+    output logic CLQ_pop,
+    output logic ENG_P_push
 );
     logic [`CLA_LENGTH-1:0] nonzero;
+    logic stall;
+    lit_t uc;
+
+    assign stall = (clause == 'b0 && UCQ_out_empty) | ENG_P_FULL | CLQ_empty;
+    assign UCQ_out_pop = (clause == 'b0 && !stall) ? 1 : 0;
+    assign CLQ_pop = !stall;
+    assign ENG_P_push = !stall && !done;
 
     always_comb begin
         // Initialization
@@ -32,15 +48,18 @@ module bcp_pe (
         imply_idx = 'bx;
         // Determine if clause satisfy : Comparing literals indexes
         for (int i=0; i < `CLA_LENGTH ; i++ ) begin
-            if (litDec != 'b0) begin
-                if (litDec == clause[i]) begin
+            if (uc != 'b0) begin
+                if (uc == clause[i]) begin
                     pr_clause[i] = 0;
                     done = 'b1;
                 end
-                else if (-litDec == clause[i]) begin
+                else if (-uc == clause[i]) begin
                     pr_clause[i] = 0;
                 end
                 else pr_clause[i] = clause[i];
+
+            end
+            else begin
 
             end
             if (pr_clause[i] != 0)
@@ -59,5 +78,16 @@ module bcp_pe (
             conflict = 1;
         else
             conflict = 0;
+    end
+
+    always_ff @(posedge clk) begin
+        if (rst_n) begin
+            uc <= 'b0;
+        end
+        else begin
+            if (UCQ_out_pop) begin
+                uc <= litDec;
+            end
+        end
     end
 endmodule
