@@ -14,7 +14,7 @@ module cla_queue(
     cla_t [depth-1:0] buffer;
 
     assign full  =  head[$clog2(depth)-1:0] == tail[$clog2(depth)-1:0] &&
-                    head[$clog2(depth)] ^ tail[$clog2(depth)];
+                    (head[$clog2(depth)] ^ tail[$clog2(depth)]);
     assign empty = head == tail;
     assign cla_out = buffer[head[$clog2(depth)-1:0]];
     
