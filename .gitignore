@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /lt_model/obj/*
 /lt_model/bin/*
 /lt_model/input_file/cnf_to_test*
@@ -7,7 +6,6 @@
 /lt_model/unit_test/bin/*
 /lt_model/unit_test/test_dual_port_fifo*
 /lt_model/unit_test/obj/*
-=======
 simv
 src/uc/DVEfiles
 src/uc/csrc
@@ -17,4 +15,3 @@ src/uc/csrc
 *.out
 *.old
 *.daidir
->>>>>>> 1a69263fe024330e1976f21abf34bcac01755b7f
