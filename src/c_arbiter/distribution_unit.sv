@@ -10,7 +10,7 @@
 module Distribution_unit(
 	input 											clock,
 	input 											reset,
-	input 	[`NUM_ENGINE - 1:0] 					full_in,			//clause queue's full signal; act as !(request signal)	
+	input 	[`NUM_ENGINE - 1:0] 					full_in,			//clause queue's full signal; act as !(request signal); pipeline register might need to be removed	
 	input											load_sig_in,		//set to 1 to load data into the buffer
 	input											start_in,			//set to 1 to signal that test data loading is complete, start distributing the data
 	input 	[`VARIABLE_LENGTH * `CLA_LENGTH-1:0]	clause_in,			//clause input, from testbench or from UC_arbiter
