@@ -40,13 +40,14 @@ module bcp_pe (
     assign stall = (clause == 'b0 && UCQ_out_empty) | ENG_P_FULL | CLQ_empty | UCQ_in_full;
     assign UCQ_out_pop = (clause == 'b0 && !stall) ? 1 : 0;
     assign CLQ_pop = !stall;
-    assign ENG_P_push = !stall && !done;
+    assign ENG_P_push = !done;
 
     always_comb begin
         // Initialization
         done = 'b0;
         imply = 'b0;
         imply_idx = 'bx;
+        pr_clause = 'bx;
         // Determine if clause satisfy : Comparing literals indexes
         for (int i=0; i < `CLA_LENGTH ; i++ ) begin
             if (uc != 'b0) begin
@@ -60,9 +61,7 @@ module bcp_pe (
                 else pr_clause[i] = clause[i];
 
             end
-            else begin
-
-            end
+            
             if (pr_clause[i] != 0)
                 nonzero[i] = 1;
             else

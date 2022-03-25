@@ -2,12 +2,20 @@ module top(
     input clk,
     input rst_n,
     
-    // UC Arbiter to pipeline
-    input lit_t ucarb2UCQ_in_pop,
+    //UCQ_in to UC arbiter
+    input  ucarb2UCQ_in_pop,
+    output lit_t UCQ_in2uarb_uc,
+    output logic UCQ_in_empty,
     
+    //UCQ_out <-> UC arbiter
+    input lit_t ucarb2UCQ_out_uc,
+    input ucarb2UCQ_out_push,
+    output logic UCQ_out_full,
+
     // sw
-    input cla_t carb2sw,
-    input carb2sw_valid,
+    input cla_t carb2sw_cla,
+    input carb2sw_valid
+
 );
 
 // BCP Engine
@@ -27,7 +35,7 @@ logic ENG_P_push;
 // CLQ
 logic CLQ_full;
 logic CLQ_empty;
-cla_t CLQ2BCP_cla,
+cla_t CLQ2BCP_cla;
 
 // sw(switch)
 logic eng2sw_valid;
@@ -37,7 +45,12 @@ logic sw2clq_valid;
 
 // UCQ_in
 logic UCQ_in_full;
-lit_t UCQ_in2uarb_uc;
+
+
+
+lit_t UCQ_out2eng_uc;
+cla_t CLQ2eng_cla;
+cla_t eng2sw_cla;
 
 bcp_pe bcp_pe (
     .clk(clk),    
@@ -52,7 +65,7 @@ bcp_pe bcp_pe (
     .imply(eng2UCQ_in_valid),
     .imply_idx(imply_idx),
     
-    .pr_clause(eng2sw),
+    .pr_clause(eng2sw_cla),
     .done(),
     .conflict(),
     
@@ -76,9 +89,9 @@ CLQ(
 );
 
 sw sw(
-    .carb2sw(carb2sw),
+    .carb2sw(carb2sw_cla),
     .carb2sw_valid(carb2sw_valid),
-    .eng2sw(eng2sw),
+    .eng2sw(eng2sw_cla),
     .eng2sw_valid(eng2sw_valid),
 
     .sw2clq(sw2clq_cla),
@@ -87,7 +100,7 @@ sw sw(
 );
 
 queue #(
-    .DATA_LEN(`LIT_IDX_MAX)
+    .DATA_LEN(`LIT_IDX_MAX*2),
     .QUEUE_SIZE(`UCQ_SIZE)
 )
 UCQ_in(
@@ -102,7 +115,7 @@ UCQ_in(
 );
 
 queue #(
-    .DATA_LEN(`LIT_IDX_MAX)
+    .DATA_LEN(`LIT_IDX_MAX*2),
     .QUEUE_SIZE(`UCQ_SIZE)
 )
 UCQ_out(

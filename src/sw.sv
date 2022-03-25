@@ -30,6 +30,7 @@ always_comb begin
         'b10: begin
             sw2clq = carb2sw;
             sw2clq_valid = 'b1;
+            sw2eng_stall = 'b1;
         end
         'b11: begin
             sw2clq = carb2sw;

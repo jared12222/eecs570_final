@@ -1,7 +1,8 @@
-VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L +vcs+loopreport
+VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L
 
-TESTBENCH = tb_sw_engine.sv
-SIMFILES  = top.sv ./bcp/bcp_pe.sv ./cla_queue/cla_queue.sv ./uc/queue.sv sw.sv
+TESTBENCH = tb_sw.sv
+SIMFILES  = sw.sv
+
 HEADERS   = sys_def.sv
 
 #INCLUDES  = uc_queue.sv
@@ -23,7 +24,7 @@ simv:	$(HEADERS) $(INCLUDES) $(SIMFILES) $(TESTBENCH)
 
 .PHONY: sim
 
-dve:	simv
+dve:	sim
 	./simv -gui &
 
 dve_syn: syn_simv 
