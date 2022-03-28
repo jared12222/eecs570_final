@@ -40,7 +40,7 @@ module bcp_pe (
     assign stall = (clause == 'b0 && UCQ_out_empty) | ENG_P_FULL | CLQ_empty | UCQ_in_full;
     assign UCQ_out_pop = (clause == 'b0 && !stall) ? 1 : 0;
     assign CLQ_pop = !stall;
-    assign ENG_P_push = !done;
+    assign ENG_P_push = !stall && !done && !imply;
 
     always_comb begin
         // Initialization
