@@ -47,10 +47,10 @@ module bcp_pe (
         done = 'b0;
         imply = 'b0;
         imply_idx = 'bx;
-        pr_clause = 'bx;
+        pr_clause = clause;
         // Determine if clause satisfy : Comparing literals indexes
         for (int i=0; i < `CLA_LENGTH ; i++ ) begin
-            if (uc != 'b0) begin
+            if (uc != 'b0) begin // if initialized decision
                 if (uc == clause[i]) begin
                     pr_clause[i] = 0;
                     done = 'b1;

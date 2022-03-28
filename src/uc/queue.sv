@@ -39,7 +39,7 @@ logic [$clog2(DATA_LEN)-1:0] qout_r;
 logic [$clog2(DATA_LEN)-1:0] qout_w;
 `endif
 
-assign qout = qout_r;
+assign qout = qout_w;
 
 always_comb begin
     
