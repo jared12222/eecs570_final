@@ -61,18 +61,22 @@ always_comb begin
             if (i >= ref_count_r) begin
                 idx = i;
                 if (eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]]) begin
+                    
+                    // Send data to uc arbiter
                     uca2eng_pop        = 'b1;
                     eng2uca_mout_d     = eng2uca_min  [idx[$clog2(`NUM_ENGINE)-1:0]];
                     eng2uca_mout_valid = eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]];
+                    
+                    // Reference counter increment logic
+                    if (i == ref_count_r) begin
+                        ref_count_w = ref_count_r + 'b1;
+                    end
+                    else begin
+                        ref_count_w = idx[$clog2(`NUM_ENGINE)-1:0] + 'b1;
+                    end
+                    
+                    break;
                 end
-                // Reference counter increment logic
-                if (i == ref_count_r) begin
-                    ref_count_w = ref_count_r + 'b1;
-                end
-                else begin
-                    ref_count_w = idx[$clog2(`NUM_ENGINE)-1:0] + 'b1;
-                end
-                break;
             end
         end
     end
