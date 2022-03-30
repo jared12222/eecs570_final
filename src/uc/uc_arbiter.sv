@@ -7,15 +7,21 @@ module uc_arbiter (
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
     input  logic signed [$clog2(`LIT_IDX_MAX):0] eng2uca,
-    input  logic [`NUM_ENGINE-1:0] uca2eng_full,
+    input  logic [`NUM_ENGINE-1:0] eng2uca_full,
+    input  logic input_mode,
     output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
     output logic [`NUM_ENGINE-1:0] engmask,
     output logic                   conflict
 );
 
-// TODO
-// Add a MUX outside of this module to select input
-// Signal outside world that inner buffer is full
+/*
+uca: Unit Clause arbiter
+mem: Memory -- Sends a unit clause from the interconnect
+input_mode: Mode of receiving implied unit clauses from engine
+    (0) Mask mode -- Read every engine queue sequentially
+    (1) PQ mode   -- Get input to write to buffer from wrapper PQ
+*/
+
 
 typedef enum logic [1:0] {
 	IDLE  = 2'b00,
@@ -41,9 +47,10 @@ logic [$clog2(`LIT_IDX_MAX):0] data;
 // But truncated on purpose for the sake of easier debugging
 logic [`LIT_IDX_MAX-1:0][1:0]    conflict_table_r;
 logic [`LIT_IDX_MAX-1:0][1:0]    conflict_table_w;
-logic [$clog2(`LIT_IDX_MAX):0] conflict_detect;
+logic [$clog2(`LIT_IDX_MAX):0]   conflict_detect;
+
 logic [$clog2(`LIT_IDX_MAX)-2:0] uc_idx;
-logic                          uc_polarity;
+logic                            uc_polarity;
 
 assign engmask = engmask_r;
 assign uc_polarity = data[$clog2(`LIT_IDX_MAX)];
@@ -63,8 +70,8 @@ uc_queue uc_queue (
 );
 
 always_comb begin
-    pop        = 'b0;
-    if(&uca2eng_full == 'b0) begin
+    pop = 'b0;
+    if(&eng2uca_full == 'b0) begin
         if(empty == 'b0) begin
             pop = 'b1;
         end        
@@ -89,15 +96,25 @@ always_comb begin
             next_state = mem2uca_done ? READY : IDLE;
         end
         READY: begin
-            // Update mask
-            engmask_w = engmask_r == 'b0 ? 'b1 : engmask_r << 1;
-
-            // Check for conflicts before registering data
-            if(|conflict_detect == 'b1) begin
-                next_state = DONE;
+            if (input_mode) begin
+                if (eng2uca_valid) begin
+                    data = eng2uca;
+                    push = 'b1;
+                    conflict_table_w[uc_idx][uc_polarity] = 'b1;
+                end
+                next_state = READY;             
             end
             else begin
-                next_state = PROC;
+                // Update mask
+                engmask_w = engmask_r == 'b0 ? 'b1 : engmask_r << 1;
+
+                // Check for conflicts before registering data
+                if(|conflict_detect == 'b1) begin
+                    next_state = DONE;
+                end
+                else begin
+                    next_state = PROC;
+                end
             end
         end
         PROC: begin

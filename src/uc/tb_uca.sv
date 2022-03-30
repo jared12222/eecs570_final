@@ -10,7 +10,7 @@ module tb_uca();
     logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca;
     logic eng2uca_valid;
     logic eng2uca_empty;
-    logic eng2uca_rd;
+    logic [`NUM_ENGINE-1:0] eng2uca_full;
     logic signed [$clog2(`LIT_IDX_MAX):0] eng2uca;
     logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng;
     logic [`NUM_ENGINE-1:0]               engmask;
@@ -28,7 +28,7 @@ uc_arbiter dut(
     .eng2uca_valid(eng2uca_valid),
     .eng2uca_empty(eng2uca_empty),
     .eng2uca(eng2uca),
-    .eng2uca_rd(eng2uca_rd),
+    .eng2uca_full(eng2uca_full),
     .uca2eng(uca2eng),
     .engmask(engmask),
     .conflict(conflict)
@@ -90,7 +90,7 @@ initial begin
     eng2uca_valid = 0;
     eng2uca_empty = 0;
     eng2uca       = 0;
-    eng2uca_rd    = 0;
+    eng2uca_full  = 0;
 
     sender[0] = 2;
     sender[1] = 4;
