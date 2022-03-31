@@ -18,6 +18,10 @@ module testbench_distribution_unit ();
 	logic 	[`NUM_ENGINE-1:0][`CLA_LENGTH * `VARIABLE_LENGTH -1:0] 		clause_out;
 	logic 	[`NUM_ENGINE-1:0] 											grant_out;
 	logic																empty_out;
+	logic   [`VARIABLE_LENGTH-1:0]                                      chosen_uc_in;
+	logic                                                               chosen_uc_valid_in;
+	logic   [`VARIABLE_LENGTH-1:0]                                      chosen_uc_out;
+	logic                                                               chosen_uc_valid_out;
 
 	Distribution_unit distribution_unit(
 		.clock(clock),
@@ -28,14 +32,21 @@ module testbench_distribution_unit ();
 		.clause_in(clause_in),
 		.clause_out(clause_out),
 		.grant_out(grant_out),
-		.empty_out(empty_out)
+		.empty_out(empty_out),
+		.chosen_uc_in(chosen_uc_in),
+		.chosen_uc_valid_in(chosen_uc_valid_in),
+		.chosen_uc_out(chosen_uc_out),
+		.chosen_uc_valid_out(chosen_uc_valid_out)
 	);
+
 
 	task show_result();
 		#1
 		$display("clause_out: %d_%d_%d_%d", clause_out[3], clause_out[2], clause_out[1], clause_out[0]);
 		$display("grant_out: %b", grant_out);
 		$display("empty_out: %b", empty_out);
+		$display("uc_out: %b", chosen_uc_out);
+		$display("uc_valid_out: %b", chosen_uc_valid_out);
 	endtask
 
 	always begin
@@ -55,6 +66,8 @@ module testbench_distribution_unit ();
 		load_sig_in = 1;
 		full_in 	= 4'b0000;
 		start_in 	= 0;
+		chosen_uc_valid_in = 1;
+		chosen_uc_in = 11'b101_1011_1011;
 		for (int i = 0; i < 24; i++) begin
 			clause_in = i;
 			#(`CYCLE);
@@ -75,8 +88,8 @@ module testbench_distribution_unit ();
 		show_result();
 		@(negedge clock);
 		$display("cycle 4");
-		show_result();
 		full_in = 4'b0101;
+		show_result();
 		@(negedge clock);
 		$display("cycle 5");
 		show_result();

@@ -14,10 +14,14 @@ module Distribution_unit(
 	input											load_sig_in,		//set to 1 to load data into the buffer
 	input											start_in,			//set to 1 to signal that test data loading is complete, start distributing the data
 	input 	[`VARIABLE_LENGTH * `CLA_LENGTH-1:0]	clause_in,			//clause input, from testbench or from UC_arbiter
+	input   [`VARIABLE_LENGTH-1:0]                  chosen_uc_in,
+	input                                           chosen_uc_valid_in,
 
-	output 	logic 	[`NUM_ENGINE-1:0][`CLA_LENGTH * `VARIABLE_LENGTH -1:0] 		clause_out,		//data for class queues
-	output 	logic 	[`NUM_ENGINE-1:0] 											grant_out,		//signal that clause_out is valid
-	output 	logic																empty_out		//the buffer is empty; well..., maybe we don't need this signal
+	output 	logic 	[`NUM_ENGINE-1:0][`CLA_LENGTH * `VARIABLE_LENGTH -1:0]      clause_out,		//data for class queues
+	output 	logic 	[`NUM_ENGINE-1:0]                                           grant_out,		//signal that clause_out is valid
+	output 	logic																empty_out,		//the buffer is empty; well..., maybe we don't need this signal
+	output  logic   [`VARIABLE_LENGTH-1:0]                                      chosen_uc_out,
+	output  logic                                                               chosen_uc_valid_out
 	);
 
 	logic 	[`NUM_ENGINE-1:0][`VARIABLE_LENGTH * `CLA_LENGTH-1:0]	clause;
@@ -45,13 +49,21 @@ module Distribution_unit(
 		.start_in(start_in),
 		.clause_in(clause_in),
 		.clause_received_in(clause_feedback_cnt),
+		.chosen_uc_in(chosen_uc_in),
+		.chosen_uc_valid_in(chosen_uc_valid_in),
 	
 		.clause_released_out(clause_distributed_cnt),
 		.clause_out(clause),
+		.chosen_uc_out(chosen_uc_out),
+		.chosen_uc_valid_out(chosen_uc_valid_out),
 		.empty_out(empty_out),
 		.start_out(start)
 	
 		);
+
+
+
+
 
 
 endmodule
