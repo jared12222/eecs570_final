@@ -27,6 +27,7 @@ top DUT (
     .ucarb2UCQ_in_pop(ucarb2UCQ_in_pop),
     .UCQ_in2uarb_uc(UCQ_in2uarb_uc),
     .UCQ_in_empty(UCQ_in_empty),
+    
     //UCQ_out <-> UC arbiter
     .ucarb2UCQ_out_uc(ucarb2UCQ_out_uc),
     .ucarb2UCQ_out_push(ucarb2UCQ_out_push),

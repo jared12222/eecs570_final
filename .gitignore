@@ -21,3 +21,4 @@ ucli.key
 DVEfiles
 program.out
 *.vpd*
+*.log

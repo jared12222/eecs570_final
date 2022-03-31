@@ -5,7 +5,7 @@
 `define CLA_LENGTH 3
 
 // Unit Clause
-`define NUM_ENGINE 4
+`define NUM_ENGINE 1
 `define MAX_UC 64
 `define UCQ_SIZE 16
 

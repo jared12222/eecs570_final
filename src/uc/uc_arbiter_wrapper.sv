@@ -10,6 +10,7 @@ module uc_arbiter_wrapper (
     input  logic [`NUM_ENGINE-1:0] eng2uca_full,
     input  logic input_mode,
     output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
+    output logic                                 uca2eng_valid,
     output logic uca2eng_pop,
     output logic conflict
 );
@@ -43,6 +44,7 @@ uc_arbiter uca(
     .eng2uca_full(eng2uca_full),
     .input_mode(input_mode),
     .uca2eng(uca2eng),
+    .uca2eng_valid(uca2eng_valid),
     .engmask(engmask),
     .conflict(conflict)
 );
@@ -57,25 +59,35 @@ always_comb begin
 
     if (input_mode) begin
         // Round-robin priority selection
-        for (int i=0; i<`NUM_ENGINE*2; i++) begin
-            if (i >= ref_count_r) begin
-                idx = i;
-                if (eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]]) begin
-                    
-                    // Send data to uc arbiter
-                    uca2eng_pop        = 'b1;
-                    eng2uca_mout_d     = eng2uca_min  [idx[$clog2(`NUM_ENGINE)-1:0]];
-                    eng2uca_mout_valid = eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]];
-                    
-                    // Reference counter increment logic
-                    if (i == ref_count_r) begin
-                        ref_count_w = ref_count_r + 'b1;
+        if (`NUM_ENGINE == 1) begin
+            if (eng2uca_valid[0]) begin
+                // Send data to uc arbiter
+                uca2eng_pop        = 'b1;
+                eng2uca_mout_d     = eng2uca_min  [0];
+                eng2uca_mout_valid = eng2uca_valid[0];
+            end
+        end
+        else begin
+            for (int i=0; i<`NUM_ENGINE*2; i++) begin
+                if (i >= ref_count_r) begin
+                    idx = i;
+                    if (eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]]) begin
+                        
+                        // Send data to uc arbiter
+                        uca2eng_pop        = 'b1;
+                        eng2uca_mout_d     = eng2uca_min  [idx[$clog2(`NUM_ENGINE)-1:0]];
+                        eng2uca_mout_valid = eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]];
+                        
+                        // Reference counter increment logic
+                        if (i == ref_count_r) begin
+                            ref_count_w = ref_count_r + 'b1;
+                        end
+                        else begin
+                            ref_count_w = idx[$clog2(`NUM_ENGINE)-1:0] + 'b1;
+                        end
+                        
+                        break;
                     end
-                    else begin
-                        ref_count_w = idx[$clog2(`NUM_ENGINE)-1:0] + 'b1;
-                    end
-                    
-                    break;
                 end
             end
         end

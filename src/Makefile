@@ -1,12 +1,12 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L +vcs+loopreport
 
-TESTBENCH = tb_sw_engine.sv
-SIMFILES  = top.sv ./bcp/bcp_pe.sv ./cla_queue/cla_queue.sv ./uc/queue.sv sw.sv
-HEADERS   = sys_def.sv
-
-#INCLUDES  = uc_queue.sv
-#INCLUDES += queue.sv
-#INCLUDES += uc_arbiter.sv
+TESTBENCH =  tb_sw_engine_ucarb.sv
+SIMFILES  =  top.sv proc.sv
+SIMFILES  += ./bcp/bcp_pe.sv
+SIMFILES  += ./cla_queue/cla_queue.sv ./uc/queue.sv
+SIMFILES  += $(wildcard ./uc/uc*.sv)
+SIMFILES  += sw.sv
+HEADERS   =  sys_def.sv
 
 all:    simv
 	./simv | tee program.out
@@ -19,7 +19,7 @@ sim:	simv
 	./simv | tee program.out
 
 simv:	$(HEADERS) $(INCLUDES) $(SIMFILES) $(TESTBENCH)
-	$(VCS) $^ -o simv
+	$(VCS) $^ -o simv | tee compile.out
 
 .PHONY: sim
 

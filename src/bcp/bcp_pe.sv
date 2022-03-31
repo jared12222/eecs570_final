@@ -46,7 +46,7 @@ module bcp_pe (
         // Initialization
         done = 'b0;
         imply = 'b0;
-        imply_idx = 'bx;
+        imply_idx = 'b0;
         pr_clause = clause;
         // Determine if clause satisfy : Comparing literals indexes
         for (int i=0; i < `CLA_LENGTH ; i++ ) begin
@@ -68,12 +68,15 @@ module bcp_pe (
                 nonzero[i] = 0;
         end
 
-        for (int i = 0 ; i < `CLA_LENGTH ; i++ ) begin
-            if(nonzero == (1 << i)) begin
-                imply = 1;
-                imply_idx = clause[i];
-            end
+        if(!done) begin
+            for (int i = 0 ; i < `CLA_LENGTH ; i++ ) begin
+                if(nonzero == (1 << i)) begin
+                    imply = 1;
+                    imply_idx = clause[i];
+                end
+            end            
         end
+
         if (pr_clause == 'b0 && done != 1)
             conflict = 1;
         else

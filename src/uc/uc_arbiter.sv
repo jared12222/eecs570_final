@@ -10,6 +10,7 @@ module uc_arbiter (
     input  logic [`NUM_ENGINE-1:0] eng2uca_full,
     input  logic input_mode,
     output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
+    output logic                                 uca2eng_valid,
     output logic [`NUM_ENGINE-1:0] engmask,
     output logic                   conflict
 );
@@ -71,17 +72,21 @@ uc_queue uc_queue (
 
 always_comb begin
     pop = 'b0;
+    uca2eng_valid = 'b0;
+
     if(&eng2uca_full == 'b0) begin
         if(empty == 'b0) begin
             pop = 'b1;
+            uca2eng_valid = 'b1;
         end        
     end
 end
 
 always_comb begin
-    for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
-        conflict_table_w[i] = conflict_table_r[i];
-    end
+    // for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
+    //     conflict_table_w[i] = conflict_table_r[i];
+    // end
+    conflict_table_w = conflict_table_r;
     engmask_w  = engmask_r;
     next_state = curr_state;
     data       = eng2uca;
@@ -102,7 +107,13 @@ always_comb begin
                     push = 'b1;
                     conflict_table_w[uc_idx][uc_polarity] = 'b1;
                 end
-                next_state = READY;             
+                // Check for conflicts before registering data
+                if(|conflict_detect == 'b1) begin
+                    next_state = DONE;
+                end
+                else begin
+                    next_state =  READY;             
+                end
             end
             else begin
                 // Update mask
@@ -141,20 +152,22 @@ always_comb begin
 end
 
 
-always_ff @(posedge clk or negedge rst) begin
+always_ff @(posedge clk) begin
     if (rst) begin
-        for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
-            conflict_table_r[i] <= 'b0;
-            conflict_detect[i]  <= 'b0;
-        end
+        conflict_table_r <= 'b0;
+        conflict_detect  <= 'b0;
         engmask_r  <= 'b0;
         curr_state <= IDLE;
     end
     else begin
-        for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
+        // for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
+        //     conflict_table_r[i] <= conflict_table_w[i];
+        //     conflict_detect[i]  <= &conflict_table_w[i];
+        // end
+        for (int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
             conflict_table_r[i] <= conflict_table_w[i];
             conflict_detect[i]  <= &conflict_table_w[i];
-        end
+        end   
         engmask_r  <= engmask_w;
         curr_state <= next_state;
     end
