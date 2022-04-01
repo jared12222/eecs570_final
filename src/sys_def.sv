@@ -1,6 +1,9 @@
 // Shared macros
 `define LIT_IDX_MAX 1024
 
+// Clause Arbiter
+`define NUM_CLAUSE	8
+
 // Engine and Clause
 `define CLA_LENGTH 3
 

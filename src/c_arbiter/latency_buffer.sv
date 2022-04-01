@@ -1,34 +1,30 @@
-`define LIT_IDX_MAX 1024
-`define CLA_LENGTH 3
-`define NUM_ENGINE 4
+// `define VARIABLE_LENGTH	($clog2(`LIT_IDX_MAX) + 1)
 
-`define UC_LENGTH	1024
-`define VARIABLE_LENGTH	($clog2(`LIT_IDX_MAX) + 1)
+module Latency_buffer (
+	input                                   clock,
+	input                                   reset,
+	input                                   load_sig_in,
+	input                                   start_in,
+	input   cla_t                           clause_in,
+	input   [$clog2(`NUM_ENGINE):0]	        clause_received_in,
+	input   lit_t                           chosen_uc_in,
+	input                                   chosen_uc_valid_in,
 
-	module Latency_buffer (
-		input                                           clock,    // Clock
-		input                                           reset, // Clock Enable
-		input                                           load_sig_in,
-		input                                           start_in,
-		input   [`VARIABLE_LENGTH * `CLA_LENGTH-1:0]    clause_in,
-		input   [$clog2(`NUM_ENGINE):0]	                clause_received_in,
-		input   [`VARIABLE_LENGTH-1:0]                  chosen_uc_in,
-		input                                           chosen_uc_valid_in,
-	
-		output  logic   [$clog2(`NUM_ENGINE):0]                                 clause_released_out,		//count
-		output  logic   [`NUM_ENGINE-1:0][`VARIABLE_LENGTH * `CLA_LENGTH-1:0]   clause_out,
-		output  logic   [`VARIABLE_LENGTH-1:0]                                  chosen_uc_out,
-		output  logic                                                           chosen_uc_valid_out, empty_out, start_out
-	
-	);
+	output  logic   [$clog2(`NUM_ENGINE):0] clause_released_out,
+	output  cla_t   [`NUM_ENGINE-1:0]       clause_out,
+	output  lit_t                           chosen_uc_out,
+	output  logic                           chosen_uc_valid_out, 
+	output  logic                           empty_out, 
+	output  logic                           start_out
+);
 
 
-	logic   [`UC_LENGTH+`NUM_ENGINE-1:0][`VARIABLE_LENGTH * `CLA_LENGTH-1:0]    buffer, next_buffer;
-	logic   [$clog2(`UC_LENGTH)+1:0]                                            head, tail, next_head, next_tail, head_tmpt;
+	cla_t [`NUM_CLAUSE+`NUM_ENGINE-1:0] buffer, next_buffer;
+	logic [$clog2(`NUM_CLAUSE)+1:0]     head, tail, next_head, next_tail, head_tmpt;
 
-	logic                                           load_sig_in_blocked, start_in_blocked;
-	logic   [`VARIABLE_LENGTH * `CLA_LENGTH-1:0]    clause_in_blocked;
-	logic   [`VARIABLE_LENGTH-1:0]                  chosen_uc_buffer, next_chosen_uc_buffer;
+	logic load_sig_in_blocked, start_in_blocked;
+	cla_t clause_in_blocked;
+	lit_t chosen_uc_buffer, next_chosen_uc_buffer;
 
 	always_comb begin
 		start_out             = start_in_blocked;
@@ -58,11 +54,11 @@
 		if (start_in_blocked) begin
 			chosen_uc_out       = chosen_uc_buffer;
 			chosen_uc_valid_out = 1;
-			if (head[$clog2(`UC_LENGTH)+1] == tail[$clog2(`UC_LENGTH)+1] && head[$clog2(`UC_LENGTH):0] == tail[$clog2(`UC_LENGTH):0]) begin
+			if (head[$clog2(`NUM_CLAUSE)+1] == tail[$clog2(`NUM_CLAUSE)+1] && head[$clog2(`NUM_CLAUSE):0] == tail[$clog2(`NUM_CLAUSE):0]) begin
 				empty_out = 1;
 			end
 			for (int i = 0; i < `NUM_ENGINE; i++) begin
-				if (head_tmpt[$clog2(`UC_LENGTH)+1] == tail[$clog2(`UC_LENGTH)+1] && head_tmpt[$clog2(`UC_LENGTH):0] == tail[$clog2(`UC_LENGTH):0]) begin
+				if (head_tmpt[$clog2(`NUM_CLAUSE)+1] == tail[$clog2(`NUM_CLAUSE)+1] && head_tmpt[$clog2(`NUM_CLAUSE):0] == tail[$clog2(`NUM_CLAUSE):0]) begin
 					break;
 				end
 				clause_released_out = clause_released_out + 1;

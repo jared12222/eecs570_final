@@ -9,19 +9,19 @@
 
 module testbench_distribution_unit ();
 
-	logic											clock;
-	logic											reset;
-	logic	[`NUM_ENGINE - 1:0] 					full_in;			 					
-	logic											load_sig_in;
-	logic											start_in;
-	logic	[`VARIABLE_LENGTH * `CLA_LENGTH-1:0]	clause_in;
-	logic 	[`NUM_ENGINE-1:0][`CLA_LENGTH * `VARIABLE_LENGTH -1:0] 		clause_out;
-	logic 	[`NUM_ENGINE-1:0] 											grant_out;
-	logic																empty_out;
-	logic   [`VARIABLE_LENGTH-1:0]                                      chosen_uc_in;
-	logic                                                               chosen_uc_valid_in;
-	logic   [`VARIABLE_LENGTH-1:0]                                      chosen_uc_out;
-	logic                                                               chosen_uc_valid_out;
+	logic						clock;
+	logic						reset;
+	logic	[`NUM_ENGINE - 1:0] full_in;			 					
+	logic						load_sig_in;
+	logic						start_in;
+	cla_t	                    clause_in;
+	cla_t 	[`NUM_ENGINE-1:0]	clause_out;
+	logic 	[`NUM_ENGINE-1:0] 	grant_out;
+	logic						empty_out;
+	lit_t                       chosen_uc_in;
+	logic                       chosen_uc_valid_in;
+	lit_t                     	chosen_uc_out;
+	logic                       chosen_uc_valid_out;
 
 	Distribution_unit distribution_unit(
 		.clock(clock),
