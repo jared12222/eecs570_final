@@ -131,7 +131,7 @@ void top::top_compute(){
         //     // sc_stop();
         // }
         // i++;
-        print_all_engine_input_clause_fifo();
+        //print_all_engine_input_clause_fifo();
     }
     // wait(uc_queue_arbiter_1->no_data_in_queue);
     // print_engine_input_clause_fifo(0);
