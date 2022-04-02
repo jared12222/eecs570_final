@@ -10,7 +10,7 @@ module uc_arbiter (
     input  logic [`NUM_ENGINE-1:0] eng2uca_full,
     input  logic input_mode,
     output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
-    output logic                                 uca2eng_valid,
+    output logic                                 uca2eng_push,
     output logic [`NUM_ENGINE-1:0] engmask,
     output logic                   conflict
 );
@@ -72,12 +72,12 @@ uc_queue uc_queue (
 
 always_comb begin
     pop = 'b0;
-    uca2eng_valid = 'b0;
+    uca2eng_push = 'b0;
 
     if(&eng2uca_full == 'b0) begin
         if(empty == 'b0) begin
             pop = 'b1;
-            uca2eng_valid = 'b1;
+            uca2eng_push = 'b1;
         end        
     end
 end

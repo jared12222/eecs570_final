@@ -1,5 +1,6 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L +vcs+loopreport
 
+# TESTBENCH =  tb_generate.sv
 TESTBENCH =  tb_sw_engine_ucarb_carb.sv
 SIMFILES  =  top.sv proc.sv
 SIMFILES  += ./bcp/bcp_pe.sv

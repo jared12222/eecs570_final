@@ -1,17 +1,27 @@
 module uc_arbiter_wrapper (
     input  logic clk,
     input  logic rst,
+    input  logic input_mode,
+    /*
+        Accepts UC from interconnect
+    */
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
     input  logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca,
+    /*
+        Arbitration signals based on ENG UCQ_IN
+    */
     input  logic signed [`NUM_ENGINE-1:0][$clog2(`LIT_IDX_MAX):0] eng2uca_min,
     input  logic [`NUM_ENGINE-1:0] eng2uca_valid,
     input  logic [`NUM_ENGINE-1:0] eng2uca_empty,
     input  logic [`NUM_ENGINE-1:0] eng2uca_full,
-    input  logic input_mode,
+    /*
+        UCA pushes to ENG UCQ_OUT
+        UCA popes from ENG UCQ_IN
+    */
     output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
-    output logic                                 uca2eng_valid,
-    output logic uca2eng_pop,
+    output logic                                 uca2eng_push,
+    output logic [`NUM_ENGINE-1:0]               uca2eng_pop,
     output logic conflict
 );
 
@@ -44,7 +54,7 @@ uc_arbiter uca(
     .eng2uca_full(eng2uca_full),
     .input_mode(input_mode),
     .uca2eng(uca2eng),
-    .uca2eng_valid(uca2eng_valid),
+    .uca2eng_push(uca2eng_push),
     .engmask(engmask),
     .conflict(conflict)
 );
@@ -59,22 +69,21 @@ always_comb begin
 
     if (input_mode) begin
         // Round-robin priority selection
-        if (`NUM_ENGINE == 1) begin
+        `ifdef `NUM_ENGINE == 1
             if (eng2uca_valid[0]) begin
                 // Send data to uc arbiter
                 uca2eng_pop        = 'b1;
                 eng2uca_mout_d     = eng2uca_min  [0];
                 eng2uca_mout_valid = eng2uca_valid[0];
             end
-        end
-        else begin
+        `else
             for (int i=0; i<`NUM_ENGINE*2; i++) begin
                 if (i >= ref_count_r) begin
                     idx = i;
                     if (eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]]) begin
                         
                         // Send data to uc arbiter
-                        uca2eng_pop        = 'b1;
+                        uca2eng_pop[idx[$clog2(`NUM_ENGINE)-1:0]] = 'b1;
                         eng2uca_mout_d     = eng2uca_min  [idx[$clog2(`NUM_ENGINE)-1:0]];
                         eng2uca_mout_valid = eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]];
                         
@@ -90,7 +99,7 @@ always_comb begin
                     end
                 end
             end
-        end
+        `endif
     end
     else begin
         if(!eng2uca_mout_empty) begin
