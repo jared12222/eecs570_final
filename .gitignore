@@ -22,3 +22,4 @@ DVEfiles
 program.out
 *.vpd*
 *.log
+*.dump

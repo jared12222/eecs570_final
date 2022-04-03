@@ -1,8 +1,9 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L
 
-HEADERS = ../sys_def.sv
-TESTBENCH = tb_fifo.sv
-SIMFILES  = cla_queue.sv
+HEADERS   = ../sys_def.sv
+# TESTBENCH = tb_fifo.sv
+TESTBENCH = tb_gst.sv
+SIMFILES  = gst.sv
 
 all:    simv
 	./simv | tee program.out

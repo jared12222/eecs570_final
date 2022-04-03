@@ -23,17 +23,8 @@ input_mode: Mode of receiving implied unit clauses from engine
     (1) PQ mode   -- Get input to write to buffer from wrapper PQ
 */
 
-
-typedef enum logic [1:0] {
-	IDLE  = 2'b00,
-	READY = 2'b01,
-	PROC  = 2'b10,
-    DONE  = 2'b11
-} uc_arb_t;
-
 logic [`NUM_ENGINE-1:0] engmask_r;
 logic [`NUM_ENGINE-1:0] engmask_w;
-
 
 uc_arb_t curr_state;
 uc_arb_t next_state;
