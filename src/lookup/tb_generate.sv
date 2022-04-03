@@ -59,93 +59,93 @@ task send2latencyuca(input lit_t in);
     chosen_uc_valid = 1;
 endtask
 
-logic h;
-logic t;
-task print_ucq_out(int clk);
-    $display("------------- UCQ Out State -------------");
-    $write("Cycle = %d\n", clk);
-    for(int e=0; e<`NUM_ENGINE; e++) begin
-        for(int i=0; i<`UCQ_SIZE; ++i) begin
-            $write("[%d] = %b", i, DUT.eng_array[e].UCQ_out.entry_r[i]);
-            h = DUT.eng_array[e].UCQ_out.head_r[$clog2(`UCQ_SIZE)-1:0] == i;
-            t = DUT.eng_array[e].UCQ_out.tail_r[$clog2(`UCQ_SIZE)-1:0] == i;
-            case({h,t})
-                'b11: $write(" <- h,t\n");
-                'b10: $write(" <- h\n");
-                'b01: $write(" <- t\n");
-                default: $write("\n");
-            endcase
-        end
-    end
-    $display("-----------------------------------------");
-endtask
+// logic h;
+// logic t;
+// task print_ucq_out(int clk);
+//     $display("------------- UCQ Out State -------------");
+//     $write("Cycle = %d\n", clk);
+//     for(int e=0; e<`NUM_ENGINE; e++) begin
+//         for(int i=0; i<`UCQ_SIZE; ++i) begin
+//             $write("[%d] = %b", i, DUT.eng_array[e].UCQ_out.entry_r[i]);
+//             h = DUT.eng_array[e].UCQ_out.head_r[$clog2(`UCQ_SIZE)-1:0] == i;
+//             t = DUT.eng_array[e].UCQ_out.tail_r[$clog2(`UCQ_SIZE)-1:0] == i;
+//             case({h,t})
+//                 'b11: $write(" <- h,t\n");
+//                 'b10: $write(" <- h\n");
+//                 'b01: $write(" <- t\n");
+//                 default: $write("\n");
+//             endcase
+//         end
+//     end
+//     $display("-----------------------------------------");
+// endtask
 
-task print_ucq_in(int clk);
-    $display("------------- UCQ in State -------------");
-    $write("Cycle = %d\n", clk);
-    for(int i=0; i<`UCQ_SIZE; ++i) begin
-        $write("[%d] = %b", i, DUT.eng[0].UCQ_in.entry_r[i]);
-        h = DUT.eng[0].UCQ_in.head_r[$clog2(`UCQ_SIZE)-1:0] == i;
-        t = DUT.eng[0].UCQ_in.tail_r[$clog2(`UCQ_SIZE)-1:0] == i;
-        case({h,t})
-            'b11: $write(" <- h,t\n");
-            'b10: $write(" <- h\n");
-            'b01: $write(" <- t\n");
-            default: $write("\n");
-        endcase
-    end
-    $display("-----------------------------------------");
-endtask
+// task print_ucq_in(int clk);
+//     $display("------------- UCQ in State -------------");
+//     $write("Cycle = %d\n", clk);
+//     for(int i=0; i<`UCQ_SIZE; ++i) begin
+//         $write("[%d] = %b", i, DUT.eng[0].UCQ_in.entry_r[i]);
+//         h = DUT.eng[0].UCQ_in.head_r[$clog2(`UCQ_SIZE)-1:0] == i;
+//         t = DUT.eng[0].UCQ_in.tail_r[$clog2(`UCQ_SIZE)-1:0] == i;
+//         case({h,t})
+//             'b11: $write(" <- h,t\n");
+//             'b10: $write(" <- h\n");
+//             'b01: $write(" <- t\n");
+//             default: $write("\n");
+//         endcase
+//     end
+//     $display("-----------------------------------------");
+// endtask
 
-task print_CLQ(int clk);
-    $display("------------- CLQ State -------------");
-    $write("Cycle = %d\n", clk);
-    for(int i=0; i<`CLQ_DEPTH; ++i) begin
-        $write("[%d] = ", i);
-        for(int j = `CLA_LENGTH-1; j >=0 ; --j) begin
-            $write(" %b", DUT.eng[0].CLQ.buffer[i][j]);
-        end
-        h = DUT.eng[0].CLQ.head[$clog2(`CLQ_DEPTH)-1:0] == i;
-        t = DUT.eng[0].CLQ.tail[$clog2(`CLQ_DEPTH)-1:0] == i;
-        case({h,t})
-            'b11: $write(" <- h,t\n");
-            'b10: $write(" <- h\n");
-            'b01: $write(" <- t\n");
-            default: $write("\n");
-        endcase
-    end
-    $display("-----------------------------------------");
-endtask
+// task print_CLQ(int clk);
+//     $display("------------- CLQ State -------------");
+//     $write("Cycle = %d\n", clk);
+//     for(int i=0; i<`CLQ_DEPTH; ++i) begin
+//         $write("[%d] = ", i);
+//         for(int j = `CLA_LENGTH-1; j >=0 ; --j) begin
+//             $write(" %b", DUT.eng[0].CLQ.buffer[i][j]);
+//         end
+//         h = DUT.eng[0].CLQ.head[$clog2(`CLQ_DEPTH)-1:0] == i;
+//         t = DUT.eng[0].CLQ.tail[$clog2(`CLQ_DEPTH)-1:0] == i;
+//         case({h,t})
+//             'b11: $write(" <- h,t\n");
+//             'b10: $write(" <- h\n");
+//             'b01: $write(" <- t\n");
+//             default: $write("\n");
+//         endcase
+//     end
+//     $display("-----------------------------------------");
+// endtask
 
-task print_latency_buffer(int clk);
-    $display("------------- Latency Buffer State -------------");
-    $write("Cycle = %d\n", clk);
-    for(int i=0; i<`NUM_CLAUSE; ++i) begin
-        $write("[%d] = ", i);
-        for(int j = `CLA_LENGTH-1; j >=0 ; --j) begin
-            $write(" %b", DUT.dist_unit.latency_buffer.buffer[i][j]);
-        end
-        h = DUT.dist_unit.latency_buffer.head[$clog2(`NUM_CLAUSE):0] == i;
-        t = DUT.dist_unit.latency_buffer.tail[$clog2(`NUM_CLAUSE):0] == i;
-        case({h,t})
-            'b11: $write(" <- h,t\n");
-            'b10: $write(" <- h\n");
-            'b01: $write(" <- t\n");
-            default: $write("\n");
-        endcase
-    end
-    $display("-----------------------------------------");
-endtask
+// task print_latency_buffer(int clk);
+//     $display("------------- Latency Buffer State -------------");
+//     $write("Cycle = %d\n", clk);
+//     for(int i=0; i<`NUM_CLAUSE; ++i) begin
+//         $write("[%d] = ", i);
+//         for(int j = `CLA_LENGTH-1; j >=0 ; --j) begin
+//             $write(" %b", DUT.dist_unit.latency_buffer.buffer[i][j]);
+//         end
+//         h = DUT.dist_unit.latency_buffer.head[$clog2(`NUM_CLAUSE):0] == i;
+//         t = DUT.dist_unit.latency_buffer.tail[$clog2(`NUM_CLAUSE):0] == i;
+//         case({h,t})
+//             'b11: $write(" <- h,t\n");
+//             'b10: $write(" <- h\n");
+//             'b01: $write(" <- t\n");
+//             default: $write("\n");
+//         endcase
+//     end
+//     $display("-----------------------------------------");
+// endtask
 
 int clk_cnt=0;
 always begin
     #(PERIOD/2);
     clk = ~clk;
     if(!clk) begin
-        print_ucq_out(clk_cnt);
-        print_ucq_in(clk_cnt);
-        print_CLQ(clk_cnt);
-        print_latency_buffer(clk_cnt);
+        // print_ucq_out(clk_cnt);
+        // print_ucq_in(clk_cnt);
+        // print_CLQ(clk_cnt);
+        // print_latency_buffer(clk_cnt);
         clk_cnt++;
     end
 end
@@ -222,6 +222,7 @@ initial begin
 
     //In UCQ_in_FIFO
     // none
+    $display(DUT.eng_array[0].UCQ_out_pop);
     $display("------------- 1st case, Check normal end -------------");
     $display("------------- 2nd case, Check conflict start -------------");
     initialize();
