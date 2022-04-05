@@ -5,10 +5,10 @@ all:	simv
 	./simv | tee program.out
 
 
-TESTBENCH =  ../sys_def.sv testbench_distribution_unit.sv
-SIMFILES  = distribution_unit.sv c_arbiter_v4.sv latency_buffer.sv
-SYNFILES  =  distribution_unit.vg
-TCLFILES  =  distribution_unit.tcl
+TESTBENCH = testbench_L_buffer_singleload.sv
+SIMFILES  = L_buffer_singleload.sv
+SYNFILES  =  L_buffer_singleload.vg
+TCLFILES  =  L_buffer_singleload.tcl
 
 c_arbiter.vg: $(SYNFILES) $(TCLFILES)
 	dc_shell-t -f $(TCLFILES) | tee synth.out
