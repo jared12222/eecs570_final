@@ -7,21 +7,22 @@ module uc_arbiter_wrapper (
     */
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
-    input  logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca,
+    input  lit_t mem2uca,
     /*
         Arbitration signals based on ENG UCQ_IN
     */
-    input  logic signed [`NUM_ENGINE-1:0][$clog2(`LIT_IDX_MAX):0] eng2uca_min,
+    input  lit_t [`NUM_ENGINE-1:0] eng2uca_min,
     input  logic [`NUM_ENGINE-1:0] eng2uca_valid,
     input  logic [`NUM_ENGINE-1:0] eng2uca_empty,
-    input  logic [`NUM_ENGINE-1:0] eng2uca_full,
+    // MStack full + all UCQ_out full
+    input  logic [`NUM_ENGINE:0]   eng2uca_full,
     /*
         UCA pushes to ENG UCQ_OUT
         UCA popes from ENG UCQ_IN
     */
-    output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
-    output logic                                 uca2eng_push,
-    output logic [`NUM_ENGINE-1:0]               uca2eng_pop,
+    output lit_t                   uca2eng_lit,
+    output logic                   uca2eng_push,
+    output logic [`NUM_ENGINE-1:0] uca2eng_pop,
     output logic conflict
 );
 
@@ -50,10 +51,10 @@ uc_arbiter uca(
     .mem2uca(mem2uca),
     .eng2uca_valid(eng2uca_mout_valid),
     .eng2uca_empty(eng2uca_mout_empty),
-    .eng2uca(eng2uca_mout_d),
+    .eng2uca_lit(eng2uca_mout_d),
     .eng2uca_full(eng2uca_full),
     .input_mode(input_mode),
-    .uca2eng(uca2eng),
+    .uca2eng_lit(uca2eng_lit),
     .uca2eng_push(uca2eng_push),
     .engmask(engmask),
     .conflict(conflict)
@@ -69,7 +70,7 @@ always_comb begin
 
     if (input_mode) begin
         // Round-robin priority selection
-        `ifdef `NUM_ENGINE == 1
+        `ifdef `ONE_ENGINE
             if (eng2uca_valid[0]) begin
                 // Send data to uc arbiter
                 uca2eng_pop        = 'b1;

@@ -1,16 +1,20 @@
 module uc_arbiter (
     input  logic clk,
     input  logic rst,
+    input  logic input_mode,
+    
     input  logic mem2uca_valid,
     input  logic mem2uca_done,
-    input  logic signed [$clog2(`LIT_IDX_MAX):0] mem2uca,
+    input  lit_t mem2uca,
+    
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
-    input  logic signed [$clog2(`LIT_IDX_MAX):0] eng2uca,
-    input  logic [`NUM_ENGINE-1:0] eng2uca_full,
-    input  logic input_mode,
-    output logic signed [$clog2(`LIT_IDX_MAX):0] uca2eng,
-    output logic                                 uca2eng_push,
+    input  lit_t eng2uca_lit,
+    // MStack full + all UCQ_out full
+    input  logic [`NUM_ENGINE:0]   eng2uca_full,
+    output lit_t                   uca2eng_lit,
+    output logic                   uca2eng_push,
+    
     output logic [`NUM_ENGINE-1:0] engmask,
     output logic                   conflict
 );
@@ -74,13 +78,10 @@ always_comb begin
 end
 
 always_comb begin
-    // for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin
-    //     conflict_table_w[i] = conflict_table_r[i];
-    // end
     conflict_table_w = conflict_table_r;
     engmask_w  = engmask_r;
     next_state = curr_state;
-    data       = eng2uca;
+    data       = eng2uca_lit;
     push       = 'b0;
     conflict   = 'b0;
 
@@ -94,7 +95,7 @@ always_comb begin
         READY: begin
             if (input_mode) begin
                 if (eng2uca_valid) begin
-                    data = eng2uca;
+                    data = eng2uca_lit;
                     push = 'b1;
                     conflict_table_w[uc_idx][uc_polarity] = 'b1;
                 end
@@ -124,7 +125,7 @@ always_comb begin
                 next_state = READY;
             end
             else begin
-                data = eng2uca;
+                data = eng2uca_lit;
                 push = 'b1;
                 conflict_table_w[uc_idx][uc_polarity] = 'b1;
                 /*

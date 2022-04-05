@@ -1,101 +1,109 @@
 module proc (
-    input clk,
-    input rst_n,
+    input  logic   clk,
+    input  logic   rst_n,
+    input  logic   proc_halt,
     
-    // UCQ_in <-> UC arbiter
-    input ucarb2UCQ_in_pop,
+    // Carb <-> CLQ
+    input  node_t      carb2clq_node_in,
+    input  logic       carb2clq_push,
+    input  dummy_ptr_t carb2bcp_dummies,
+    input  logic       carb2bcp_dummies_valid,
+
+    // UCarb <-> UCQ_out
+    input  logic ucarb2UCQ_out_push,
+    input  lit_t ucarb2UCQ_out_uc,
+    output logic UCQ_out_full,
+
+    // UCarb <-> UCQ_in
+    input  logic ucarb2UCQ_in_pop,
     output lit_t UCQ_in2uarb_uc,
     output logic UCQ_in_empty,
-    
-    // UCQ_out <-> UC arbiter
-    input  lit_t ucarb2UCQ_out_uc,
-    input  ucarb2UCQ_out_push,
-    output UCQ_out_full,
-    
-    // sw
-    input cla_t carb2sw_cla,
-    input       carb2sw_valid
-    
+
+    output logic conflict
 );
 
-// BCP Engine
-logic imply;
-lit_t imply_idx;
+// Wait till carb has fully written everything to CLQ
+logic  bcp_halt;
 
-cla_t pr_clause; // output pruned clause
-logic done; // the clause is satisfied
+// Global State Table (inside CLQ) <-> BCP engine
+cla_t       bcp2gst_curr_cla;
+logic       bcp2gst_curr_cla_valid;
+bcp_state_t bcp2gst_curr_state;
+lit_state_t [`CLA_LENGTH-1:0] gst2bcp_lit_state;
 
-logic UCQ_out_pop;
-logic CLQ_pop;
-logic ENG_P_push;
+// BCP <-> UCQ_in implication (unit clause)
+logic bcp2UCQ_in_valid;
+lit_t bcp2UCQ_in_uc;
 
-
-// CLQ
-logic CLQ_full;
-logic CLQ_empty;
-cla_t CLQ2BCP_cla;
-
-// sw(switch)
-logic eng2sw_valid;
-logic sw2eng_stall;
-cla_t sw2clq_cla;
-logic sw2clq_valid;
+logic conflict;
 
 // UCQ_in
 logic UCQ_in_full;
 
-
-// UCQ_out
+// UCQ_out <-> BCP
 lit_t UCQ_out2eng_uc;
 
-cla_t CLQ2eng_cla;
-cla_t eng2sw_cla;
+// CLQ <-> BCP
+ptr_t  bcp2CLQ_ptr;
+ptr_t  clq2bcp_init_ptr;
+node_t clq2bcp_node_out;
 
-bcp_pe bcp_pe (
-    .clk(clk),    
+assign bcp_halt = UCQ_in_full | proc_halt;
+
+bcp_pe bcp_pe(
+    .clk(clk),
     .rst_n(rst_n),
-    .litDec(UCQ_out2eng_uc), 
-    .clause(CLQ2eng_cla), 
-    .ENG_P_FULL(sw2eng_stall),
-    .UCQ_in_full(UCQ_in_full),
-    .UCQ_out_empty(UCQ_out_empty),
-    .CLQ_empty(CLQ_empty),
+
+    // CLQ <->
+    // input clause
+    .node(clq2bcp_node_out),
+    .next_node_ptr(bcp2CLQ_ptr),
+
+    // Ucarb <-> BCP engine
+    .newLit(UCQ_out2eng_uc),
+    .newLitValid(!UCQ_out_empty),
+    .newLitHeadPtr(clq2bcp_init_ptr),
+    .newLitAccept(eng2UCQ_out_pop),
     
-    .imply(eng2UCQ_in_valid),
-    .imply_idx(imply_idx),
-    
-    .pr_clause(eng2sw_cla),
-    .done(),
-    .conflict(),
-    
-    .UCQ_out_pop(eng2UCQ_out_pop),
-    .CLQ_pop(eng2CLQ_pop),
-    .ENG_P_push(eng2sw_valid)
+    // CArb <-> BCP engine
+    // Wait till carb has fully written everything to CLQ
+    .halt(bcp_halt),
+
+    // Global State Table <-> BCP engine
+    .bcp2gst_curr_cla(bcp2gst_curr_cla),
+    .bcp2gst_curr_cla_valid(bcp2gst_curr_cla_valid),
+    .bcp2gst_curr_state(bcp2gst_curr_state),
+    .gst2bcp_lit_state(gst2bcp_lit_state),
+
+    // implication (unit clause)
+    .imply_valid(bcp2UCQ_in_valid),
+    .imply_lit(bcp2UCQ_in_uc),
+
+    .conflict(conflict)
 );
 
 cla_queue #(
-    .depth(`CLQ_DEPTH)
+    .DEPTH(`CLQ_DEPTH)
 )
-CLQ(
+CLQ (
     .clk(clk),
     .rst_n(rst_n),
-    .cla_in(sw2clq_cla),
-    .push(sw2clq_valid),
-    .pop(eng2CLQ_pop),
-    .full(CLQ_full),
-    .empty(CLQ_empty),
-    .cla_out(CLQ2eng_cla)
-);
 
-sw sw(
-    .carb2sw(carb2sw_cla),
-    .carb2sw_valid(carb2sw_valid),
-    .eng2sw(eng2sw_cla),
-    .eng2sw_valid(eng2sw_valid),
+    // Carb <-> CLQ
+    .carb2clq_node_in(carb2clq_node_in),
+    .carb2clq_push(carb2clq_push),
+    .carb2bcp_dummies(carb2bcp_dummies),
+    .carb2bcp_dummies_valid(carb2bcp_dummies_valid),
 
-    .sw2clq(sw2clq_cla),
-    .sw2clq_valid(sw2clq_valid),
-    .sw2eng_stall(sw2eng_stall)
+    // UCarb (UCQ_OUT) <-> CLQ
+    .ucarb2clq_uc_rqst(UCQ_out2eng_uc),
+    .ucarb2clq_uc_rqst_valid(!UCQ_out_empty),
+
+    // CLQ <-> BCP engine
+    .bcp2clq_cnf_idx(bcp2CLQ_ptr),
+    .clq2bcp_init_ptr(clq2bcp_init_ptr),
+    .clq2bcp_init_ptr_valid(clq2bcp_init_ptr_valid),
+    .clq2bcp_node_out(clq2bcp_node_out)
 );
 
 queue #(
@@ -105,9 +113,9 @@ queue #(
 UCQ_in(
     .clk(clk),
     .rst(rst_n),
-    .push(eng2UCQ_in_valid),
+    .push(bcp2UCQ_in_valid),
     .pop(ucarb2UCQ_in_pop),
-    .data(imply_idx),
+    .data(bcp2UCQ_in_uc),
     .empty(UCQ_in_empty),
     .full(UCQ_in_full),
     .qout(UCQ_in2uarb_uc)

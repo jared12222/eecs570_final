@@ -14,16 +14,16 @@ module bcp_pe (
     input  clk,
     input  rst_n,
 
-    // CLQ <->
-    // input clause
-    input node_t node,
-    output ptr_t next_node_ptr,
+    // CLQ <-> BCP engine
+    input  ptr_t  clq2bcp_init_ptr,
+    input  logic  clq2bcp_init_ptr_valid,
+    input  node_t node,
+    output ptr_t  next_node_ptr,
 
-    // Ucarb <-> BCP engine
-    input  lit_t newLit,
-    input        newLitValid,
-    input  ptr_t newLitHeadPtr,
-    output logic newLitAccept,
+    // Ucarb (UCQ_OUT) <-> BCP engine
+    input  lit_t ucarb2bcp_newLit,
+    input        ucarb2bcp_newLitValid,
+    output logic bcp2ucarb_newLitAccept,
     
     // CArb <-> BCP engine
     // Wait till carb has fully written everything to CLQ
@@ -61,21 +61,22 @@ module bcp_pe (
     ptr_t next_ptr; 
 
     // BCP computation
-    logic [`CLA_LENGTH-1:0] someTrue;
+    logic [`CLA_LENGTH-1:0]         someTrue;
     logic [$clog2(`CLA_LENGTH)-1:0] someUNDEF;
     /*
         End of Updated intermediate logic
     */
 
-    assign next_node_ptr = next_ptr;
+    assign next_node_ptr = curr_ptr;
 
     always_comb begin
         // Initialization
         imply_valid = 'b0;
         imply_lit = 'b0;
         conflict = 0;
-        newLitAccept = 0;
-        next_lit = newLit;
+        bcp2ucarb_newLitAccept = 0;
+        next_lit = ucarb2bcp_newLit;
+        
         bcp2gst_curr_cla = node.cla;
         bcp2gst_curr_state = curr_state;
         bcp2gst_curr_cla_valid = 0;
@@ -86,15 +87,18 @@ module bcp_pe (
         if(!halt) begin
             case (curr_state)
                 BCP_IDLE: begin
-                    newLitAccept = 1;
-                    if (newLitValid) begin
-                        next_ptr = newLitHeadPtr;
+                    // Pops literal from UCQ_OUT
+                    bcp2ucarb_newLitAccept = 1;
+                    // Lookup initial pointer position
+                    if (ucarb2bcp_newLitValid && 
+                        clq2bcp_init_ptr_valid
+                    ) begin
+                        next_ptr = clq2bcp_init_ptr;
                         next_state = BCP_PROC;
                     end
                 end
                 BCP_PROC: begin
                     bcp2gst_curr_cla_valid = 1;
-                    // Update next pointer
                     // Capture the literal of interest via a for loop
                     for (int i=0; i<`CLA_LENGTH; i++) begin
                         if (node.cla[i] == curr_lit) begin
@@ -126,9 +130,12 @@ module bcp_pe (
                     end
                 end
                 BCP_DONE: begin
-                    newLitAccept = 1;
-                    if (newLitValid) begin
-                        next_ptr = newLitHeadPtr;
+                    bcp2ucarb_newLitAccept = 1;
+                    // Lookup initial pointer position
+                    if (ucarb2bcp_newLitValid && 
+                        clq2bcp_init_ptr_valid
+                    ) begin
+                        next_ptr = clq2bcp_init_ptr;
                         next_state = BCP_PROC;
                     end
                 end
