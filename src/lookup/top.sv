@@ -33,7 +33,7 @@ logic                     proc_halt;
 logic   [`NUM_ENGINE-1:0] proc_conflict;
 node_t  [`NUM_ENGINE-1:0] proc_node_in;
 logic   [`NUM_ENGINE-1:0] proc_node_in_valid;
-dummy_ptr_t  [`NUM_ENGINE-1:0] proc_dummy_ptrs;
+dummy_ptr_t   proc_dummy_ptrs;
 logic   [`NUM_ENGINE-1:0] proc_dummy_ptr_valid;
 
 assign conflict  = |proc_conflict;
@@ -50,7 +50,7 @@ generate
             // Carb <-> CLQ
             .carb2clq_node_in(proc_node_in[i]),
             .carb2clq_push(proc_node_in_valid[i]),
-            .carb2bcp_dummies(proc_dummy_ptrs[i]),
+            .carb2bcp_dummies(proc_dummy_ptrs),
             .carb2bcp_dummies_valid(proc_dummy_ptr_valid[i]),
 
             // Mstack <-> UCQ_out
@@ -116,8 +116,8 @@ L_buffer_singleload lbuf(
 
 	.clause_out(proc_node_in),
 	.clause_valid_out(proc_node_in_valid),
-	.ptr_out(), 
-	.ptr_valid_out()
+	.ptr_out(proc_dummy_ptrs), 
+	.ptr_valid_out(proc_dummy_ptr_valid)
 )
 
 endmodule
