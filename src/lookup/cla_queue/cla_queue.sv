@@ -58,7 +58,7 @@ module cla_queue #(
         end
         else begin
             if (push) begin
-                buffer[tail[$clog2(DEPTH)-1:0]] <= node_in;
+                buffer[tail[$clog2(DEPTH)-1:0]] <= carb2clq_node_in;
                 tail <= tail + 1;
             end
             if (carb2bcp_dummies_valid) begin
