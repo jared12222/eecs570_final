@@ -4,19 +4,11 @@ module top(
 
     input logic halt,
 
-    // CA I/O
-    // input        mem2carb_start,
-    // input        mem2carb_finish,
-    // input  cla_t mem2carb_clause,
-    // input        mem2carb_uc_valid,
-    // input  lit_t mem2carb_uc,
-    // output logic carb_empty,
-
-    //
-    input  node_t      carb2clq_node_in,
-    input  logic       carb2clq_push,
-    input  dummy_ptr_t carb2bcp_dummies,
-    input  logic       carb2bcp_dummies_valid,
+    input  node_t      node_in,
+    input  logic       node_in_valid,
+    input  ptr_t       dummy_ptr,
+    input  logic       dummy_ptr_valid,
+    input  logic       change_eng,
 
     // UCA I/O
     output logic conflict
@@ -36,33 +28,16 @@ logic [`NUM_ENGINE-1:0] UCQ_out_full;
 lit_t carb2ucarb_uc;
 logic carb2ucarb_uc_valid;
 
-// Model stack
-
 // Proc
-logic                   proc_halt;
-logic [`NUM_ENGINE-1:0] proc_conflict;
+logic                     proc_halt;
+logic   [`NUM_ENGINE-1:0] proc_conflict;
+node_t  [`NUM_ENGINE-1:0] proc_node_in;
+logic   [`NUM_ENGINE-1:0] proc_node_in_valid;
+dummy_ptr_t  [`NUM_ENGINE-1:0] proc_dummy_ptrs;
+logic   [`NUM_ENGINE-1:0] proc_dummy_ptr_valid;
 
 assign conflict  = |proc_conflict;
 assign proc_halt = halt;
-
-// Fixed mismatches
-// Distribution_unit dist_unit(
-// 	.clock(clk),
-// 	.reset(rst_n),
-    
-// 	.full_in({`NUM_ENGINE{1'b0}}),
-// 	.load_sig_in(mem2carb_start),
-// 	.start_in(mem2carb_finish),
-// 	.clause_in(mem2carb_clause),
-// 	.chosen_uc_in(mem2carb_uc),
-// 	.chosen_uc_valid_in(mem2carb_uc_valid),
-
-// 	.clause_out(carb2sw_cla),
-// 	.grant_out(carb2sw_valid),
-// 	.empty_out(carb_empty),
-// 	.chosen_uc_out(carb2ucarb_uc),
-// 	.chosen_uc_valid_out(carb2ucarb_uc_valid)
-// );
 
 genvar i;
 generate
@@ -73,10 +48,10 @@ generate
             .proc_halt(proc_halt),
             
             // Carb <-> CLQ
-            .carb2clq_node_in(carb2clq_node_in),
-            .carb2clq_push(carb2clq_push),
-            .carb2bcp_dummies(carb2bcp_dummies),
-            .carb2bcp_dummies_valid(carb2bcp_dummies_valid),
+            .carb2clq_node_in(proc_node_in[i]),
+            .carb2clq_push(proc_node_in_valid[i]),
+            .carb2bcp_dummies(proc_dummy_ptrs[i]),
+            .carb2bcp_dummies_valid(proc_dummy_ptr_valid[i]),
 
             // Mstack <-> UCQ_out
             .ucarb2UCQ_out_push(ucarb2UCQ_out_push),
@@ -126,5 +101,23 @@ uc_arbiter_wrapper ucarb(
     .uca2eng_pop(ucarb2UCQ_in_pop),
     .conflict(conflict)
 );
+
+L_buffer_singleload lbuf(
+    .clock(clk),
+	.reset(rst_n),
+	.clause_in(node_in),
+	.ptr_in(dummy_ptr),
+	.load_clause_in(node_in_valid),
+    .load_ptr_in(dummy_ptr_valid), 
+	
+    `ifndef ONE_ENGINE
+	.load_change_engine_in(change_eng),	//signal to load another engine
+	`endif
+
+	.clause_out(proc_node_in),
+	.clause_valid_out(proc_node_in_valid),
+	.ptr_out(), 
+	.ptr_valid_out()
+)
 
 endmodule
