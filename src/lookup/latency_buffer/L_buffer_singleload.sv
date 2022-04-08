@@ -1,11 +1,3 @@
-`define LIT_IDX_MAX 4
-`define CLA_LENGTH 3
-`define NUM_ENGINE 2
-`define CLQ_DEPTH 64
-
-
-
-//uncomment the following line if NUM_ENGINE == 1
 //`define ONE_ENGINE
 
 module L_buffer_singleload (

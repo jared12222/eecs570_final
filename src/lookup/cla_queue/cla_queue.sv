@@ -30,7 +30,7 @@ module cla_queue #(
     dummy_ptr_t             head_nodes;
 
     // Send CNF entry to BCP engine
-    assign node_out = buffer[idx];
+    assign node_out = buffer[bcp2clq_cnf_idx];
 
     assign uc_polarity = ucarb2clq_uc_rqst[$clog2(`LIT_IDX_MAX)];
     assign uc_idx = uc_polarity? 
@@ -43,7 +43,7 @@ module cla_queue #(
         clq2bcp_init_ptr_valid = 'b0;
 
         if(ucarb2clq_uc_rqst_valid) begin
-            clq2bcp_init_ptr = head_nodes[uc_idx + uc_polarity*LIT_IDX_MAX];
+            clq2bcp_init_ptr = head_nodes[uc_idx + uc_polarity*`LIT_IDX_MAX];
             clq2bcp_init_ptr_valid = 'b1;
         end
     end
@@ -57,7 +57,7 @@ module cla_queue #(
             end
         end
         else begin
-            if (push) begin
+            if (carb2clq_push) begin
                 buffer[tail[$clog2(DEPTH)-1:0]] <= carb2clq_node_in;
                 tail <= tail + 1;
             end

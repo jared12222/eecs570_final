@@ -70,7 +70,7 @@ always_comb begin
 
     if (input_mode) begin
         // Round-robin priority selection
-        `ifdef `ONE_ENGINE
+        `ifdef ONE_ENGINE
             if (eng2uca_valid[0]) begin
                 // Send data to uc arbiter
                 uca2eng_pop        = 'b1;

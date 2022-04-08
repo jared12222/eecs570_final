@@ -62,7 +62,7 @@ uc_queue uc_queue (
     .uca2ucq(data),
     .empty(empty),
     .full(full),
-    .ucq2eng(uca2eng)
+    .ucq2eng(uca2eng_lit)
 );
 
 always_comb begin
@@ -86,13 +86,13 @@ always_comb begin
     conflict   = 'b0;
 
     case (curr_state)
-        IDLE: begin
+        UCARB_IDLE: begin
             engmask_w  = 'b0;
             push       = mem2uca_valid ? 'b1 : 'b0;
             data       = mem2uca;
-            next_state = mem2uca_done ? READY : IDLE;
+            next_state = mem2uca_done ? UCARB_READY : UCARB_IDLE;
         end
-        READY: begin
+        UCARB_READY: begin
             if (input_mode) begin
                 if (eng2uca_valid) begin
                     data = eng2uca_lit;
@@ -101,10 +101,10 @@ always_comb begin
                 end
                 // Check for conflicts before registering data
                 if(|conflict_detect == 'b1) begin
-                    next_state = DONE;
+                    next_state = UCARB_DONE;
                 end
                 else begin
-                    next_state =  READY;             
+                    next_state =  UCARB_READY;             
                 end
             end
             else begin
@@ -113,16 +113,16 @@ always_comb begin
 
                 // Check for conflicts before registering data
                 if(|conflict_detect == 'b1) begin
-                    next_state = DONE;
+                    next_state = UCARB_DONE;
                 end
                 else begin
-                    next_state = PROC;
+                    next_state = UCARB_PROC;
                 end
             end
         end
-        PROC: begin
+        UCARB_PROC: begin
             if(eng2uca_empty == 'b1 | engmask_r == 'b0) begin
-                next_state = READY;
+                next_state = UCARB_READY;
             end
             else begin
                 data = eng2uca_lit;
@@ -134,10 +134,10 @@ always_comb begin
                 2: Negative UC
                 3: Conflict!
                 */
-                next_state = READY;
+                next_state = UCARB_READY;
             end
         end
-        DONE: begin
+        UCARB_DONE: begin
             conflict = 'b1;
         end
     endcase
@@ -149,7 +149,7 @@ always_ff @(posedge clk) begin
         conflict_table_r <= 'b0;
         conflict_detect  <= 'b0;
         engmask_r  <= 'b0;
-        curr_state <= IDLE;
+        curr_state <= UCARB_IDLE;
     end
     else begin
         // for(int i=0; i<$clog2(`LIT_IDX_MAX); i++) begin

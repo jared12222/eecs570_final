@@ -18,7 +18,7 @@ module bcp_pe (
     input  ptr_t  clq2bcp_init_ptr,
     input  logic  clq2bcp_init_ptr_valid,
     input  node_t node,
-    output ptr_t  next_node_ptr,
+    output ptr_t  node_ptr,
 
     // Ucarb (UCQ_OUT) <-> BCP engine
     input  lit_t ucarb2bcp_newLit,
@@ -67,7 +67,7 @@ module bcp_pe (
         End of Updated intermediate logic
     */
 
-    assign next_node_ptr = curr_ptr;
+    assign node_ptr = curr_ptr;
 
     always_comb begin
         // Initialization

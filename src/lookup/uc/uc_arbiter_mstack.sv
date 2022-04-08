@@ -1,6 +1,6 @@
 module uc_arbiter_mstack (
     input  logic clk,
-    input  logic rst,
+    input  logic rst_n,
     
     // Ucarb <-> mstack
     input  logic uca2mstack_push,
@@ -9,7 +9,8 @@ module uc_arbiter_mstack (
     output logic mstack2uca_full,
 
     // UCQ_out <-> mstack
-    input  logic [`NUM_ENGINE-1:0] ucq2mstack_full,
+    // input  logic [`NUM_ENGINE-1:0] ucq2mstack_full,
+    input  logic                   mstack_pop,
     output lit_t                   mstack2ucq_lit
 
 );
@@ -20,8 +21,8 @@ module uc_arbiter_mstack (
     Hence this module serves merely as a debugging convenience
 */
 
-logic mstack_pop;
-assign mstack_pop = |ucq2mstack_full ? 'b0 : 'b1;
+// logic mstack_pop;
+// assign mstack_pop = |ucq2mstack_full ? 'b0 : 'b1;
 
 queue #(
     .DATA_LEN(`LIT_IDX_MAX*2),

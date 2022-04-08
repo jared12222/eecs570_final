@@ -11,7 +11,7 @@ typedef logic signed [$clog2(`LIT_IDX_MAX):0] lit_t;
 typedef lit_t [`CLA_LENGTH-1:0] cla_t;
 
 // Unit Clause
-`define NUM_ENGINE 1
+`define NUM_ENGINE 4
 `define MAX_UC 64
 `define UCQ_SIZE 16
 
