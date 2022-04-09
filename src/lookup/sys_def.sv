@@ -56,5 +56,7 @@ typedef enum logic [1:0] {
     BCP_DONE  = 2'b11
 } bcp_state_t;
 
+`define TOTAL_CLAUSE 512
+`define CLQ_DEPTH 128
 
 `timescale 1ns/1ns
