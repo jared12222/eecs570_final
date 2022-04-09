@@ -20,6 +20,8 @@ logic mstack_pop;
 logic mstack_empty;
 lit_t mstack_lit;
 
+integer clk_cnt;
+
 top DUT(
     .clk(clk),
     .rst_n(rst_n),
@@ -41,13 +43,37 @@ top DUT(
     .mstack_lit(mstack_lit)
 );
 
+node_t nodes_queue[`NUM_ENGINE][$];
+
+task rst_task();
+    // Signal Initialization
+    clk     = 0;
+    rst_n   = 1;
+    halt    = 1;
+    node_in = 0;
+    node_in_valid = 0;
+    change_eng = 0;
+    dummy_ptr = 0;
+    dummy_ptr_valid = 0;
+    mem2uca_done  = 0;
+    mem2uca_valid = 0;
+    mstack_pop = 0;
+
+    @(negedge clk);
+    rst_n = 0;
+endtask
+
 always begin
     clk = ~clk;
     #(PERIOD/2);
+    if (clk) begin
+        clk_cnt = clk_cnt + 1;
+    end
 end
 
 initial begin
     clk = 0;
+    clk_cnt = 0;
     rst_n = 1;
     $finish;
 end

@@ -105,7 +105,7 @@ module bcp_pe (
                             if (node.ptr[i] != 'b0)
                                 next_ptr = node.ptr[i];
                             else
-                                next_state = BCP_DONE;
+                                next_state = BCP_IDLE;
                         end
                     end
                     // Make implications according to status of each literals
@@ -129,17 +129,6 @@ module bcp_pe (
                         end
                     end
                 end
-                BCP_DONE: begin
-                    bcp2ucarb_newLitAccept = 1;
-                    // Lookup initial pointer position
-                    if (ucarb2bcp_newLitValid && 
-                        clq2bcp_init_ptr_valid
-                    ) begin
-                        next_ptr = clq2bcp_init_ptr;
-                        next_state = BCP_PROC;
-                    end
-                end
-
             endcase
         end
     end

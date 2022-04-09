@@ -36,7 +36,9 @@ typedef struct packed {
 } node_t;
 
 // Structure that stores all dummy heads
-typedef ptr_t [2*`LIT_IDX_MAX-1:0] dummy_ptr_t;
+
+typedef logic [$clog2(`CLQ_DEPTH):0] dummy_entry_t; // extend 1 more bit from ptr_t for invalid(=1) head ptr
+typedef dummy_entry_t [2*`LIT_IDX_MAX-1:0] dummy_ptr_t;
 
 // Define state of literals
 typedef enum logic [1:0] { 
@@ -52,8 +54,7 @@ typedef lit_state_t [`LIT_IDX_MAX-1:0] lit_table_t;
 // BCP PE
 typedef enum logic [1:0] {
     BCP_IDLE  = 2'b00,
-    BCP_PROC  = 2'b01,
-    BCP_DONE  = 2'b11
+    BCP_PROC  = 2'b01
 } bcp_state_t;
 
 

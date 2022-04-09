@@ -43,8 +43,12 @@ module cla_queue #(
         clq2bcp_init_ptr_valid = 'b0;
 
         if(ucarb2clq_uc_rqst_valid) begin
-            clq2bcp_init_ptr = head_nodes[uc_idx + uc_polarity*`LIT_IDX_MAX];
-            clq2bcp_init_ptr_valid = 'b1;
+            if (head_nodes[uc_idx + uc_polarity*`LIT_IDX_MAX][$clog2(`CLQ_DEPTH)] == 0) begin
+                clq2bcp_init_ptr = head_nodes[uc_idx + uc_polarity*`LIT_IDX_MAX][$clog2(`CLQ_DEPTH)-1:0];
+                clq2bcp_init_ptr_valid = 'b1;
+            else 
+                clq2bcp_init_ptr_valid = 'b0;
+            end
         end
     end
 
