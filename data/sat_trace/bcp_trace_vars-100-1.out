@@ -69868,6 +69868,4 @@ num_of_clause 3
 31 -36 -21 
 bcp_result UNDEFINE
 
-SATISFIABLE,300,5723
-count = 5723
-avg size = 6.16582
+SATISFIABLE
