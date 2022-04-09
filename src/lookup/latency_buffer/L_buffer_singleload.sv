@@ -5,7 +5,7 @@ module L_buffer_singleload (
 	input                                   reset,
 	//load preprocess data
 	input   node_t                          clause_in,
-	input	ptr_t                           ptr_in,
+	input	dummy_entry_t                   ptr_in,
 	input                                   load_clause_in, load_ptr_in, 
 	`ifndef ONE_ENGINE
 	input                                   load_change_engine_in,	//signal to load another engine
@@ -24,7 +24,7 @@ module L_buffer_singleload (
 	`endif
 
 	cla_t                           	 clause_in_blocked;
-	ptr_t                                ptr_in_blocked;
+	dummy_entry_t                        ptr_in_blocked;
 	logic                                load_clause_in_blocked, load_ptr_in_blocked, load_change_engine_in_blocked;
 
 	logic    [$clog2(`LIT_IDX_MAX):0]    counter, next_counter;

@@ -2,15 +2,15 @@ real PERIOD = 10.0;
 
 module tb();
 
-logic       clk;
-logic       rst_n;
-logic       halt;
-node_t      node_in;
-logic       node_in_valid;
-logic       change_eng;
-ptr_t       dummy_ptr;
-logic       dummy_ptr_valid;
-logic       conflict;
+logic          clk;
+logic          rst_n;
+logic          halt;
+node_t         node_in;
+logic          node_in_valid;
+logic          change_eng;
+dummy_entry_t  dummy_ptr;
+logic          dummy_ptr_valid;
+logic          conflict;
 
 lit_t       mem2uca;
 logic       mem2uca_done;

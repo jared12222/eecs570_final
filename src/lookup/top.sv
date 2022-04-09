@@ -4,15 +4,15 @@ module top(
 
     input logic halt,
 
-    input  node_t      node_in,
-    input  logic       node_in_valid,
-    input  ptr_t       dummy_ptr,
-    input  logic       dummy_ptr_valid,
-    input  logic       change_eng,
+    input  node_t         node_in,
+    input  logic          node_in_valid,
+    input  dummy_entry_t  dummy_ptr,
+    input  logic          dummy_ptr_valid,
+    input  logic          change_eng,
 
-    input  lit_t       mem2uca,
-    input  logic       mem2uca_done,
-    input  logic       mem2uca_valid,
+    input  lit_t          mem2uca,
+    input  logic          mem2uca_done,
+    input  logic          mem2uca_valid,
 
     // UCA I/O
     output logic conflict,
