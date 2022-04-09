@@ -1,12 +1,10 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L +vcs+loopreport
 
 # TESTBENCH =  tb_generate.sv
-TESTBENCH =  tb_sw_engine_ucarb_carb.sv
+TESTBENCH =  tb_top.sv
 SIMFILES  =  top.sv proc.sv
 SIMFILES  += ./bcp/bcp_pe.sv
-SIMFILES  += ./c_arbiter/c_arbiter_v4.sv
-SIMFILES  += ./c_arbiter/distribution_unit.sv
-SIMFILES  += ./c_arbiter/latency_buffer.sv
+SIMFILES  += ./latency_buffer/L_buffer_singleload.sv
 SIMFILES  += ./cla_queue/cla_queue.sv ./uc/queue.sv
 SIMFILES  += $(wildcard ./uc/uc*.sv)
 SIMFILES  += sw.sv

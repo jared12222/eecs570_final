@@ -35,8 +35,6 @@ lit_state_t [`CLA_LENGTH-1:0] gst2bcp_lit_state;
 logic bcp2UCQ_in_valid;
 lit_t bcp2UCQ_in_uc;
 
-logic conflict;
-
 // UCQ_in
 logic UCQ_in_full;
 
@@ -54,16 +52,16 @@ bcp_pe bcp_pe(
     .clk(clk),
     .rst_n(rst_n),
 
-    // CLQ <->
-    // input clause
+    // CLQ <-> BCP engine
+    .clq2bcp_init_ptr(clq2bcp_init_ptr),
+    .clq2bcp_init_ptr_valid(clq2bcp_init_ptr_valid),
     .node(clq2bcp_node_out),
-    .next_node_ptr(bcp2CLQ_ptr),
+    .node_ptr(bcp2CLQ_ptr),
 
     // Ucarb <-> BCP engine
-    .newLit(UCQ_out2eng_uc),
-    .newLitValid(!UCQ_out_empty),
-    .newLitHeadPtr(clq2bcp_init_ptr),
-    .newLitAccept(eng2UCQ_out_pop),
+    .ucarb2bcp_newLit(UCQ_out2eng_uc),
+    .ucarb2bcp_newLitValid(!UCQ_out_empty),
+    .bcp2ucarb_newLitAccept(eng2UCQ_out_pop),
     
     // CArb <-> BCP engine
     // Wait till carb has fully written everything to CLQ
