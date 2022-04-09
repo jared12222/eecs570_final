@@ -38,6 +38,17 @@ int output_num_of_engine(){
     return res
 }
 
+int output_num_of_clause_per_engine(){
+    int res;
+    string tmp;
+    cnf_input_file >> tmp;
+    while(tmp != "Num_of_clause_per_engine"){
+        cnf_input_file >> tmp;
+    }
+    cnf_input_file >> res;
+    return res
+}
+
 int output_num_of_padding(){
     int res;
     string tmp;
@@ -90,3 +101,59 @@ int output_number(){ //output header value or clause value
     return res;
 }
 
+int output_iter_trace(){
+    int res;
+    string tmp;
+    trace_input_file >> tmp;
+    while(tmp != "iter"){
+        trace_input_file >> tmp;
+    }
+    trace_input_file >> res;
+    return res
+}
+
+void skip_model_trace(){
+    string tmp;
+    trace_input_file >> tmp;
+    while(tmp != "model"){
+        trace_input_file >> tmp;
+    }
+}
+
+int output_init_uc_trace(){
+    int res;
+    string tmp;
+    trace_input_file >> tmp;
+    while(tmp != "init_uc"){
+        trace_input_file >> tmp;
+    }
+    trace_input_file >> res;
+    return res
+}
+
+int output_num_of_clause_trace(){
+    int res;
+    string tmp;
+    trace_input_file >> tmp;
+    while(tmp != "num_of_clause"){
+        trace_input_file >> tmp;
+    }
+    trace_input_file >> res;
+    return res
+}
+
+int output_bcp_result(){
+    
+    string tmp;
+    trace_input_file >> tmp;
+    while(tmp != "bcp_result"){
+        trace_input_file >> tmp;
+    }
+    trace_input_file >> tmp;
+    if(tmp == "UNDEFINE"){
+        return 0;
+    }else{
+        return 1;
+    }
+    return res
+}

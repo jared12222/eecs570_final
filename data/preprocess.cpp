@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <algorithm>
 
-#define SORT
+// #define SORT
 
 using namespace std;
 
@@ -122,12 +122,13 @@ int main(int argc, char *argv[]){
     string aux;
 	input_file >> aux >> num_of_var >> num_of_clause;
     // cout<<"num_of_engine = "<<num_of_engine<<" num_of_clause = "<<num_of_clause<<endl;
-    num_clause_per_engine = num_of_clause / num_of_engine; 
-    padding = num_of_clause - num_clause_per_engine * num_of_engine;
-
+    num_clause_per_engine = num_of_clause / num_of_engine;
+    padding = num_of_engine - (num_of_clause - num_clause_per_engine * num_of_engine);
+    if(num_of_clause%num_of_engine != 0)
+        num_clause_per_engine++;
     // cout<<"after num_of_engine = "<<num_of_engine<<" num_of_clause = "<<num_of_clause<<endl;
     output_file << "Num_of_engine "<<num_of_engine<<endl;
-    // output_file << "Num_of_clause_per_engine "<<num_clause_per_engine<<endl;
+    output_file << "Num_of_clause_per_engine "<<num_clause_per_engine<<endl;
     output_file << "Num_of_padding "<<padding<<endl;
     output_file << "Num_of_var "<<num_of_var<<endl;
 
@@ -167,7 +168,7 @@ int main(int argc, char *argv[]){
             output_file << cal_next_idx(clauses_per_engine[i], -1, -k) << endl;
         }
 
-        output_file << "Clause_node "<<clauses_per_engine[i].size()<<endl;
+        // output_file << "Clause_node "<<clauses_per_engine[i].size()<<endl;
         for(int j=0; j<clauses_per_engine[i].size(); ++j){
             for(int k=0; k<clauses_per_engine[i][j].size(); ++k){
                 output_file << clauses_per_engine[i][j][k] << " ";
@@ -176,6 +177,11 @@ int main(int argc, char *argv[]){
             output_file<<endl;
         }
 
+        if(i >= num_of_engine - padding){
+            for(int j=0; j<clauses_per_engine[i][0].size(); ++j){
+                output_file << "0 -1 ";
+            }
+        }
         output_file<<endl<<endl;
     }
 
