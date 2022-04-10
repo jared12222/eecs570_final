@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fstream> 
+#include <fstream>
 #include <vector>   
 #include <stdlib.h>
 #include <algorithm>
@@ -52,6 +52,23 @@ uint var(int literal) {
 // }
 
 int cal_next_idx(vector<vector<int> > clauses, int start, int var){
+  
+    if(start >= int(clauses.size())){
+        return 0;
+    }
+    
+    for(int i=start; i<clauses.size(); ++i){
+        for(int j=0; j<clauses[i].size(); ++j){
+            if(clauses[i][j] == var){
+                return i;
+            }
+        }
+    }
+    return 0;
+
+}
+
+int cal_next_idx_header(vector<vector<int> > clauses, int start, int var){
   
     if(start >= int(clauses.size() - 1)){
         return -1;
@@ -161,11 +178,11 @@ int main(int argc, char *argv[]){
         output_file << "Head_node "<<endl;
         for (int k=1; k<num_of_var+1; ++k){
             output_file << k << " ";
-            output_file << cal_next_idx(clauses_per_engine[i], -1, k) << endl;
+            output_file << cal_next_idx_header(clauses_per_engine[i], -1, k) << endl;
         }
         for (int k=1; k<num_of_var+1; ++k){
             output_file << -k << " ";
-            output_file << cal_next_idx(clauses_per_engine[i], -1, -k) << endl;
+            output_file << cal_next_idx_header(clauses_per_engine[i], -1, -k) << endl;
         }
 
         // output_file << "Clause_node "<<clauses_per_engine[i].size()<<endl;
