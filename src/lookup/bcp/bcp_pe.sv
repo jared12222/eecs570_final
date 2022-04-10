@@ -42,9 +42,6 @@ module bcp_pe (
     output logic conflict, // if all literal are assigned, set if the clause cannot satisfy
     output logic stall
 );
-    logic [`CLA_LENGTH-1:0] nonzero;
-
-
     /*
         Updated intermediate logic
     */
@@ -61,12 +58,12 @@ module bcp_pe (
 
     // BCP computation
     logic [`CLA_LENGTH-1:0]         someTrue;
-    logic [$clog2(`CLA_LENGTH)-1:0] someUNDEF;
+    logic [`CLA_LENGTH-1:0]         someUNDEF;
     /*
         End of Updated intermediate logic
     */
 
-    assign stall = halt | (curr_state == BCP_IDLE && !ucarb2bcp_newLitValid);
+    assign stall = (curr_state == BCP_IDLE && !ucarb2bcp_newLitValid);
     assign node_ptr = curr_ptr;
 
     always_comb begin
@@ -116,8 +113,7 @@ module bcp_pe (
                     // Make implications according to status of each literals
                     // Determine if clause satisfy : Comparing literals indexes
                     for (int i=0; i < `CLA_LENGTH ; i++ ) begin
-                        someTrue[i]  =  gst2bcp_lit_state[i] == TRUE  && node.cla[i] > 0 ||
-                                        gst2bcp_lit_state[i] == FALSE && node.cla[i] < 0;
+                        someTrue[i]  =  node.cla[i] > 0 ? gst2bcp_lit_state[i] == TRUE : gst2bcp_lit_state[i] == FALSE;
                         someUNDEF[i] =  gst2bcp_lit_state[i] == UNDEFINED;
                         if (someUNDEF[i]) imply_lit = node.cla[i];
                     end

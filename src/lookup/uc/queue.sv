@@ -73,24 +73,24 @@ always_comb begin
     case({push, pop})
         'b10: begin
             if (!full) begin
-                entry_w[tail_r] = data;
+                entry_w[tail_r[$clog2(QUEUE_SIZE)-1:0]] = data;
                 tail_w = tail_r+'b1;
             end
         end
         'b01: begin
             if (!empty) begin
-                qout_w = entry_r[head_r];
+                qout_w = entry_r[head_r[$clog2(QUEUE_SIZE)-1:0]];
                 head_w = head_r+'b1;
             end
         end
         'b11: begin
             // Pop
             if(!empty) begin
-                qout_w = entry_r[head_r];
+                qout_w = entry_r[head_r[$clog2(QUEUE_SIZE)-1:0]];
                 head_w = head_r+'b1;
             end
             // Push
-            entry_w[tail_r] = data;
+            entry_w[tail_r[$clog2(QUEUE_SIZE)-1:0]] = data;
             tail_w = tail_r+'b1;
         end
         default: begin

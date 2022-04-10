@@ -14,12 +14,18 @@ module uc_arbiter_wrapper (
     input  lit_t [`NUM_ENGINE-1:0] eng2uca_min,
     input  logic [`NUM_ENGINE-1:0] eng2uca_valid,
     input  logic [`NUM_ENGINE-1:0] eng2uca_empty,
+    // All engines have finished processing its CLQ
+    input  logic [`NUM_ENGINE-1:0] eng2uca_stall,
     // MStack full + all UCQ_out full
     input  logic [`NUM_ENGINE:0]   eng2uca_full,
     /*
         UCA pushes to ENG UCQ_OUT
         UCA popes from ENG UCQ_IN
     */
+
+    // Update GST when MOUT is determined
+    output lit_t                   uca2gst_lit,
+    output logic                   uca2gst_lit_valid,
     output lit_t                   uca2eng_lit,
     output logic                   uca2eng_push,
     output logic [`NUM_ENGINE-1:0] uca2eng_pop,
@@ -43,6 +49,9 @@ logic [$clog2(`NUM_ENGINE)-1:0] ref_count_w;
 logic [$clog2(`NUM_ENGINE)-1:0] ref_count_r;
 logic [$clog2(`NUM_ENGINE):0]   idx;
 
+assign uca2gst_lit       = eng2uca_mout_d;
+assign uca2gst_lit_valid = eng2uca_mout_valid;
+
 uc_arbiter uca(
     .clk(clk),
     .rst(rst),
@@ -52,6 +61,8 @@ uc_arbiter uca(
     .eng2uca_valid(eng2uca_mout_valid),
     .eng2uca_empty(eng2uca_mout_empty),
     .eng2uca_lit(eng2uca_mout_d),
+    .eng2uca_processed(|eng2uca_valid),
+    .eng2uca_stall(eng2uca_stall),
     .eng2uca_full(eng2uca_full),
     .input_mode(input_mode),
     .uca2eng_lit(uca2eng_lit),
@@ -86,8 +97,7 @@ always_comb begin
                         // Send data to uc arbiter
                         uca2eng_pop[idx[$clog2(`NUM_ENGINE)-1:0]] = 'b1;
                         eng2uca_mout_d     = eng2uca_min  [idx[$clog2(`NUM_ENGINE)-1:0]];
-                        eng2uca_mout_valid = eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]];
-                        
+                        eng2uca_mout_valid = eng2uca_valid[idx[$clog2(`NUM_ENGINE)-1:0]];                      
                         // Reference counter increment logic
                         if (i == ref_count_r) begin
                             ref_count_w = ref_count_r + 'b1;

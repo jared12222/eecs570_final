@@ -10,10 +10,19 @@ module gst(
     output lit_state_t [`NUM_ENGINE-1:0] [`CLA_LENGTH-1:0] gst2bcp_lit_state,
     output logic       [`NUM_ENGINE-1:0] gst2bcp_update_finish,
 
-    // UC Arbiter <-> Global State Table
+    /*
+        UC Arbiter <-> Global State Table
+    */
+    // From UC arbiter MUX in
     input  lit_t ucarb2gst_lit,
-    input  logic ucarb2gst_empty,
+    input  logic ucarb2gst_valid,
+    // From UC arbiter output initial decision
+    input  lit_t ucarb2gst_init_lit,
+    input  logic ucarb2gst_init_vaild,
+
     output logic gst2ucarb_pop
+
+    
 );
 
 /*
@@ -36,10 +45,32 @@ gst_state_t next_state;
 logic [$clog2(`LIT_IDX_MAX)-1:0] uc_idx;
 logic                            uc_polarity;
 
-assign uc_polarity = ucarb2gst_lit[$clog2(`LIT_IDX_MAX)];
-assign uc_idx      = uc_polarity? 
-    ~ucarb2gst_lit[$clog2(`LIT_IDX_MAX)-1:0] + 1 : 
-     ucarb2gst_lit[$clog2(`LIT_IDX_MAX)-1:0];
+// assign uc_polarity = ucarb2gst_lit[$clog2(`LIT_IDX_MAX)];
+// assign uc_idx      = uc_polarity? 
+//     ~ucarb2gst_lit[$clog2(`LIT_IDX_MAX)-1:0] + 1 : 
+//      ucarb2gst_lit[$clog2(`LIT_IDX_MAX)-1:0];
+
+always_comb begin
+    if (ucarb2gst_valid) begin
+        uc_polarity = ucarb2gst_lit[$clog2(`LIT_IDX_MAX)];
+        if (uc_polarity) begin
+            uc_idx = ~ucarb2gst_lit[$clog2(`LIT_IDX_MAX)-1:0] + 1;
+        end
+        else begin
+            uc_idx = ucarb2gst_lit[$clog2(`LIT_IDX_MAX)-1:0];
+        end
+    end
+    else begin
+        uc_polarity = ucarb2gst_init_lit[$clog2(`LIT_IDX_MAX)];
+        if (uc_polarity) begin
+            uc_idx = ~ucarb2gst_init_lit[$clog2(`LIT_IDX_MAX)-1:0] + 1;
+        end
+        else begin
+            uc_idx = ucarb2gst_init_lit[$clog2(`LIT_IDX_MAX)-1:0];
+        end
+    end
+
+end
 
 always_comb begin
     lit_status_w          = lit_status_r;
@@ -71,7 +102,7 @@ always_comb begin
         //     end
         // end
         // WRITE: begin
-            if(!ucarb2gst_empty) begin
+            if(ucarb2gst_valid | ucarb2gst_init_vaild) begin
                 lit_status_w[uc_idx]  = uc_polarity ? FALSE : TRUE;
                 gst2ucarb_pop         = 'b1;
             end

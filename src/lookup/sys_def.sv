@@ -1,5 +1,5 @@
 // Shared macros
-`define LIT_IDX_MAX 128
+`define LIT_IDX_MAX 512
 
 // Clause Arbiter
 `define NUM_CLAUSE	8
@@ -24,7 +24,7 @@ typedef enum logic [1:0] {
 } uc_arb_t;
 
 // Clause Queue
-`define CLQ_DEPTH 32
+`define CLQ_DEPTH 64
 
 // Pointer for a given literal
 typedef logic [$clog2(`CLQ_DEPTH)-1:0] ptr_t;

@@ -35,6 +35,9 @@ module proc (
 // Wait till carb has fully written everything to CLQ
 logic  bcp_halt;
 
+// Set when UCQ_out empty && no on-the-fly process
+logic bcp_stall;
+
 // Global State Table (inside CLQ) <-> BCP engine
 
 
@@ -55,6 +58,7 @@ ptr_t  clq2bcp_init_ptr;
 node_t clq2bcp_node_out;
 
 assign bcp_halt = UCQ_in_full | proc_halt;
+assign stall = bcp_stall;
 
 bcp_pe bcp_pe(
     .clk(clk),
@@ -86,7 +90,7 @@ bcp_pe bcp_pe(
     .imply_lit(bcp2UCQ_in_uc),
 
     .conflict(conflict),
-    .stall(stall)
+    .stall(bcp_stall)
 );
 
 cla_queue #(

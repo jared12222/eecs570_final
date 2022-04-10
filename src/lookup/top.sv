@@ -52,8 +52,8 @@ bcp_state_t [`NUM_ENGINE-1:0] bcp2gst_curr_state;
 
 lit_state_t [`NUM_ENGINE-1:0][`CLA_LENGTH-1:0] gst2bcp_lit_state;
 assign conflict  = |proc_conflict | ucarb_conflict;
-assign stall     = &proc_stall;
-assign proc_halt = halt;
+assign stall     = &proc_stall && &UCQ_in_empty;
+assign proc_halt = halt | (&UCQ_in_empty && &proc_stall);
 
 genvar i;
 generate
@@ -99,7 +99,7 @@ uc_arbiter_mstack mstack (
     // Ucarb <-> mstack
     .uca2mstack_push(ucarb2UCQ_out_push),
     .uca2mstack_lit(ucarb2UCQ_out_uc),
-    .mstack2uca_empty(mstack2uca_empty),
+    .mstack2uca_empty(mstack_empty),
     .mstack2uca_full(mstack2uca_full),
 
     // UCQ_out <-> mstack
@@ -109,20 +109,29 @@ uc_arbiter_mstack mstack (
 );
 
 
+lit_t                   uca2gst_lit;
+logic                   uca2gst_lit_valid;
+
 uc_arbiter_wrapper ucarb(
     .clk(clk),
     .rst(rst_n),
+    .input_mode(1'b1),
+    
     .mem2uca_valid(mem2uca_valid),
     .mem2uca_done(mem2uca_done),
     .mem2uca(mem2uca),
+    
     .eng2uca_min(UCQ_in2uarb_uc),
     .eng2uca_valid(~UCQ_in_empty),
     .eng2uca_empty(UCQ_in_empty),
+    .eng2uca_stall(proc_stall),
     .eng2uca_full({UCQ_out_full, mstack2uca_full}),
-    .input_mode(1'b1),
     .uca2eng_lit(ucarb2UCQ_out_uc),
     .uca2eng_push(ucarb2UCQ_out_push),
     .uca2eng_pop(ucarb2UCQ_in_pop),
+
+    .uca2gst_lit(uca2gst_lit),
+    .uca2gst_lit_valid(uca2gst_lit_valid),
     .conflict(ucarb_conflict)
 );
 
@@ -144,17 +153,26 @@ L_buffer_singleload lbuf(
 	.ptr_valid_out(proc_dummy_ptr_valid)
 );
 
+lit_t ucarb2gst_init_lit;
+logic ucarb2gst_init_valid;
+
+assign ucarb2gst_init_lit   = mem2uca;
+assign ucarb2gst_init_valid = mem2uca_valid;
+
 gst gst(
     .clk(clk),
     .rst_n(rst_n),
+    
     .bcp2gst_curr_cla(bcp2gst_curr_cla),
     .bcp2gst_curr_cla_valid(bcp2gst_curr_cla_valid),
     .bcp2gst_curr_state(bcp2gst_curr_state),
     .gst2bcp_lit_state(gst2bcp_lit_state),
 
     // UC Arbiter <-> Global State Table
-    .ucarb2gst_lit(ucarb2UCQ_out_uc),
-    .ucarb2gst_empty(!ucarb2UCQ_out_push),
+    .ucarb2gst_lit(uca2gst_lit),
+    .ucarb2gst_valid(uca2gst_lit_valid),
+    .ucarb2gst_init_lit(ucarb2gst_init_lit),
+    .ucarb2gst_init_vaild(ucarb2gst_init_valid),
     .gst2ucarb_pop()
 );
 

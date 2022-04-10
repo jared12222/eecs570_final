@@ -7,9 +7,14 @@ module uc_arbiter (
     input  logic mem2uca_done,
     input  lit_t mem2uca,
     
+    // Wrapper to UC arbiter mux-in inputs
     input  logic eng2uca_valid,
     input  logic eng2uca_empty,
     input  lit_t eng2uca_lit,
+    // All UCQ in entries are not valid
+    input  logic eng2uca_processed,
+    // All engines have finished processing its CLQ
+    input  logic [`NUM_ENGINE-1:0] eng2uca_stall,
     // MStack full + all UCQ_out full
     input  logic [`NUM_ENGINE:0]   eng2uca_full,
     output lit_t                   uca2eng_lit,
@@ -103,8 +108,11 @@ always_comb begin
                 if(|conflict_detect == 'b1) begin
                     next_state = UCARB_DONE;
                 end
+                else if (&eng2uca_stall && !eng2uca_processed) begin
+                    next_state = UCARB_IDLE;
+                end
                 else begin
-                    next_state =  UCARB_READY;             
+                    next_state = UCARB_READY;             
                 end
             end
             else begin

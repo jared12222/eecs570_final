@@ -213,10 +213,14 @@ always begin
         if(!mstack_empty) begin
             mstack_pop = 1;
             queue_result.push_back(mstack_lit);
+            $display("#%d Unit clause: %d", clk_cnt, mstack_lit);
         end
         else mstack_pop = 0;
     end
 end
+
+int start_cnt;
+int end_cnt;
 
 initial begin
     clk = 0;
@@ -233,7 +237,15 @@ initial begin
         import_CLQ_to_engine();
         import_header_to_engine();    
     join
+    start_cnt = clk_cnt;
     uc_handler();
+
+    @(posedge conflict);
+    end_cnt = clk_cnt;
+    #(PERIOD*10);
+    $display("Start: %d", start_cnt);
+    $display("End: %d", end_cnt);
+    $display("Proc cycle: %d", end_cnt - start_cnt);
     $finish;
 end
 
