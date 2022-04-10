@@ -16,6 +16,7 @@ module top(
 
     // UCA I/O
     output logic conflict,
+    output logic stall,
     input  logic mstack_pop,
     output logic mstack_empty,
     output lit_t mstack_lit
@@ -38,12 +39,20 @@ logic carb2ucarb_uc_valid;
 // Proc
 logic                     proc_halt;
 logic   [`NUM_ENGINE-1:0] proc_conflict;
-node_t  [`NUM_ENGINE-1:0] proc_node_in;
+logic   [`NUM_ENGINE-1:0] proc_stall;
+node_t                    proc_node_in;
 logic   [`NUM_ENGINE-1:0] proc_node_in_valid;
 dummy_ptr_t               proc_dummy_ptrs;
 logic   [`NUM_ENGINE-1:0] proc_dummy_ptr_valid;
 logic                     ucarb_conflict;
+
+cla_t   [`NUM_ENGINE-1:0] bcp2gst_curr_cla;
+logic   [`NUM_ENGINE-1:0] bcp2gst_curr_cla_valid;
+bcp_state_t [`NUM_ENGINE-1:0] bcp2gst_curr_state;
+
+lit_state_t [`NUM_ENGINE-1:0][`CLA_LENGTH-1:0] gst2bcp_lit_state;
 assign conflict  = |proc_conflict | ucarb_conflict;
+assign stall     = &proc_stall;
 assign proc_halt = halt;
 
 genvar i;
@@ -55,7 +64,7 @@ generate
             .proc_halt(proc_halt),
             
             // Carb <-> CLQ
-            .carb2clq_node_in(proc_node_in[i]),
+            .carb2clq_node_in(proc_node_in),
             .carb2clq_push(proc_node_in_valid[i]),
             .carb2bcp_dummies(proc_dummy_ptrs),
             .carb2bcp_dummies_valid(proc_dummy_ptr_valid[i]),
@@ -69,8 +78,15 @@ generate
             .ucarb2UCQ_in_pop(ucarb2UCQ_in_pop[i]),
             .UCQ_in2uarb_uc(UCQ_in2uarb_uc[i]),
             .UCQ_in_empty(UCQ_in_empty[i]),
+
+            // BCP <-> GST
+            .bcp2gst_curr_cla(bcp2gst_curr_cla[i]),
+            .bcp2gst_curr_cla_valid(bcp2gst_curr_cla_valid[i]),
+            .bcp2gst_curr_state(bcp2gst_curr_state[i]),
+            .gst2bcp_lit_state(gst2bcp_lit_state[i]),
             
-            .conflict(proc_conflict[i])
+            .conflict(proc_conflict[i]),
+            .stall(proc_stall[i])
             
         );
     end
@@ -126,6 +142,20 @@ L_buffer_singleload lbuf(
 	.clause_valid_out(proc_node_in_valid),
 	.ptr_out(proc_dummy_ptrs), 
 	.ptr_valid_out(proc_dummy_ptr_valid)
+);
+
+gst gst(
+    .clk(clk),
+    .rst_n(rst_n),
+    .bcp2gst_curr_cla(bcp2gst_curr_cla),
+    .bcp2gst_curr_cla_valid(bcp2gst_curr_cla_valid),
+    .bcp2gst_curr_state(bcp2gst_curr_state),
+    .gst2bcp_lit_state(gst2bcp_lit_state),
+
+    // UC Arbiter <-> Global State Table
+    .ucarb2gst_lit(ucarb2UCQ_out_uc),
+    .ucarb2gst_empty(!ucarb2UCQ_out_push),
+    .gst2ucarb_pop()
 );
 
 endmodule

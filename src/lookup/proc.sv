@@ -19,17 +19,25 @@ module proc (
     output lit_t UCQ_in2uarb_uc,
     output logic UCQ_in_empty,
 
-    output logic conflict
+    // BCP <-> GST
+    output cla_t bcp2gst_curr_cla,
+    output logic bcp2gst_curr_cla_valid,
+    output bcp_state_t bcp2gst_curr_state,
+    input  lit_state_t [`CLA_LENGTH-1:0] gst2bcp_lit_state,
+
+
+
+
+    output logic conflict,
+    output logic stall
 );
 
 // Wait till carb has fully written everything to CLQ
 logic  bcp_halt;
 
 // Global State Table (inside CLQ) <-> BCP engine
-cla_t       bcp2gst_curr_cla;
-logic       bcp2gst_curr_cla_valid;
-bcp_state_t bcp2gst_curr_state;
-lit_state_t [`CLA_LENGTH-1:0] gst2bcp_lit_state;
+
+
 
 // BCP <-> UCQ_in implication (unit clause)
 logic bcp2UCQ_in_valid;
@@ -59,7 +67,7 @@ bcp_pe bcp_pe(
     .node_ptr(bcp2CLQ_ptr),
 
     // Ucarb <-> BCP engine
-    .ucarb2bcp_newLit(UCQ_out2eng_uc),
+    .ucarb2bcp_newLit(-UCQ_out2eng_uc),
     .ucarb2bcp_newLitValid(!UCQ_out_empty),
     .bcp2ucarb_newLitAccept(eng2UCQ_out_pop),
     
@@ -77,7 +85,8 @@ bcp_pe bcp_pe(
     .imply_valid(bcp2UCQ_in_valid),
     .imply_lit(bcp2UCQ_in_uc),
 
-    .conflict(conflict)
+    .conflict(conflict),
+    .stall(stall)
 );
 
 cla_queue #(
@@ -94,7 +103,7 @@ CLQ (
     .carb2bcp_dummies_valid(carb2bcp_dummies_valid),
 
     // UCarb (UCQ_OUT) <-> CLQ
-    .ucarb2clq_uc_rqst(UCQ_out2eng_uc),
+    .ucarb2clq_uc_rqst(-UCQ_out2eng_uc),
     .ucarb2clq_uc_rqst_valid(!UCQ_out_empty),
 
     // CLQ <-> BCP engine

@@ -1,5 +1,5 @@
 // Shared macros
-`define LIT_IDX_MAX 1024
+`define LIT_IDX_MAX 128
 
 // Clause Arbiter
 `define NUM_CLAUSE	8
@@ -11,7 +11,7 @@ typedef logic signed [$clog2(`LIT_IDX_MAX):0] lit_t;
 typedef lit_t [`CLA_LENGTH-1:0] cla_t;
 
 // Unit Clause
-`define NUM_ENGINE 4
+`define NUM_ENGINE 24
 `define MAX_UC 64
 `define UCQ_SIZE 16
 
@@ -24,7 +24,7 @@ typedef enum logic [1:0] {
 } uc_arb_t;
 
 // Clause Queue
-`define CLQ_DEPTH 64
+`define CLQ_DEPTH 32
 
 // Pointer for a given literal
 typedef logic [$clog2(`CLQ_DEPTH)-1:0] ptr_t;
@@ -38,7 +38,7 @@ typedef struct packed {
 // Structure that stores all dummy heads
 
 typedef logic [$clog2(`CLQ_DEPTH):0] dummy_entry_t; // extend 1 more bit from ptr_t for invalid(=1) head ptr
-typedef dummy_entry_t [2*`LIT_IDX_MAX-1:0] dummy_ptr_t;
+typedef dummy_entry_t [2*`LIT_IDX_MAX:0] dummy_ptr_t;
 
 // Define state of literals
 typedef enum logic [1:0] { 
@@ -58,6 +58,6 @@ typedef enum logic [1:0] {
 } bcp_state_t;
 
 `define TOTAL_CLAUSE 512
-`define CLQ_DEPTH 128
+`define MAX_ITER 6000
 
 `timescale 1ns/1ns

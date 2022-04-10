@@ -22,31 +22,39 @@ module cla_queue #(
 );
     logic [$clog2(DEPTH):0] tail;
     
-    logic [$clog2(`LIT_IDX_MAX)-2:0] uc_idx;
+    logic [$clog2(`LIT_IDX_MAX)-1:0] uc_idx;
+    logic [$clog2(2*`LIT_IDX_MAX):0] entry_idx;
     logic                            uc_polarity;
 
     // Distributed CNF and dummy head node data structure
     node_t      [DEPTH-1:0] buffer;
-    dummy_ptr_t             head_nodes;
+    dummy_ptr_t             head_nodes; // [0...NUM_LIT, -1...-NUM_LIT]
 
     // Send CNF entry to BCP engine
-    assign node_out = buffer[bcp2clq_cnf_idx];
+    assign clq2bcp_node_out = buffer[bcp2clq_cnf_idx];
 
     assign uc_polarity = ucarb2clq_uc_rqst[$clog2(`LIT_IDX_MAX)];
-    assign uc_idx = uc_polarity? 
-        ~ucarb2clq_uc_rqst[$clog2(`LIT_IDX_MAX)-1:0] + 1 : 
-         ucarb2clq_uc_rqst[$clog2(`LIT_IDX_MAX)-1:0];
 
     // Query for dummy head position
     always_comb begin
         clq2bcp_init_ptr = 'b0;
         clq2bcp_init_ptr_valid = 'b0;
 
+        if(uc_polarity) begin // negative
+            uc_idx = -ucarb2clq_uc_rqst;
+            entry_idx = uc_idx + `LIT_IDX_MAX;
+        end
+        else begin
+            uc_idx = ucarb2clq_uc_rqst;
+            entry_idx = uc_idx;
+        end
+
         if(ucarb2clq_uc_rqst_valid) begin
-            if (head_nodes[uc_idx + uc_polarity*`LIT_IDX_MAX][$clog2(`CLQ_DEPTH)] == 0) begin
-                clq2bcp_init_ptr = head_nodes[uc_idx + uc_polarity*`LIT_IDX_MAX][$clog2(`CLQ_DEPTH)-1:0];
+            if (head_nodes[entry_idx][$clog2(`CLQ_DEPTH)] == 0) begin
+                clq2bcp_init_ptr = head_nodes[entry_idx][$clog2(`CLQ_DEPTH)-1:0];
                 clq2bcp_init_ptr_valid = 'b1;
-            else 
+            end
+            else begin
                 clq2bcp_init_ptr_valid = 'b0;
             end
         end

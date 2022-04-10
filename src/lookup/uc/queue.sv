@@ -85,8 +85,10 @@ always_comb begin
         end
         'b11: begin
             // Pop
-            qout_w = entry_r[head_r];
-            head_w = head_r+'b1;
+            if(!empty) begin
+                qout_w = entry_r[head_r];
+                head_w = head_r+'b1;
+            end
             // Push
             entry_w[tail_r] = data;
             tail_w = tail_r+'b1;

@@ -39,12 +39,11 @@ module bcp_pe (
     output logic imply_valid,
     output lit_t imply_lit,
 
-    output logic conflict // if all literal are assigned, set if the clause cannot satisfy
+    output logic conflict, // if all literal are assigned, set if the clause cannot satisfy
+    output logic stall
 );
     logic [`CLA_LENGTH-1:0] nonzero;
-    logic stall;
 
-    assign stall = halt;
 
     /*
         Updated intermediate logic
@@ -67,6 +66,7 @@ module bcp_pe (
         End of Updated intermediate logic
     */
 
+    assign stall = halt | (curr_state == BCP_IDLE && !ucarb2bcp_newLitValid);
     assign node_ptr = curr_ptr;
 
     always_comb begin
@@ -77,12 +77,17 @@ module bcp_pe (
         bcp2ucarb_newLitAccept = 0;
         next_lit = ucarb2bcp_newLit;
         
-        bcp2gst_curr_cla = node.cla;
         bcp2gst_curr_state = curr_state;
         bcp2gst_curr_cla_valid = 0;
 
         next_state = curr_state;
         next_ptr   = curr_ptr;
+        
+        for(int i = 0; i < `CLA_LENGTH; i++) begin
+            bcp2gst_curr_cla[i] = node.cla[i] > 0 ?
+                node.cla[i] :
+                ~node.cla[i] + 1;
+        end
 
         if(!halt) begin
             case (curr_state)

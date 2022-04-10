@@ -4,11 +4,10 @@ module gst(
     input rst_n,
 
     // Global State Table <-> BCP Engine
-    input  cla_t                         bcp2gst_curr_cla,
-    input  logic                         bcp2gst_curr_cla_valid,
+    input  cla_t       [`NUM_ENGINE-1:0] bcp2gst_curr_cla,
+    input  logic       [`NUM_ENGINE-1:0] bcp2gst_curr_cla_valid,
     input  bcp_state_t [`NUM_ENGINE-1:0] bcp2gst_curr_state,
-    output lit_state_t [`CLA_LENGTH-1:0] gst2bcp_lit_state,
-    output logic                         gst2bcp_lit_state_valid,
+    output lit_state_t [`NUM_ENGINE-1:0] [`CLA_LENGTH-1:0] gst2bcp_lit_state,
     output logic       [`NUM_ENGINE-1:0] gst2bcp_update_finish,
 
     // UC Arbiter <-> Global State Table
@@ -34,7 +33,7 @@ typedef enum logic {
 gst_state_t curr_state;
 gst_state_t next_state;
 
-logic [$clog2(`LIT_IDX_MAX)-2:0] uc_idx;
+logic [$clog2(`LIT_IDX_MAX)-1:0] uc_idx;
 logic                            uc_polarity;
 
 assign uc_polarity = ucarb2gst_lit[$clog2(`LIT_IDX_MAX)];
@@ -48,40 +47,44 @@ always_comb begin
     gst2ucarb_pop         = 'b0;
     next_state            = curr_state;
 
-    case (curr_state)
-        READ: begin
-            if (bcp2gst_curr_cla_valid) begin        
-                for (int i=0; i<`CLA_LENGTH; i++) begin
-                    // Return lookup results
-                    if (bcp2gst_curr_cla[i] != 'b0) begin
-                        gst2bcp_lit_state[i] = lit_status_r[bcp2gst_curr_cla[i]];
-                    end
-                    else begin
-                        gst2bcp_lit_state[i] = FALSE;
+    // case (curr_state)
+    //     READ: begin
+            for(int j = 0; j < `NUM_ENGINE ; j++) begin
+                if (bcp2gst_curr_cla_valid[j]) begin        
+                    for (int i=0; i<`CLA_LENGTH; i++) begin
+                        // Return lookup results
+                        if (bcp2gst_curr_cla[j][i] != 'b0) begin
+                            gst2bcp_lit_state[j][i] = lit_status_r[bcp2gst_curr_cla[j][i]];
+                        end
+                        else begin
+                            gst2bcp_lit_state[j][i] = FALSE;
+                        end
                     end
                 end
             end
-            // Allow update of gst iff all engines are done
-            if (&bcp2gst_curr_state) begin              
-                next_state = WRITE;
+        //     // Allow update of gst iff all engines are done
+        //     if (&bcp2gst_curr_state) begin              
+        //         next_state = WRITE;
+        //     end
+        //     else begin
+        //         next_state = READ;
+        //     end
+        // end
+        // WRITE: begin
+            if(!ucarb2gst_empty) begin
+                lit_status_w[uc_idx]  = uc_polarity ? FALSE : TRUE;
+                gst2ucarb_pop         = 'b1;
             end
-            else begin
-                next_state = READ;
-            end
-        end
-        WRITE: begin
-            lit_status_w[uc_idx]  = uc_polarity ? FALSE : TRUE;
-            gst2ucarb_pop         = 'b1;
             
-            if (!ucarb2gst_empty) begin
-                next_state = WRITE;
-            end
-            else begin
-                gst2bcp_update_finish = 'b1;
-                next_state = READ;
-            end
-        end
-    endcase
+            // if (!ucarb2gst_empty) begin
+            //     next_state = WRITE;
+            // end
+            // else begin
+                // gst2bcp_update_finish = 'b1;
+                // next_state = READ;
+            // end
+        // end
+    // endcase
 end
 
 always_ff @(posedge clk) begin

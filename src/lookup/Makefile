@@ -1,13 +1,13 @@
 VCS = vcs -V -sverilog +vc -Mupdate -line -full64 +vcs+vcdpluson -debug_pp +lint=TFIPC-L +vcs+loopreport
 
 # TESTBENCH =  tb_generate.sv
-TESTBENCH =  tb_top.sv
+TESTBENCH =  tb_top.sv utilities.cpp
 SIMFILES  =  top.sv proc.sv
 SIMFILES  += ./bcp/bcp_pe.sv
 SIMFILES  += ./latency_buffer/L_buffer_singleload.sv
 SIMFILES  += ./cla_queue/cla_queue.sv ./uc/queue.sv
 SIMFILES  += $(wildcard ./uc/uc*.sv)
-SIMFILES  += sw.sv
+SIMFILES  += ./cla_queue/gst.sv
 HEADERS   =  sys_def.sv
 
 all:    simv

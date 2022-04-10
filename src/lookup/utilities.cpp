@@ -1,29 +1,27 @@
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
+#include <regex>
 #include "svdpi.h"
 
 using namespace std;
+extern "C" {
+static ifstream cnf_input_file;
+static ifstream trace_input_file;
 
-static ifstream cnf_input_file = NULL;
-static ifstream trace_input_file = NULL;
-
-void init_cnf_input_file(string file_path) {
-    if (cnf_input_file == NULL){
-        cnf_input_file.open(file_path, ios::in);
-        if(!cnf_input_file.is_open()){
-            cout<<"ERROR when opening cnf_input_file !"<<endl;
-            exit(-1);
-        }
+void init_cnf_input_file(char* file_path) {
+    cnf_input_file.open(file_path, ios::in);
+    if(!cnf_input_file.is_open()){
+        cout<<"ERROR when opening cnf_input_file !"<<endl;
+        exit(-1);
     }
 }
 
-void init_trace_input_file(string file_path) {
-    if (trace_input_file == NULL){
-        trace_input_file.open(file_path, ios::in);
-        if(!trace_input_file.is_open()){
-            cout<<"ERROR when opening trace_input_file !"<<endl;
-            exit(-1);
-        }
+void init_trace_input_file(char* file_path) {
+    trace_input_file.open(file_path, ios::in);
+    if(!trace_input_file.is_open()){
+        cout<<"ERROR when opening trace_input_file !"<<endl;
+        exit(-1);
     }
 }
 
@@ -35,7 +33,7 @@ int output_num_of_engine(){
         cnf_input_file >> tmp;
     }
     cnf_input_file >> res;
-    return res
+    return res;
 }
 
 int output_num_of_clause_per_engine(){
@@ -46,7 +44,7 @@ int output_num_of_clause_per_engine(){
         cnf_input_file >> tmp;
     }
     cnf_input_file >> res;
-    return res
+    return res;
 }
 
 int output_num_of_padding(){
@@ -57,7 +55,7 @@ int output_num_of_padding(){
         cnf_input_file >> tmp;
     }
     cnf_input_file >> res;
-    return res
+    return res;
 }
 
 int output_num_of_var(){
@@ -68,7 +66,7 @@ int output_num_of_var(){
         cnf_input_file >> tmp;
     }
     cnf_input_file >> res;
-    return res
+    return res;
 }
 
 int output_num_of_lit_per_clause(){
@@ -79,12 +77,17 @@ int output_num_of_lit_per_clause(){
         cnf_input_file >> tmp;
     }
     cnf_input_file >> res;
-    return res
+    return res;
 }
 
 void skip_engine_num_head_node_string(){
     string tmp;
-    cnf_input_file >> tmp >> tmp >> tmp;
+    cnf_input_file >> tmp;
+    while(!regex_match(tmp, regex("(Head_node)(.*)"))){
+        cnf_input_file >> tmp;
+    }
+    // cnf_input_file >> tmp >> tmp;
+    cout <<"output " << tmp <<endl;
 }
 
 int output_num_of_clause(){
@@ -98,6 +101,7 @@ int output_num_of_clause(){
 int output_number(){ //output header value or clause value
     int res;
     cnf_input_file >> res;
+    cout<<"res = "<<res<<endl;
     return res;
 }
 
@@ -105,12 +109,31 @@ int output_iter_trace(){
     int res;
     string tmp;
     trace_input_file >> tmp;
-    while(tmp != "iter"){
+    while(tmp != "iter" && (tmp != "SATISFIABLE" || tmp != "UNSATISFIABLE" || tmp != "Conflict")){
         trace_input_file >> tmp;
     }
-    trace_input_file >> res;
-    return res
+    cout << tmp << endl;
+    if((tmp == "SATISFIABLE" || tmp == "UNSATISFIABLE" || tmp == "Conflict")){
+        return -1;
+    }else{
+        trace_input_file >> res;
+        return res;
+    }
 }
+
+// int stop_at_conflict(){
+//     string tmp;
+//     cnf_input_file >> tmp;
+//     while(!regex_match(tmp, regex("(Conflict)(.*)")) && ){
+//         cnf_input_file >> tmp;
+//     }
+//     // cnf_input_file >> tmp >> tmp;
+//     if(regex_match(tmp, regex("(Conflict)(.*)")))
+//         return -1;
+//     else
+//         return 0;
+//     // cout <<"output " << tmp <<endl;
+// }
 
 void skip_model_trace(){
     string tmp;
@@ -124,11 +147,16 @@ int output_init_uc_trace(){
     int res;
     string tmp;
     trace_input_file >> tmp;
-    while(tmp != "init_uc"){
+    while(tmp != "init_uc" && tmp != "Conflict"){
         trace_input_file >> tmp;
     }
-    trace_input_file >> res;
-    return res
+    if(tmp == "Conflict"){
+        return -1;
+    }else{
+        trace_input_file >> res;
+        return res;
+    }
+    
 }
 
 int output_num_of_clause_trace(){
@@ -139,7 +167,7 @@ int output_num_of_clause_trace(){
         trace_input_file >> tmp;
     }
     trace_input_file >> res;
-    return res
+    return res;
 }
 
 int output_bcp_result(){
@@ -155,5 +183,5 @@ int output_bcp_result(){
     }else{
         return 1;
     }
-    return res
+}
 }

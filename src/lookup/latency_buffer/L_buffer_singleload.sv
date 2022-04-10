@@ -23,11 +23,11 @@ module L_buffer_singleload (
 		logic	[$clog2(`NUM_ENGINE)-1:0]    ptr_engine_indicator, next_ptr_engine_indicator;
 	`endif
 
-	cla_t                           	 clause_in_blocked;
+	node_t                           	 clause_in_blocked;
 	dummy_entry_t                        ptr_in_blocked;
 	logic                                load_clause_in_blocked, load_ptr_in_blocked, load_change_engine_in_blocked;
 
-	logic    [$clog2(`LIT_IDX_MAX):0]    counter, next_counter;
+	logic    [$clog2(`LIT_IDX_MAX)+1:0]    counter, next_counter;
 	dummy_ptr_t                          ptr_buffer, next_ptr_buffer;
 
 	always_comb begin
@@ -57,13 +57,13 @@ module L_buffer_singleload (
 		if (load_ptr_in_blocked) begin
 			next_ptr_buffer[counter] = ptr_in_blocked;
 			next_counter             = counter + 1;
-			if (counter == 2*`LIT_IDX_MAX-1) begin
+			if (counter == 2*`LIT_IDX_MAX) begin
 				`ifndef ONE_ENGINE
 					ptr_valid_out[ptr_engine_indicator] = 1;
 				`else 
 					ptr_valid_out = 1;
 				`endif
-				for (int i = 0; i < 2*`LIT_IDX_MAX-1; i++) begin
+				for (int i = 0; i < 2*`LIT_IDX_MAX + 1; i++) begin
 					ptr_out[i] = ptr_buffer[i];
 				end
 				next_counter = 0;
