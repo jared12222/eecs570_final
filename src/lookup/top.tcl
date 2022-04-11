@@ -17,7 +17,7 @@
 
 #read_file -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_mstack.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
 
-analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/uc_queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
 elaborate top -library work
 set design_name top
 set clock_name clock
