@@ -13,6 +13,11 @@ SYNFILES  =  top.vg
 HEADERS   =  sys_def.sv
 TCL       =  top.tcl
 
+export SIMFILES
+export HEADERS
+export TESTBENCH
+
+
 top.vg:		$(SIMFILES) $(TCL)
 	dc_shell-t -f $(TCL) | tee top_synth.out
 
@@ -20,6 +25,7 @@ all:    simv
 	./simv | tee program.out
 
 .PHONY: all
+
 
 # Simulation:
 
