@@ -22,6 +22,9 @@ module top(
     output lit_t mstack_lit
 );
 
+//syn add
+logic                   mstack2uca_full;
+
 // UCQ_in
 logic [`NUM_ENGINE-1:0] ucarb2UCQ_in_pop;
 lit_t [`NUM_ENGINE-1:0] UCQ_in2uarb_uc;
