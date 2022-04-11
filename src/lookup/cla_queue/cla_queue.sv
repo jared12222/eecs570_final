@@ -39,6 +39,7 @@ module cla_queue #(
     always_comb begin
         clq2bcp_init_ptr = 'b0;
         clq2bcp_init_ptr_valid = 'b0;
+        head_nodes_buffer = head_nodes;
 
         if(uc_polarity) begin // negative
             uc_idx = -ucarb2clq_uc_rqst;
