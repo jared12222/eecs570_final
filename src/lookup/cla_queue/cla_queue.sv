@@ -66,7 +66,7 @@ module cla_queue #(
             buffer <= 'b0;
             tail   <= 'b0;
             for (int i=0; i<2*`LIT_IDX_MAX; i++)begin
-                head_nodes = 'b0;
+                head_nodes <= 'b0;
             end
         end
         else begin
