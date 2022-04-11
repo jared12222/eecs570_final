@@ -31,6 +31,11 @@ module proc (
     output logic conflict,
     output logic stall
 );
+//syn add
+logic  clq2bcp_init_ptr_valid;
+logic  UCQ_out_empty;
+logic  eng2UCQ_out_pop;
+
 
 // Wait till carb has fully written everything to CLQ
 logic  bcp_halt;
