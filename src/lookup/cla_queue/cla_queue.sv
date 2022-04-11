@@ -28,7 +28,7 @@ module cla_queue #(
 
     // Distributed CNF and dummy head node data structure
     node_t      [DEPTH-1:0] buffer;
-    dummy_ptr_t             head_nodes; // [0...NUM_LIT, -1...-NUM_LIT]
+    dummy_ptr_t             head_nodes, head_nodes_buffer; // [0...NUM_LIT, -1...-NUM_LIT]
 
     // Send CNF entry to BCP engine
     assign clq2bcp_node_out = buffer[bcp2clq_cnf_idx];
@@ -50,8 +50,8 @@ module cla_queue #(
         end
 
         if(ucarb2clq_uc_rqst_valid) begin
-            if (head_nodes[entry_idx][$clog2(`CLQ_DEPTH)] == 0) begin
-                clq2bcp_init_ptr = head_nodes[entry_idx][$clog2(`CLQ_DEPTH)-1:0];
+            if (head_nodes_buffer[entry_idx][$clog2(`CLQ_DEPTH)] == 0) begin
+                clq2bcp_init_ptr = head_nodes_buffer[entry_idx][$clog2(`CLQ_DEPTH)-1:0];
                 clq2bcp_init_ptr_valid = 'b1;
             end
             else begin
@@ -77,7 +77,7 @@ module cla_queue #(
                 head_nodes <= carb2bcp_dummies;
             end
             else begin
-                head_nodes <= head_nodes;
+                head_nodes <= head_nodes_buffer;
             end
         end
     end
