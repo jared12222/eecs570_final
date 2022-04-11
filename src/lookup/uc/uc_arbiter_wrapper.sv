@@ -125,7 +125,8 @@ always_comb begin
     end
 end
 
-always_ff @(posedge clk or negedge rst) begin
+//always_ff @(posedge clk or negedge rst) begin
+always_ff @(posedge clk) begin
     if (rst) begin
         ref_count_r <= 'b0;
     end
