@@ -20,8 +20,8 @@
 analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/uc_queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
 elaborate top -library work
 set design_name top
-set clock_name clock
-set reset_name reset
+set clock_name clk
+set reset_name rst_n
 set CLK_PERIOD 20
 
 
