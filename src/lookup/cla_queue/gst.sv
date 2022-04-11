@@ -77,6 +77,7 @@ always_comb begin
     gst2bcp_update_finish = 'b0;
     gst2ucarb_pop         = 'b0;
     next_state            = curr_state;
+    gst2bcp_lit_state     = 'b0;
 
     // case (curr_state)
     //     READ: begin
