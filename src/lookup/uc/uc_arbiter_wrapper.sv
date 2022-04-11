@@ -73,7 +73,7 @@ uc_arbiter uca(
 
 always_comb begin
     uca2eng_pop        = 'b0;
-    eng2uca_mout_empty = eng2uca_empty[$clog2(engmask)];
+    eng2uca_mout_empty = 'b0;//eng2uca_empty[$clog2(engmask)];
     eng2uca_mout_valid = 'b0;
     eng2uca_mout_d     = 'b0;
     ref_count_w        = ref_count_r;
@@ -112,7 +112,7 @@ always_comb begin
             end
         `endif
     end
-    else begin
+    /*else begin
         if(!eng2uca_mout_empty) begin
             uca2eng_pop        = 'b1;
             eng2uca_mout_d     = eng2uca_min[$clog2(engmask)];
@@ -122,7 +122,7 @@ always_comb begin
             eng2uca_mout_d = 'b0;
             eng2uca_mout_valid = 'b0;
         end
-    end
+    end */
 end
 
 //always_ff @(posedge clk or negedge rst) begin
