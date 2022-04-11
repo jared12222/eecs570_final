@@ -1,0 +1,627 @@
+
+                           Design Compiler Graphical 
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+               Version S-2021.06-SP1 for linux64 - Jul 13, 2021 
+
+                    Copyright (c) 1988 - 2021 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+#/***********************************************************/
+#/*   FILE        : mult_stage.tcl                          */
+#/*   Description : Default Synopsys Design Compiler Script */
+#/*   Usage       : dc_shell -tcl_mode -f default.tcl       */
+#/*   You'll need to minimally set design_name & read files */
+#/***********************************************************/
+#/***********************************************************/
+#/* The following five lines must be updated for every      */
+#/* new design                                              */
+#/***********************************************************/
+#set simfiles [getenv SIMFILES]
+#set testbench [getenv TESTBENCH]
+#set headers [getenv HEADERS]
+#$(info $(simfiles)
+#read_file -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_mstack.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/uc_queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+Running PRESTO HDLC
+Compiling source file ./sys_def.sv
+Compiling source file ./top.sv
+Compiling source file ./proc.sv
+Compiling source file ./bcp/bcp_pe.sv
+Compiling source file ./uc/uc_arbiter_mstack.sv
+Compiling source file ./latency_buffer/L_buffer_singleload.sv
+Compiling source file ./cla_queue/cla_queue.sv
+Compiling source file ./uc/uc_queue.sv
+Compiling source file ./uc/uc_arbiter.sv
+Compiling source file ./uc/uc_arbiter_wrapper.sv
+Compiling source file ./cla_queue/gst.sv
+Presto compilation completed successfully.
+Warning: Can't read link_library file 'your_library.db'. (UID-3)
+1
+elaborate top -library work
+Loading db file '/usr/caen/synopsys-synth-2021.06-SP1/libraries/syn/gtech.db'
+Loading db file '/usr/caen/synopsys-synth-2021.06-SP1/libraries/syn/standard.sldb'
+  Loading link library 'gtech'
+Warning: Can't read link_library file 'your_library.db'. (UID-3)
+Running PRESTO HDLC
+Presto compilation completed successfully. (top)
+Elaborated 1 design.
+Current design is now 'top'.
+Warning: Can't read link_library file 'your_library.db'. (UID-3)
+Information: Building the design 'proc'. (HDL-193)
+Presto compilation completed successfully. (proc)
+Information: Building the design 'uc_arbiter_mstack'. (HDL-193)
+Presto compilation completed successfully. (uc_arbiter_mstack)
+Information: Building the design 'uc_arbiter_wrapper'. (HDL-193)
+Warning:  ./uc/uc_arbiter_wrapper.sv:52: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./uc/uc_arbiter_wrapper.sv:94: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/uc_arbiter_wrapper.sv:99: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/uc_arbiter_wrapper.sv:102: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./uc/uc_arbiter_wrapper.sv:93: signed to unsigned conversion occurs. (VER-318)
+Warning:  ./uc/uc_arbiter_wrapper.sv:95: Out of bounds bit select eng2uca_valid[24], valid bounds are [23:0]. (ELAB-312)
+Warning:  ./uc/uc_arbiter_wrapper.sv:98: Out of bounds bit select uca2eng_pop[24], valid bounds are [23:0]. (ELAB-312)
+Warning:  ./uc/uc_arbiter_wrapper.sv:99: Out of bounds bit select eng2uca_min[24], valid bounds are [23:0]. (ELAB-312)
+Warning:  ./uc/uc_arbiter_wrapper.sv:100: Out of bounds bit select eng2uca_valid[24], valid bounds are [23:0]. (ELAB-312)
+
+Inferred memory devices in process
+	in routine uc_arbiter_wrapper line 129 in file
+		'./uc/uc_arbiter_wrapper.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   ref_count_r_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (uc_arbiter_wrapper)
+Information: Building the design 'L_buffer_singleload'. (HDL-193)
+Warning:  ./latency_buffer/L_buffer_singleload.sv:60: signed to unsigned conversion occurs. (VER-318)
+
+Inferred memory devices in process
+	in routine L_buffer_singleload line 77 in file
+		'./latency_buffer/L_buffer_singleload.sv'.
+=============================================================================================
+|           Register Name           |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=============================================================================================
+|          ptr_buffer_reg           | Flip-flop | 7175  |  Y  | N  | N  | N  | N  | N  | N  |
+|       engine_indicator_reg        | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|     ptr_engine_indicator_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|       clause_in_blocked_reg       | Flip-flop |  48   |  Y  | N  | N  | N  | N  | N  | N  |
+|        ptr_in_blocked_reg         | Flip-flop |   7   |  Y  | N  | N  | N  | N  | N  | N  |
+|    load_clause_in_blocked_reg     | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|      load_ptr_in_blocked_reg      | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| load_change_engine_in_blocked_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|            counter_reg            | Flip-flop |  11   |  Y  | N  | N  | N  | N  | N  | N  |
+=============================================================================================
+Presto compilation completed successfully. (L_buffer_singleload)
+Information: Building the design 'gst'. (HDL-193)
+Warning:  ./cla_queue/gst.sv:57: signed to unsigned part selection occurs. (VER-318)
+Warning:  ./cla_queue/gst.sv:60: signed to unsigned part selection occurs. (VER-318)
+Warning:  ./cla_queue/gst.sv:66: signed to unsigned part selection occurs. (VER-318)
+Warning:  ./cla_queue/gst.sv:69: signed to unsigned part selection occurs. (VER-318)
+Warning:  ./cla_queue/gst.sv:88: signed to unsigned conversion occurs. (VER-318)
+
+Inferred memory devices in process
+	in routine gst line 122 in file
+		'./cla_queue/gst.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|  lit_status_r_reg   | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+|      gst/89      |  512   |    2    |      9       |
+======================================================
+Presto compilation completed successfully. (gst)
+Information: Building the design 'bcp_pe'. (HDL-193)
+Warning:  ./bcp/bcp_pe.sv:126: signed to unsigned conversion occurs. (VER-318)
+
+Statistics for case statements in always block at line 69 in file
+	'./bcp/bcp_pe.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            90            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine bcp_pe line 137 in file
+		'./bcp/bcp_pe.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    curr_lit_reg     | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
+|   curr_state_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|    curr_ptr_reg     | Flip-flop |   6   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (bcp_pe)
+Information: Building the design 'cla_queue' instantiated from design 'proc' with
+	the parameters "DEPTH=64". (HDL-193)
+Warning:  ./cla_queue/cla_queue.sv:45: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./cla_queue/cla_queue.sv:49: signed to unsigned assignment occurs. (VER-318)
+
+Inferred memory devices in process
+	in routine cla_queue_DEPTH64 line 64 in file
+		'./cla_queue/cla_queue.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   head_nodes_reg    | Flip-flop | 7175  |  Y  | N  | N  | N  | N  | N  | N  |
+|     buffer_reg      | Flip-flop | 3072  |  Y  | N  | N  | N  | N  | N  | N  |
+|      tail_reg       | Flip-flop |   7   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+==========================================================
+|   block name/line    | Inputs | Outputs | # sel inputs |
+==========================================================
+| cla_queue_DEPTH64/34 |   64   |   48    |      6       |
+==========================================================
+Presto compilation completed successfully. (cla_queue_DEPTH64)
+Information: Building the design 'queue' instantiated from design 'proc' with
+	the parameters "DATA_LEN=1024,QUEUE_SIZE=16". (HDL-193)
+Warning:  ./uc/queue.sv:42: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./uc/queue.sv:76: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/queue.sv:93: signed to unsigned assignment occurs. (VER-318)
+
+Statistics for case statements in always block at line 44 in file
+	'./uc/queue.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            73            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine queue_DATA_LEN1024_QUEUE_SIZE16 line 102 in file
+		'./uc/queue.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     head_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|     entry_r_reg     | Flip-flop |  160  |  Y  | N  | N  | N  | N  | N  | N  |
+|     qout_r_reg      | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
+|     tail_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+========================================================================
+|          block name/line           | Inputs | Outputs | # sel inputs |
+========================================================================
+| queue_DATA_LEN1024_QUEUE_SIZE16/82 |   16   |   10    |      4       |
+========================================================================
+Presto compilation completed successfully. (queue_DATA_LEN1024_QUEUE_SIZE16)
+Information: Building the design 'uc_arbiter'. (HDL-193)
+Warning:  ./uc/uc_arbiter.sv:89: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/uc_arbiter.sv:97: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/uc_arbiter.sv:103: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/uc_arbiter.sv:136: signed to unsigned assignment occurs. (VER-318)
+
+Statistics for case statements in always block at line 85 in file
+	'./uc/uc_arbiter.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            93            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine uc_arbiter line 155 in file
+		'./uc/uc_arbiter.sv'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+|    curr_state_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| conflict_table_r_reg | Flip-flop |  18   |  Y  | N  | N  | N  | N  | N  | N  |
+| conflict_detect_reg  | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
+|    engmask_r_reg     | Flip-flop |  24   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+Presto compilation completed successfully. (uc_arbiter)
+Information: Building the design 'uc_queue'. (HDL-193)
+Presto compilation completed successfully. (uc_queue)
+1
+set design_name top
+top
+set clock_name clk
+clk
+set reset_name rst_n
+rst_n
+set CLK_PERIOD 20
+20
+#/***********************************************************/
+#/* The rest of this file may be left alone for most small  */
+#/* to moderate sized designs.  You may need to alter it    */
+#/* when synthesizing your final project.                   */
+#/***********************************************************/
+set SYN_DIR ./
+./
+set search_path "/afs/umich.edu/class/eecs470/lib/synopsys/"
+/afs/umich.edu/class/eecs470/lib/synopsys/
+set target_library "lec25dscc25_TT.db"
+lec25dscc25_TT.db
+set link_library [concat  "*" $target_library]
+* lec25dscc25_TT.db
+#/***********************************************************/
+#/* Set some flags for optimisation */
+set compile_top_all_paths "true"
+true
+set auto_wire_load_selection "false"
+false
+#/***********************************************************/
+#/*  Clk Periods/uncertainty/transition                     */
+set CLK_TRANSITION 0.1
+0.1
+set CLK_UNCERTAINTY 0.1
+0.1
+set CLK_LATENCY 0.1
+0.1
+#/* Input/output Delay values */
+set AVG_INPUT_DELAY 0.1
+0.1
+set AVG_OUTPUT_DELAY 0.1
+0.1
+#/* Critical Range (ns) */
+set CRIT_RANGE 1.0
+1.0
+#/***********************************************************/
+#/* Design Constrains: Not all used                         */
+set MAX_TRANSITION 1.0
+1.0
+set FAST_TRANSITION 0.1
+0.1
+set MAX_FANOUT 32
+32
+set MID_FANOUT 8
+8
+set LOW_FANOUT 1
+1
+set HIGH_DRIVE 0
+0
+set HIGH_LOAD 1.0
+1.0
+set AVG_LOAD 0.1
+0.1
+set AVG_FANOUT_LOAD 10
+10
+#/***********************************************************/
+#/*BASIC_INPUT = cb18os120_tsmc_max/nd02d1/A1
+#BASIC_OUTPUT = cb18os120_tsmc_max/nd02d1/ZN*/
+set DRIVING_CELL dffacs1
+dffacs1
+#/* DONT_USE_LIST = {   } */
+#/*************operation cons**************/
+#/*OP_WCASE = WCCOM;
+#OP_BCASE = BCCOM;*/
+set WIRE_LOAD "tsmcwire"
+tsmcwire
+set LOGICLIB lec25dscc25_TT
+lec25dscc25_TT
+#/*****************************/
+#/* Sourcing the file that sets the Search path and the libraries(target,link) */
+set sys_clk $clock_name
+clk
+set netlist_file [format "%s%s"  [format "%s%s"  $SYN_DIR $design_name] ".vg"]
+./top.vg
+set ddc_file [format "%s%s"  [format "%s%s"  $SYN_DIR $design_name] ".ddc"]
+./top.ddc
+set rep_file [format "%s%s"  [format "%s%s"  $SYN_DIR $design_name] ".rep"]
+./top.rep
+set dc_shell_status [ set chk_file [format "%s%s"  [format "%s%s"  $SYN_DIR $design_name] ".chk"] ]
+./top.chk
+#/* if we didnt find errors at this point, run */
+if {  $dc_shell_status != [list] } {
+   current_design $design_name
+  link
+  set_wire_load_model -name $WIRE_LOAD -lib $LOGICLIB $design_name
+  set_wire_load_mode top
+  set_fix_multiple_port_nets -outputs -buffer_constants
+  create_clock -period $CLK_PERIOD -name $sys_clk [find port $sys_clk]
+  set_clock_uncertainty $CLK_UNCERTAINTY $sys_clk
+  set_fix_hold $sys_clk
+  group_path -from [all_inputs] -name input_grp
+  group_path -to [all_outputs] -name output_grp
+  set_driving_cell  -lib_cell $DRIVING_CELL [all_inputs]
+  remove_driving_cell [find port $sys_clk]
+  set_fanout_load $AVG_FANOUT_LOAD [all_outputs]
+  set_load $AVG_LOAD [all_outputs]
+  set_input_delay $AVG_INPUT_DELAY -clock $sys_clk [all_inputs]
+  remove_input_delay -clock $sys_clk [find port $sys_clk]
+  set_output_delay $AVG_OUTPUT_DELAY -clock $sys_clk [all_outputs]
+  set_dont_touch $reset_name
+  set_resistance 0 $reset_name
+  set_drive 0 $reset_name
+  set_critical_range $CRIT_RANGE [current_design]
+  set_max_delay $CLK_PERIOD [all_outputs]
+  set MAX_FANOUT $MAX_FANOUT
+  set MAX_TRANSITION $MAX_TRANSITION
+  uniquify
+  ungroup -all -flatten
+  redirect $chk_file { check_design }
+  compile -map_effort high
+  write -hier -format verilog -output $netlist_file $design_name
+  write -hier -format ddc -output $ddc_file $design_name
+  redirect $rep_file { report_design -nosplit }
+  redirect -append $rep_file { report_area }
+  redirect -append $rep_file { report_timing -max_paths 2 -input_pins -nets -transition_time -nosplit }
+  redirect -append $rep_file { report_constraint -max_delay -verbose -nosplit }
+  remove_design -all
+  read_file -format verilog $netlist_file
+  current_design $design_name
+  redirect -append $rep_file { report_reference -nosplit }
+  quit
+} else {
+   quit
+}
+Current design is 'top'.
+Loading db file '/afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db'
+
+  Linking design 'top'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (11 designs)              /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.db, etc
+  lec25dscc25_TT (library)    /afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db
+
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Warning: Design rule attributes from the driving cell will be
+	set on the port. (UID-401)
+Current design is 'top'.
+Information: Uniquified 24 instances of design 'proc'. (OPT-1056)
+Information: Uniquified 24 instances of design 'bcp_pe'. (OPT-1056)
+Information: Uniquified 24 instances of design 'cla_queue_DEPTH64'. (OPT-1056)
+Information: Uniquified 50 instances of design 'queue_DATA_LEN1024_QUEUE_SIZE16'. (OPT-1056)
+Information: Updating graph... (UID-83)
+Warning: Design 'top' contains 156 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | S-2021.06-DWBB_202106.1 |     *     |
+| Licensed DW Building Blocks        |                         |           |
+============================================================================
+
+
+Information: There are 381 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'top'
