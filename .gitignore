@@ -25,3 +25,5 @@ program.out
 *.dump
 .__*
 vc_hdrs.h
+trace.cnf
+trace.out

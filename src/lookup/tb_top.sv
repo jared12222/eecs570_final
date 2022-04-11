@@ -94,7 +94,7 @@ int tmp;
 int idx = 0;
 task import_data_to_latency_buffer();
 
-    init_cnf_input_file("/home/boray/eecs570/eecs570_final/data/preprocessed_data/preprocessed-vars-100-1.cnf");
+    init_cnf_input_file("trace.cnf");
     num_of_engine = output_num_of_engine();
     num_of_clause_per_engine = output_num_of_clause_per_engine();
     num_of_var = output_num_of_var();
@@ -188,7 +188,7 @@ task uc_handler();
 endtask
 
 task import_trace_to_buffer();
-    init_trace_input_file("/home/boray/eecs570/eecs570_final/data/sat_trace/bcp_trace_vars-100-1.out");
+    init_trace_input_file("trace.out");
     for(int i=0; i<`MAX_ITER; ++i) begin
         
         // output_iter_trace
