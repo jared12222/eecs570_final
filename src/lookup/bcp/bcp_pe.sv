@@ -118,8 +118,8 @@ module bcp_pe (
                         if (someUNDEF[i]) imply_lit = node.cla[i];
                     end
 
-                    if (! |someTrue) begin // No Literal is True
-                        if (! |someUNDEF) // No UNDEFINED
+                    if ((|someTrue) == 0) begin // No Literal is True
+                        if ((|someUNDEF) == 0) // No UNDEFINED
                             conflict = 1;
                         else begin // At least one is UNDEF
                             for (int i = 0; i < `CLA_LENGTH; i++) begin
