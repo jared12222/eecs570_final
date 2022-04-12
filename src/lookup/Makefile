@@ -52,7 +52,7 @@ syn:	syn_simv
 proc_syn_simv:	$(HEADERS) proc.vg engine_null_testbench.sv
 	$(VCS) engine_null_testbench.sv proc.vg $(LIB) -o proc_syn_simv
 
-proc_syn:	engine_syn_simv
+proc_syn:	_syn_simv
 	./proc_syn_simv | tee proc_syn.out
 
 dve_syn: syn_simv 
