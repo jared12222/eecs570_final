@@ -16,11 +16,10 @@
 #$(info $(simfiles)
 
 #read_file -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_mstack.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
-read_file -f ddc [list "proc.ddc"]
-set_dont_touch proc
-analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
-elaborate top -library work
-set design_name top
+
+analyze -library work -f sverilog [list "sys_def.sv" "proc.sv" "./bcp/bcp_pe.sv" "./cla_queue/cla_queue.sv" "./uc/uc_queue.sv"]
+elaborate proc -library work
+set design_name proc
 set clock_name clk
 set reset_name rst_n
 set CLK_PERIOD 20
