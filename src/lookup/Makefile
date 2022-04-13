@@ -18,7 +18,7 @@ export HEADERS
 export TESTBENCH
 
 
-top.vg:		sys_def.sv top.sv ./uc/uc_arbiter_mstack.sv ./latency_buffer/L_buffer_singleload.sv ./uc/uc_arbiter.sv ./uc/uc_arbiter_wrapper.sv ./cla_queue/gst.sv $(TCL)
+top.vg:		sys_def.sv top.sv proc.vg ./uc/uc_arbiter_mstack.sv ./latency_buffer/L_buffer_singleload.sv ./uc/uc_arbiter.sv ./uc/uc_arbiter_wrapper.sv ./cla_queue/gst.sv $(TCL)
 	dc_shell-t -f $(TCL) | tee top_synth.out
 
 proc.vg:	sys_def.sv proc.sv ./bcp/bcp_pe.sv ./cla_queue/cla_queue.sv ./uc/queue.sv proc.tcl
@@ -44,7 +44,7 @@ dve:	simv
 	./simv -gui &
 
 syn_simv:	$(HEADERS) $(SYNFILES) $(TESTBENCH)
-	$(VCS) $(TESTBENCH) $(SYNFILES) $(LIB) -o syn_simv
+	$(VCS) $(HEADERS) $(TESTBENCH) $(SYNFILES) $(LIB) -o syn_simv
 
 syn:	syn_simv
 	./syn_simv | tee syn.out

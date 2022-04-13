@@ -22,7 +22,7 @@ elaborate proc -library work
 set design_name proc
 set clock_name clk
 set reset_name rst_n
-set CLK_PERIOD 20
+set CLK_PERIOD 5
 
 
 

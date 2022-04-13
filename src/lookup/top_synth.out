@@ -43,63 +43,38 @@ Initializing...
 #set testbench [getenv TESTBENCH]
 #set headers [getenv HEADERS]
 #$(info $(simfiles)
-#read_file -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_mstack.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
-analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/uc_queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
-Running PRESTO HDLC
-Compiling source file ./sys_def.sv
-Compiling source file ./top.sv
-Compiling source file ./proc.sv
-Compiling source file ./bcp/bcp_pe.sv
-Compiling source file ./uc/uc_arbiter_mstack.sv
-Compiling source file ./latency_buffer/L_buffer_singleload.sv
-Compiling source file ./cla_queue/cla_queue.sv
-Compiling source file ./uc/uc_queue.sv
-Compiling source file ./uc/uc_arbiter.sv
-Compiling source file ./uc/uc_arbiter_wrapper.sv
-Compiling source file ./cla_queue/gst.sv
-Presto compilation completed successfully.
-Warning: Can't read link_library file 'your_library.db'. (UID-3)
-1
-elaborate top -library work
+set search_path [list "./" "/afs/umich.edu/class/eecs470/lib/synopsys/"]
+./ /afs/umich.edu/class/eecs470/lib/synopsys/
+read_file -f ddc [list "proc.ddc"]
 Loading db file '/usr/caen/synopsys-synth-2021.06-SP1/libraries/syn/gtech.db'
 Loading db file '/usr/caen/synopsys-synth-2021.06-SP1/libraries/syn/standard.sldb'
   Loading link library 'gtech'
+Reading ddc file '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/proc.ddc'.
+Loading db file '/afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db'
+Loaded 5 designs.
+Current design is 'proc'.
+proc proc_DW01_inc_0 proc_DW01_inc_5 proc_DW01_inc_6 proc_DW01_inc_7
+set_dont_touch proc
 Warning: Can't read link_library file 'your_library.db'. (UID-3)
+1
+read_file -f sverilog [list "sys_def.sv" "top.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+Loading sverilog files: '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/sys_def.sv' '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.sv' '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_mstack.sv' '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/latency_buffer/L_buffer_singleload.sv' '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv' '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv' '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv' 
+Detecting input file type automatically (-rtl or -netlist).
+Reading with Presto HDL Compiler (equivalent to -rtl option).
 Running PRESTO HDLC
-Presto compilation completed successfully. (top)
-Elaborated 1 design.
-Current design is now 'top'.
 Warning: Can't read link_library file 'your_library.db'. (UID-3)
-Information: Building the design 'proc'. (HDL-193)
-Presto compilation completed successfully. (proc)
-Information: Building the design 'uc_arbiter_mstack'. (HDL-193)
-Presto compilation completed successfully. (uc_arbiter_mstack)
-Information: Building the design 'uc_arbiter_wrapper'. (HDL-193)
-Warning:  ./uc/uc_arbiter_wrapper.sv:52: unsigned to signed assignment occurs. (VER-318)
-Warning:  ./uc/uc_arbiter_wrapper.sv:94: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./uc/uc_arbiter_wrapper.sv:99: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./uc/uc_arbiter_wrapper.sv:102: signed to unsigned conversion occurs. (VER-318)
-Warning:  ./uc/uc_arbiter_wrapper.sv:93: signed to unsigned conversion occurs. (VER-318)
-Warning:  ./uc/uc_arbiter_wrapper.sv:95: Out of bounds bit select eng2uca_valid[24], valid bounds are [23:0]. (ELAB-312)
-Warning:  ./uc/uc_arbiter_wrapper.sv:98: Out of bounds bit select uca2eng_pop[24], valid bounds are [23:0]. (ELAB-312)
-Warning:  ./uc/uc_arbiter_wrapper.sv:99: Out of bounds bit select eng2uca_min[24], valid bounds are [23:0]. (ELAB-312)
-Warning:  ./uc/uc_arbiter_wrapper.sv:100: Out of bounds bit select eng2uca_valid[24], valid bounds are [23:0]. (ELAB-312)
-
-Inferred memory devices in process
-	in routine uc_arbiter_wrapper line 129 in file
-		'./uc/uc_arbiter_wrapper.sv'.
-===============================================================================
-|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
-===============================================================================
-|   ref_count_r_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
-===============================================================================
-Presto compilation completed successfully. (uc_arbiter_wrapper)
-Information: Building the design 'L_buffer_singleload'. (HDL-193)
-Warning:  ./latency_buffer/L_buffer_singleload.sv:60: signed to unsigned conversion occurs. (VER-318)
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/sys_def.sv
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.sv
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_mstack.sv
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/latency_buffer/L_buffer_singleload.sv
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/latency_buffer/L_buffer_singleload.sv:60: signed to unsigned conversion occurs. (VER-318)
 
 Inferred memory devices in process
 	in routine L_buffer_singleload line 77 in file
-		'./latency_buffer/L_buffer_singleload.sv'.
+		'/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/latency_buffer/L_buffer_singleload.sv'.
 =============================================================================================
 |           Register Name           |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
 =============================================================================================
@@ -113,17 +88,57 @@ Inferred memory devices in process
 | load_change_engine_in_blocked_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
 |            counter_reg            | Flip-flop |  11   |  Y  | N  | N  | N  | N  | N  | N  |
 =============================================================================================
-Presto compilation completed successfully. (L_buffer_singleload)
-Information: Building the design 'gst'. (HDL-193)
-Warning:  ./cla_queue/gst.sv:57: signed to unsigned part selection occurs. (VER-318)
-Warning:  ./cla_queue/gst.sv:60: signed to unsigned part selection occurs. (VER-318)
-Warning:  ./cla_queue/gst.sv:66: signed to unsigned part selection occurs. (VER-318)
-Warning:  ./cla_queue/gst.sv:69: signed to unsigned part selection occurs. (VER-318)
-Warning:  ./cla_queue/gst.sv:88: signed to unsigned conversion occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv:89: signed to unsigned assignment occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv:97: signed to unsigned assignment occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv:103: signed to unsigned assignment occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv:136: signed to unsigned assignment occurs. (VER-318)
+
+Statistics for case statements in always block at line 85 in file
+	'/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            93            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine uc_arbiter line 155 in file
+		'/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter.sv'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+|    curr_state_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| conflict_table_r_reg | Flip-flop |  18   |  Y  | N  | N  | N  | N  | N  | N  |
+| conflict_detect_reg  | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
+|    engmask_r_reg     | Flip-flop |  24   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:52: unsigned to signed assignment occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:94: signed to unsigned assignment occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:99: signed to unsigned assignment occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:102: signed to unsigned conversion occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:93: signed to unsigned conversion occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:95: Out of bounds bit select eng2uca_valid[24], valid bounds are [23:0]. (ELAB-312)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:98: Out of bounds bit select uca2eng_pop[24], valid bounds are [23:0]. (ELAB-312)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:99: Out of bounds bit select eng2uca_min[24], valid bounds are [23:0]. (ELAB-312)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv:100: Out of bounds bit select eng2uca_valid[24], valid bounds are [23:0]. (ELAB-312)
+
+Inferred memory devices in process
+	in routine uc_arbiter_wrapper line 129 in file
+		'/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/uc/uc_arbiter_wrapper.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   ref_count_r_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv:57: signed to unsigned part selection occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv:60: signed to unsigned part selection occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv:66: signed to unsigned part selection occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv:69: signed to unsigned part selection occurs. (VER-318)
+Warning:  /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv:88: signed to unsigned conversion occurs. (VER-318)
 
 Inferred memory devices in process
 	in routine gst line 122 in file
-		'./cla_queue/gst.sv'.
+		'/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/gst.sv'.
 ===============================================================================
 |    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
 ===============================================================================
@@ -206,120 +221,21 @@ Statistics for MUX_OPs
 |      gst/89      |  512   |    2    |      9       |
 |      gst/89      |  512   |    2    |      9       |
 ======================================================
-Presto compilation completed successfully. (gst)
-Information: Building the design 'bcp_pe'. (HDL-193)
-Warning:  ./bcp/bcp_pe.sv:126: signed to unsigned conversion occurs. (VER-318)
-
-Statistics for case statements in always block at line 69 in file
-	'./bcp/bcp_pe.sv'
-===============================================
-|           Line           |  full/ parallel  |
-===============================================
-|            90            |    auto/auto     |
-===============================================
-
-Inferred memory devices in process
-	in routine bcp_pe line 137 in file
-		'./bcp/bcp_pe.sv'.
-===============================================================================
-|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
-===============================================================================
-|    curr_lit_reg     | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
-|   curr_state_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
-|    curr_ptr_reg     | Flip-flop |   6   |  Y  | N  | N  | N  | N  | N  | N  |
-===============================================================================
-Presto compilation completed successfully. (bcp_pe)
-Information: Building the design 'cla_queue' instantiated from design 'proc' with
-	the parameters "DEPTH=64". (HDL-193)
-Warning:  ./cla_queue/cla_queue.sv:45: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./cla_queue/cla_queue.sv:49: signed to unsigned assignment occurs. (VER-318)
-
-Inferred memory devices in process
-	in routine cla_queue_DEPTH64 line 64 in file
-		'./cla_queue/cla_queue.sv'.
-===============================================================================
-|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
-===============================================================================
-|   head_nodes_reg    | Flip-flop | 7175  |  Y  | N  | N  | N  | N  | N  | N  |
-|     buffer_reg      | Flip-flop | 3072  |  Y  | N  | N  | N  | N  | N  | N  |
-|      tail_reg       | Flip-flop |   7   |  Y  | N  | N  | N  | N  | N  | N  |
-===============================================================================
-Statistics for MUX_OPs
-==========================================================
-|   block name/line    | Inputs | Outputs | # sel inputs |
-==========================================================
-| cla_queue_DEPTH64/34 |   64   |   48    |      6       |
-==========================================================
-Presto compilation completed successfully. (cla_queue_DEPTH64)
-Information: Building the design 'queue' instantiated from design 'proc' with
-	the parameters "DATA_LEN=1024,QUEUE_SIZE=16". (HDL-193)
-Warning:  ./uc/queue.sv:42: unsigned to signed assignment occurs. (VER-318)
-Warning:  ./uc/queue.sv:76: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./uc/queue.sv:93: signed to unsigned assignment occurs. (VER-318)
-
-Statistics for case statements in always block at line 44 in file
-	'./uc/queue.sv'
-===============================================
-|           Line           |  full/ parallel  |
-===============================================
-|            73            |    auto/auto     |
-===============================================
-
-Inferred memory devices in process
-	in routine queue_DATA_LEN1024_QUEUE_SIZE16 line 102 in file
-		'./uc/queue.sv'.
-===============================================================================
-|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
-===============================================================================
-|     head_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
-|     entry_r_reg     | Flip-flop |  160  |  Y  | N  | N  | N  | N  | N  | N  |
-|     qout_r_reg      | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
-|     tail_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
-===============================================================================
-Statistics for MUX_OPs
-========================================================================
-|          block name/line           | Inputs | Outputs | # sel inputs |
-========================================================================
-| queue_DATA_LEN1024_QUEUE_SIZE16/82 |   16   |   10    |      4       |
-========================================================================
-Presto compilation completed successfully. (queue_DATA_LEN1024_QUEUE_SIZE16)
-Information: Building the design 'uc_arbiter'. (HDL-193)
-Warning:  ./uc/uc_arbiter.sv:89: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./uc/uc_arbiter.sv:97: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./uc/uc_arbiter.sv:103: signed to unsigned assignment occurs. (VER-318)
-Warning:  ./uc/uc_arbiter.sv:136: signed to unsigned assignment occurs. (VER-318)
-
-Statistics for case statements in always block at line 85 in file
-	'./uc/uc_arbiter.sv'
-===============================================
-|           Line           |  full/ parallel  |
-===============================================
-|            93            |    auto/auto     |
-===============================================
-
-Inferred memory devices in process
-	in routine uc_arbiter line 155 in file
-		'./uc/uc_arbiter.sv'.
-================================================================================
-|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
-================================================================================
-|    curr_state_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
-| conflict_table_r_reg | Flip-flop |  18   |  Y  | N  | N  | N  | N  | N  | N  |
-| conflict_detect_reg  | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
-|    engmask_r_reg     | Flip-flop |  24   |  Y  | N  | N  | N  | N  | N  | N  |
-================================================================================
-Presto compilation completed successfully. (uc_arbiter)
-Information: Building the design 'uc_queue'. (HDL-193)
-Presto compilation completed successfully. (uc_queue)
-1
+Presto compilation completed successfully.
+Current design is now '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/top.db:top'
+Loaded 6 designs.
+Current design is 'top'.
+top uc_arbiter_mstack L_buffer_singleload uc_arbiter uc_arbiter_wrapper gst
+#analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+#elaborate top -library work
 set design_name top
 top
 set clock_name clk
 clk
 set reset_name rst_n
 rst_n
-set CLK_PERIOD 20
-20
+set CLK_PERIOD 50
+50
 #/***********************************************************/
 #/* The rest of this file may be left alone for most small  */
 #/* to moderate sized designs.  You may need to alter it    */
@@ -327,8 +243,6 @@ set CLK_PERIOD 20
 #/***********************************************************/
 set SYN_DIR ./
 ./
-set search_path "/afs/umich.edu/class/eecs470/lib/synopsys/"
-/afs/umich.edu/class/eecs470/lib/synopsys/
 set target_library "lec25dscc25_TT.db"
 lec25dscc25_TT.db
 set link_library [concat  "*" $target_library]
@@ -445,14 +359,47 @@ if {  $dc_shell_status != [list] } {
    quit
 }
 Current design is 'top'.
-Loading db file '/afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db'
 
   Linking design 'top'
   Using the following designs and libraries:
   --------------------------------------------------------------------------
-  * (11 designs)              /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.db, etc
+  * (11 designs)              /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/cla_queue/top.db, etc
   lec25dscc25_TT (library)    /afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db
 
+Information: Building the design 'queue' instantiated from design 'uc_arbiter_mstack' with
+	the parameters "DATA_LEN=1024,QUEUE_SIZE=16". (HDL-193)
+Warning:  ./uc/queue.sv:42: unsigned to signed assignment occurs. (VER-318)
+Warning:  ./uc/queue.sv:76: signed to unsigned assignment occurs. (VER-318)
+Warning:  ./uc/queue.sv:93: signed to unsigned assignment occurs. (VER-318)
+
+Statistics for case statements in always block at line 44 in file
+	'./uc/queue.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            73            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine queue_DATA_LEN1024_QUEUE_SIZE16 line 102 in file
+		'./uc/queue.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|     head_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|     entry_r_reg     | Flip-flop |  160  |  Y  | N  | N  | N  | N  | N  | N  |
+|     qout_r_reg      | Flip-flop |  10   |  Y  | N  | N  | N  | N  | N  | N  |
+|     tail_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+========================================================================
+|          block name/line           | Inputs | Outputs | # sel inputs |
+========================================================================
+| queue_DATA_LEN1024_QUEUE_SIZE16/82 |   16   |   10    |      4       |
+========================================================================
+Presto compilation completed successfully. (queue_DATA_LEN1024_QUEUE_SIZE16)
+Information: Building the design 'uc_queue'. (HDL-193)
+Presto compilation completed successfully. (uc_queue)
 Warning: Design rule attributes from the driving cell will be
 	set on the port. (UID-401)
 Warning: Design rule attributes from the driving cell will be
@@ -602,12 +549,9 @@ Warning: Design rule attributes from the driving cell will be
 Warning: Design rule attributes from the driving cell will be
 	set on the port. (UID-401)
 Current design is 'top'.
-Information: Uniquified 24 instances of design 'proc'. (OPT-1056)
-Information: Uniquified 24 instances of design 'bcp_pe'. (OPT-1056)
-Information: Uniquified 24 instances of design 'cla_queue_DEPTH64'. (OPT-1056)
-Information: Uniquified 50 instances of design 'queue_DATA_LEN1024_QUEUE_SIZE16'. (OPT-1056)
+Information: Uniquified 2 instances of design 'queue_DATA_LEN1024_QUEUE_SIZE16'. (OPT-1056)
 Information: Updating graph... (UID-83)
-Warning: Design 'top' contains 156 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Warning: Design 'top' contains 12 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
 Information: Evaluating DesignWare library utilization. (UISN-27)
 
 ============================================================================
@@ -618,10 +562,555 @@ Information: Evaluating DesignWare library utilization. (UISN-27)
 ============================================================================
 
 
-Information: There are 381 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+Information: There are 100 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
 
 
 
   Beginning Pass 1 Mapping
   ------------------------
   Processing 'top'
+Information: The register 'ucarb/uca/conflict_detect_reg[9]' is a constant and will be removed. (OPT-1206)
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'top_DW01_inc_0'
+  Processing 'top_DW01_inc_1'
+  Processing 'top_DW01_inc_2'
+  Processing 'top_DW01_cmp2_0'
+  Processing 'top_DW01_cmp6_0_DW01_cmp6_2'
+  Processing 'top_DW01_inc_3'
+  Processing 'top_DW01_inc_4'
+  Processing 'top_DW01_inc_5'
+  Processing 'top_DW01_cmp2_1'
+  Processing 'top_DW01_cmp2_2'
+  Processing 'top_DW01_cmp2_3'
+  Processing 'top_DW01_cmp2_4'
+  Processing 'top_DW01_cmp2_5'
+  Processing 'top_DW01_cmp2_6'
+  Processing 'top_DW01_cmp2_7'
+  Processing 'top_DW01_cmp2_8'
+  Processing 'top_DW01_cmp2_9'
+  Processing 'top_DW01_cmp2_10'
+  Processing 'top_DW01_cmp2_11'
+  Processing 'top_DW01_cmp2_12'
+  Processing 'top_DW01_cmp2_13'
+  Processing 'top_DW01_cmp2_14'
+  Processing 'top_DW01_cmp2_15'
+  Processing 'top_DW01_cmp2_16'
+  Processing 'top_DW01_cmp2_17'
+  Processing 'top_DW01_cmp2_18'
+  Processing 'top_DW01_cmp2_19'
+  Processing 'top_DW01_cmp2_20'
+  Processing 'top_DW01_cmp2_21'
+  Processing 'top_DW01_cmp2_22'
+  Processing 'top_DW01_cmp2_23'
+  Processing 'top_DW01_inc_6'
+  Processing 'top_DW01_inc_7'
+  Processing 'top_DW01_cmp6_1_DW01_cmp6_3'
+  Building model 'DW01_NAND2'
+  Processing 'DW01_NAND2'
+  Building model 'DW01_sub_width9' (rpl)
+  Processing 'DW01_sub_width9'
+  Building model 'DW01_sub_width9' (cla)
+  Processing 'DW01_sub_width9'
+  Building model 'DW01_inc_width9' (rpl)
+  Processing 'DW01_inc_width9'
+  Allocating blocks in 'DW02_mult_A_width5_B_width1'
+  Building model 'DW01_MUX'
+  Processing 'DW01_MUX'
+  Building model 'DW01_mmux_width2'
+  Processing 'DW01_mmux_width2'
+  Building model 'DW01_mmux_width3'
+  Processing 'DW01_mmux_width3'
+  Building model 'DW01_mmux_width4'
+  Processing 'DW01_mmux_width4'
+  Building model 'DW01_mmux_width5'
+  Processing 'DW01_mmux_width5'
+  Allocating blocks in 'DW01_absval_width5'
+  Building model 'DW01_inc_width5' (cla)
+  Processing 'DW01_inc_width5'
+  Building model 'DW01_absval_width5' (cla)
+  Processing 'DW01_absval_width5'
+  Allocating blocks in 'DW01_absval_width1'
+  Building model 'DW01_inc_width1' (cla)
+  Processing 'DW01_inc_width1'
+  Building model 'DW01_absval_width1' (cla)
+  Processing 'DW01_absval_width1'
+  Building model 'DW01_inc_width6' (cla)
+  Processing 'DW01_inc_width6'
+  Allocating blocks in 'DW01_absval_width5'
+  Building model 'DW01_inc_width5' (cla)
+  Processing 'DW01_inc_width5'
+  Building model 'DW01_absval_width5' (cla)
+  Processing 'DW01_absval_width5'
+  Building model 'DW01_inc_width6' (cla)
+  Processing 'DW01_inc_width6'
+  Building model 'DW02_mult_A_width5_B_width1' (csa)
+  Processing 'DW02_mult_A_width5_B_width1'
+  Building model 'DW01_inc_width5' (rpl)
+  Processing 'DW01_inc_width5'
+  Allocating blocks in 'DW02_mult_A_width1_B_width5'
+  Building model 'DW02_mult_A_width1_B_width5' (csa)
+  Processing 'DW02_mult_A_width1_B_width5'
+  Building model 'DW01_sub_width8' (rpl)
+  Processing 'DW01_sub_width8'
+  Building model 'DW01_sub_width8' (cla)
+  Processing 'DW01_sub_width8'
+  Building model 'DW01_inc_width8' (rpl)
+  Processing 'DW01_inc_width8'
+  Processing 'top_DW01_inc_8_DW01_inc_9'
+  Processing 'top_DW01_sub_0'
+  Processing 'top_DW01_inc_9_DW01_inc_10'
+  Processing 'top_DW02_mult_0'
+  Processing 'top_DW01_inc_10_DW01_inc_11'
+  Processing 'top_DW01_sub_1'
+  Processing 'top_DW01_inc_11_DW01_inc_12'
+  Processing 'top_DW01_sub_2'
+
+  Beginning Mapping Optimizations  (High effort)
+  -------------------------------
+
+                                  TOTAL                                                  
+   ELAPSED            WORST NEG   SETUP    DESIGN                              MIN DELAY 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT             COST    
+  --------- --------- --------- --------- --------- ------------------------- -----------
+    0:09:41 82369835.2 175821.23 2783947008.0 654900314.6                                0.00  
+    0:09:41 82369835.2 175821.23 2783947008.0 654900314.6                                0.00  
+    0:09:43 82832247.7 175821.23 2783074304.0 635527210.4                                0.00  
+    0:09:45 83294660.2 175821.23 2782201344.0 616154106.2                                0.00  
+    0:09:47 83757072.7 175821.23 2781328384.0 596781002.0                                0.00  
+    0:09:49 84219485.2 175821.23 2780455424.0 577407897.7                                0.00  
+    0:09:51 84681897.7 175821.23 2779582464.0 558034793.5                                0.00  
+    0:09:53 85144310.1 175821.23 2778709504.0 538661689.3                                0.00  
+    0:09:54 85606722.6 175821.23 2777836544.0 519288585.1                                0.00  
+    0:09:56 86069135.1 175821.23 2776963584.0 499915480.9                                0.00  
+    0:09:58 86531547.6 175821.23 2776090624.0 480542376.7                                0.00  
+    0:10:00 86993960.1 175821.23 2775217664.0 461169272.5                                0.00  
+    0:10:02 87456372.6 175821.23 2774344704.0 441796168.3                                0.00  
+    0:10:04 87918785.1 175821.23 2773471744.0 422423064.1                                0.00  
+    0:10:07 88381197.6 175821.23 2772598784.0 403049959.9                                0.00  
+    0:10:08 88843610.1 175821.23 2771726080.0 383676855.7                                0.00  
+    0:10:10 89306022.6 175821.23 2770853120.0 364303751.5                                0.00  
+    0:10:13 89768435.1 175821.23 2769980160.0 344930647.2                                0.00  
+    0:10:15 90230847.5 175821.23 2769107200.0 325557543.0                                0.00  
+    0:10:17 90693260.0 175821.23 2768234240.0 306184438.8                                0.00  
+    0:10:19 91155672.5 175821.23 2767361280.0 286811334.6                                0.00  
+    0:10:21 91618085.0 175821.23 2766488320.0 267438230.4                                0.00  
+    0:10:23 92080497.5 175821.23 2765615360.0 248065126.2                                0.00  
+    0:10:25 92542910.0 175821.23 2764742400.0 228692022.0                                0.00  
+    0:10:27 93005322.5 175821.23 2763869440.0 209318917.8                                0.00  
+    0:10:29 93467735.0 175821.23 2762996480.0 189945813.6                                0.00  
+    0:10:31 93930147.5 175821.23 2762123520.0 170572709.4                                0.00  
+    0:10:33 94392560.0 175821.23 2761250560.0 151199605.2                                0.00  
+    0:10:34 94854972.5 175821.23 2760377600.0 131826501.0                                0.00  
+    0:10:37 95290287.2 175821.23 2759585280.0 114235600.7                                0.00  
+    0:10:37 95305150.7 175821.23 2759585280.0 114235385.9                                0.00  
+    0:10:37 95320014.3 175821.23 2759585280.0 114235171.0                                0.00  
+    0:10:37 95334877.8 175821.23 2759585280.0 114234956.1                                0.00  
+    0:10:37 95349741.4 175821.23 2759585280.0 114234741.3                                0.00  
+    0:10:37 95364604.9 175821.23 2759585280.0 114234526.4                                0.00  
+    0:10:37 95379468.5 175821.23 2759585280.0 114234311.6                                0.00  
+    0:10:38 95394332.0 175821.23 2759585280.0 114234096.7                                0.00  
+    0:10:38 95409195.6 175821.23 2759585280.0 114233881.8                                0.00  
+    0:10:38 95424059.1 175821.23 2759585280.0 114233667.0                                0.00  
+    0:10:38 95438922.7 175821.23 2759585280.0 114233452.1                                0.00  
+    0:10:38 95453786.2 175821.23 2759585280.0 114233237.3                                0.00  
+    0:10:38 95468649.8 175821.23 2759585280.0 114233022.4                                0.00  
+    0:10:38 95483513.3 175821.23 2759585280.0 114232807.6                                0.00  
+    0:10:38 95498376.9 175821.23 2759585280.0 114232592.7                                0.00  
+    0:10:38 95513240.4 175821.23 2759585280.0 114232377.8                                0.00  
+    0:10:38 95528104.0 175821.23 2759585280.0 114232163.0                                0.00  
+    0:10:38 95542967.5 175821.23 2759585280.0 114231948.1                                0.00  
+    0:10:38 95557831.1 175821.23 2759585280.0 114231733.3                                0.00  
+    0:10:38 95572694.6 175821.23 2759585280.0 114231518.4                                0.00  
+    0:10:38 95587558.2 175821.23 2759585280.0 114231303.5                                0.00  
+    0:10:38 95602421.7 175821.23 2759585280.0 114231088.7                                0.00  
+    0:10:38 95617285.3 175821.23 2759585280.0 114230873.8                                0.00  
+    0:10:38 95632148.8 175821.23 2759585280.0 114230659.0                                0.00  
+    0:10:38 95647012.4 175821.23 2759585280.0 114230444.1                                0.00  
+    0:10:38 95661876.0 175821.23 2759585280.0 114230229.2                                0.00  
+    0:10:39 95676739.5 175821.23 2759585280.0 114230014.4                                0.00  
+    0:10:39 95691603.1 175821.23 2759585280.0 114229799.5                                0.00  
+    0:10:39 95706466.6 175821.23 2759585280.0 114229584.7                                0.00  
+    0:10:39 95721330.2 175821.23 2759585280.0 114229369.8                                0.00  
+    0:10:39 95736193.7 175821.23 2759585280.0 114229154.9                                0.00  
+    0:10:39 95751057.3 175821.23 2759585280.0 114228940.1                                0.00  
+    0:10:39 95765920.8 175821.23 2759585280.0 114228725.2                                0.00  
+    0:10:39 95780784.4 175821.23 2759585280.0 114228510.4                                0.00  
+    0:10:39 95795647.9 175821.23 2759585280.0 114228295.5                                0.00  
+    0:10:39 95810511.5 175821.23 2759585280.0 114228080.7                                0.00  
+    0:10:39 95825375.0 175821.23 2759585280.0 114227865.8                                0.00  
+    0:10:39 95840238.6 175821.23 2759585280.0 114227650.9                                0.00  
+    0:10:39 95855102.1 175821.23 2759585280.0 114227436.1                                0.00  
+    0:10:39 95869965.7 175821.23 2759585280.0 114227221.2                                0.00  
+    0:10:39 95884829.2 175821.23 2759585280.0 114227006.4                                0.00  
+    0:10:39 95899692.8 175821.23 2759585280.0 114226791.5                                0.00  
+    0:10:39 95914556.3 175821.23 2759585280.0 114226576.6                                0.00  
+    0:10:39 95929419.9 175821.23 2759585280.0 114226361.8                                0.00  
+    0:10:39 95944283.4 175821.23 2759585280.0 114226146.9                                0.00  
+    0:10:40 95959147.0 175821.23 2759585280.0 114225932.1                                0.00  
+    0:10:40 95974010.5 175821.23 2759585280.0 114225717.2                                0.00  
+    0:10:40 95988874.1 175821.23 2759585280.0 114225502.3                                0.00  
+    0:10:40 96003737.6 175821.23 2759585280.0 114225287.5                                0.00  
+    0:10:40 96018601.2 175821.23 2759585280.0 114225072.6                                0.00  
+    0:10:40 96033464.7 175821.23 2759585280.0 114224857.8                                0.00  
+    0:10:40 96048328.3 175821.23 2759585280.0 114224642.9                                0.00  
+    0:10:40 96063191.8 175821.23 2759585280.0 114224428.0                                0.00  
+    0:10:40 96078055.4 175821.23 2759585280.0 114224213.2                                0.00  
+    0:10:40 96092919.0 175821.23 2759585280.0 114223998.3                                0.00  
+    0:10:40 96107782.5 175821.23 2759585280.0 114223783.5                                0.00  
+    0:10:40 96122646.1 175821.23 2759585280.0 114223568.6                                0.00  
+    0:10:40 96137509.6 175821.23 2759585280.0 114223353.8                                0.00  
+    0:10:40 96152373.2 175821.23 2759585280.0 114223138.9                                0.00  
+    0:10:40 96167236.7 175821.23 2759585280.0 114222924.0                                0.00  
+    0:10:40 96182100.3 175821.23 2759585280.0 114222709.2                                0.00  
+    0:10:40 96196963.8 175821.23 2759585280.0 114222494.3                                0.00  
+    0:10:40 96211827.4 175821.23 2759585280.0 114222279.5                                0.00  
+    0:10:40 96226690.9 175821.23 2759585280.0 114222064.6                                0.00  
+    0:10:41 96241554.5 175821.23 2759585280.0 114221849.7                                0.00  
+    0:10:41 96256418.0 175821.23 2759585280.0 114221634.9                                0.00  
+    0:10:41 96271281.6 175821.23 2759585280.0 114221420.0                                0.00  
+    0:10:41 96286145.1 175821.23 2759585280.0 114221205.2                                0.00  
+    0:10:41 96301008.7 175821.23 2759585280.0 114220990.3                                0.00  
+    0:10:41 96315872.2 175821.23 2759585280.0 114220775.4                                0.00  
+    0:10:41 96330735.8 175821.23 2759585280.0 114220560.6                                0.00  
+    0:10:41 96345599.3 175821.23 2759585280.0 114220345.7                                0.00  
+    0:10:41 96360462.9 175821.23 2759585280.0 114220130.9                                0.00  
+    0:10:41 96375326.4 175821.23 2759585280.0 114219916.0                                0.00  
+    0:10:41 96390190.0 175821.23 2759585280.0 114219701.1                                0.00  
+    0:10:41 96405053.5 175821.23 2759585280.0 114219486.3                                0.00  
+    0:10:41 96419917.1 175821.23 2759585280.0 114219271.4                                0.00  
+    0:10:41 96434780.6 175821.23 2759585280.0 114219056.6                                0.00  
+    0:10:41 96449644.2 175821.23 2759585280.0 114218841.7                                0.00  
+    0:10:41 96464507.7 175821.23 2759585280.0 114218626.9                                0.00  
+    0:10:41 96479371.3 175821.23 2759585280.0 114218412.0                                0.00  
+    0:10:41 96494234.8 175821.23 2759585280.0 114218197.1                                0.00  
+    0:10:41 96509098.4 175821.23 2759585280.0 114217982.3                                0.00  
+    0:10:41 96523962.0 175821.23 2759585280.0 114217767.4                                0.00  
+    0:10:42 96538825.5 175821.23 2759585280.0 114217552.6                                0.00  
+    0:10:42 96553689.1 175821.23 2759585280.0 114217337.7                                0.00  
+    0:10:42 96568552.6 175821.23 2759585280.0 114217122.8                                0.00  
+    0:10:42 96583416.2 175821.23 2759585280.0 114216908.0                                0.00  
+    0:10:42 96598279.7 175821.23 2759585280.0 114216693.1                                0.00  
+    0:10:42 96613143.3 175821.23 2759585280.0 114216478.3                                0.00  
+    0:10:42 96628006.8 175821.23 2759585280.0 114216263.4                                0.00  
+    0:10:42 96642870.4 175821.23 2759585280.0 114216048.5                                0.00  
+    0:10:42 96657733.9 175821.23 2759585280.0 114215833.7                                0.00  
+    0:10:42 96672597.5 175821.23 2759585280.0 114215618.8                                0.00  
+    0:10:42 96687461.0 175821.23 2759585280.0 114215404.0                                0.00  
+    0:10:42 96702324.6 175821.23 2759585280.0 114215189.1                                0.00  
+    0:10:42 96717188.1 175821.23 2759585280.0 114214974.2                                0.00  
+    0:10:42 96732051.7 175821.23 2759585280.0 114214759.4                                0.00  
+    0:10:42 96746915.2 175821.23 2759585280.0 114214544.5                                0.00  
+    0:10:42 96761778.8 175821.23 2759585280.0 114214329.7                                0.00  
+    0:10:42 96776642.3 175821.23 2759585280.0 114214114.8                                0.00  
+    0:10:42 96791505.9 175821.23 2759585280.0 114213900.0                                0.00  
+    0:10:42 96806369.4 175821.23 2759585280.0 114213685.1                                0.00  
+    0:10:43 96821233.0 175821.23 2759585280.0 114213470.2                                0.00  
+    0:10:43 96836096.5 175821.23 2759585280.0 114213255.4                                0.00  
+    0:10:43 96850960.1 175821.23 2759585280.0 114213040.5                                0.00  
+    0:10:43 96865823.6 175821.23 2759585280.0 114212825.7                                0.00  
+    0:10:43 96880687.2 175821.23 2759585280.0 114212610.8                                0.00  
+    0:10:43 96895550.7 175821.23 2759585280.0 114212395.9                                0.00  
+    0:10:43 96910414.3 175821.23 2759585280.0 114212181.1                                0.00  
+    0:10:43 96925277.8 175821.23 2759585280.0 114211966.2                                0.00  
+    0:10:43 96940141.4 175821.23 2759585280.0 114211751.4                                0.00  
+    0:10:43 96955005.0 175821.23 2759585280.0 114211536.5                                0.00  
+    0:10:43 96969868.5 175821.23 2759585280.0 114211321.6                                0.00  
+    0:10:43 96984732.1 175821.23 2759585280.0 114211106.8                                0.00  
+    0:10:43 96999595.6 175821.23 2759585280.0 114210891.9                                0.00  
+    0:10:43 97014459.2 175821.23 2759585280.0 114210677.1                                0.00  
+    0:10:43 97029322.7 175821.23 2759585280.0 114210462.2                                0.00  
+    0:10:43 97044186.3 175821.23 2759585280.0 114210247.3                                0.00  
+    0:10:43 97059049.8 175821.23 2759585280.0 114210032.5                                0.00  
+    0:10:43 97073913.4 175821.23 2759585280.0 114209817.6                                0.00  
+    0:10:43 97088776.9 175821.23 2759585280.0 114209602.8                                0.00  
+    0:10:44 97103640.5 175821.23 2759585280.0 114209387.9                                0.00  
+    0:10:44 97118504.0 175821.23 2759585280.0 114209173.1                                0.00  
+    0:10:44 97133367.6 175821.23 2759585280.0 114208958.2                                0.00  
+    0:10:44 97148231.1 175821.23 2759585280.0 114208743.3                                0.00  
+    0:10:44 97163094.7 175821.23 2759585280.0 114208528.5                                0.00  
+    0:10:44 97177958.2 175821.23 2759585280.0 114208313.6                                0.00  
+    0:10:44 97192821.8 175821.23 2759585280.0 114208098.8                                0.00  
+    0:10:44 97207685.3 175821.23 2759585280.0 114207883.9                                0.00  
+    0:10:44 97222548.9 175821.23 2759585280.0 114207669.0                                0.00  
+    0:10:44 97237412.4 175821.23 2759585280.0 114207454.2                                0.00  
+    0:10:44 97252276.0 175821.23 2759585280.0 114207239.3                                0.00  
+    0:10:44 97267139.5 175821.23 2759585280.0 114207024.5                                0.00  
+    0:10:44 97282003.1 175821.23 2759585280.0 114206809.6                                0.00  
+    0:10:44 97296866.6 175821.23 2759585280.0 114206594.7                                0.00  
+    0:10:44 97311730.2 175821.23 2759585280.0 114206379.9                                0.00  
+    0:10:44 97326593.7 175821.23 2759585280.0 114206165.0                                0.00  
+    0:10:44 97341457.3 175821.23 2759585280.0 114205950.2                                0.00  
+    0:10:44 97356320.9 175821.23 2759585280.0 114205735.3                                0.00  
+    0:10:44 97371184.4 175821.23 2759585280.0 114205520.4                                0.00  
+    0:10:45 97386048.0 175821.23 2759585280.0 114205305.6                                0.00  
+    0:10:45 97400911.5 175821.23 2759585280.0 114205090.7                                0.00  
+    0:10:45 97415775.1 175821.23 2759585280.0 114204875.9                                0.00  
+    0:10:45 97430638.6 175821.23 2759585280.0 114204661.0                                0.00  
+    0:10:45 97445502.2 175821.23 2759585280.0 114204446.2                                0.00  
+    0:10:45 97460365.7 175821.23 2759585280.0 114204231.3                                0.00  
+    0:10:45 97475229.3 175821.23 2759585280.0 114204016.4                                0.00  
+    0:10:45 97490092.8 175821.23 2759585280.0 114203801.6                                0.00  
+    0:10:45 97504956.4 175821.23 2759585280.0 114203586.7                                0.00  
+    0:10:45 97519819.9 175821.23 2759585280.0 114203371.9                                0.00  
+    0:10:45 97534683.5 175821.23 2759585280.0 114203157.0                                0.00  
+    0:10:45 97549547.0 175821.23 2759585280.0 114202942.1                                0.00  
+    0:10:45 97564410.6 175821.23 2759585280.0 114202727.3                                0.00  
+    0:10:45 97579274.1 175821.23 2759585280.0 114202512.4                                0.00  
+    0:10:45 97594137.7 175821.23 2759585280.0 114202297.6                                0.00  
+    0:10:45 97609001.2 175821.23 2759585280.0 114202082.7                                0.00  
+    0:10:45 97623864.8 175821.23 2759585280.0 114201867.8                                0.00  
+    0:10:45 97638728.3 175821.23 2759585280.0 114201653.0                                0.00  
+    0:10:45 97653591.9 175821.23 2759585280.0 114201438.1                                0.00  
+    0:10:45 97668455.4 175821.23 2759585280.0 114201223.3                                0.00  
+    0:10:46 97683319.0 175821.23 2759585280.0 114201008.4                                0.00  
+    0:10:46 97698182.5 175821.23 2759585280.0 114200793.5                                0.00  
+    0:10:46 97713046.1 175821.23 2759585280.0 114200578.7                                0.00  
+    0:10:46 97727909.6 175821.23 2759585280.0 114200363.8                                0.00  
+    0:10:46 97742773.2 175821.23 2759585280.0 114200149.0                                0.00  
+    0:10:46 97757636.7 175821.23 2759585280.0 114199934.1                                0.00  
+    0:10:46 97772500.3 175821.23 2759585280.0 114199719.3                                0.00  
+    0:10:46 97787363.9 175821.23 2759585280.0 114199504.4                                0.00  
+    0:10:46 97802227.4 175821.23 2759585280.0 114199289.5                                0.00  
+    0:10:46 97817091.0 175821.23 2759585280.0 114199074.7                                0.00  
+    0:10:46 97831954.5 175821.23 2759585280.0 114198859.8                                0.00  
+    0:10:46 97846818.1 175821.23 2759585280.0 114198645.0                                0.00  
+    0:10:46 97861681.6 175821.23 2759585280.0 114198430.1                                0.00  
+    0:10:46 97876545.2 175821.23 2759585280.0 114198215.2                                0.00  
+    0:10:46 97891408.7 175821.23 2759585280.0 114198000.4                                0.00  
+    0:10:46 97906272.3 175821.23 2759585280.0 114197785.5                                0.00  
+    0:10:46 97921135.8 175821.23 2759585280.0 114197570.7                                0.00  
+    0:10:46 97935999.4 175821.23 2759585280.0 114197355.8                                0.00  
+    0:10:46 97950862.9 175821.23 2759585280.0 114197140.9                                0.00  
+    0:10:47 97965726.5 175821.23 2759585280.0 114196926.1                                0.00  
+    0:10:47 97980590.0 175821.23 2759585280.0 114196711.2                                0.00  
+    0:10:47 97995453.6 175821.23 2759585280.0 114196496.4                                0.00  
+    0:10:47 98010317.1 175821.23 2759585280.0 114196281.5                                0.00  
+    0:10:47 98025180.7 175821.23 2759585280.0 114196066.6                                0.00  
+    0:10:47 98040044.2 175821.23 2759585280.0 114195851.8                                0.00  
+    0:10:47 98054907.8 175821.23 2759585280.0 114195636.9                                0.00  
+    0:10:47 98069771.3 175821.23 2759585280.0 114195422.1                                0.00  
+    0:10:47 98084634.9 175821.23 2759585280.0 114195207.2                                0.00  
+    0:10:47 98099498.4 175821.23 2759585280.0 114194992.4                                0.00  
+    0:10:47 98114362.0 175821.23 2759585280.0 114194777.5                                0.00  
+    0:10:47 98129225.5 175821.23 2759585280.0 114194562.6                                0.00  
+    0:10:47 98144089.1 175821.23 2759585280.0 114194347.8                                0.00  
+    0:10:47 98158952.6 175821.23 2759585280.0 114194132.9                                0.00  
+    0:10:47 98173816.2 175821.23 2759585280.0 114193918.1                                0.00  
+    0:10:47 98188679.7 175821.23 2759585280.0 114193703.2                                0.00  
+    0:10:47 98203543.3 175821.23 2759585280.0 114193488.3                                0.00  
+    0:10:47 98218406.9 175821.23 2759585280.0 114193273.5                                0.00  
+    0:10:47 98233270.4 175821.23 2759585280.0 114193058.6                                0.00  
+    0:10:48 98248134.0 175821.23 2759585280.0 114192843.8                                0.00  
+    0:10:48 98262997.5 175821.23 2759585280.0 114192628.9                                0.00  
+    0:10:48 98277861.1 175821.23 2759585280.0 114192414.0                                0.00  
+    0:10:48 98292724.6 175821.23 2759585280.0 114192199.2                                0.00  
+    0:10:48 98307588.2 175821.23 2759585280.0 114191984.3                                0.00  
+    0:10:48 98322451.7 175821.23 2759585280.0 114191769.5                                0.00  
+    0:10:48 98337315.3 175821.23 2759585280.0 114191554.6                                0.00  
+    0:10:48 98352178.8 175821.23 2759585280.0 114191339.7                                0.00  
+    0:10:48 98367042.4 175821.23 2759585280.0 114191124.9                                0.00  
+    0:10:48 98381905.9 175821.23 2759585280.0 114190910.0                                0.00  
+    0:10:48 98396769.5 175821.23 2759585280.0 114190695.2                                0.00  
+    0:10:48 98411633.0 175821.23 2759585280.0 114190480.3                                0.00  
+    0:10:48 98426496.6 175821.23 2759585280.0 114190265.5                                0.00  
+    0:10:48 98441360.1 175821.23 2759585280.0 114190050.6                                0.00  
+    0:10:48 98456223.7 175821.23 2759585280.0 114189835.7                                0.00  
+    0:10:48 98471087.2 175821.23 2759585280.0 114189620.9                                0.00  
+    0:10:48 98485950.8 175821.23 2759585280.0 114189406.0                                0.00  
+    0:10:48 98500814.3 175821.23 2759585280.0 114189191.2                                0.00  
+    0:10:48 98515677.9 175821.23 2759585280.0 114188976.3                                0.00  
+    0:10:49 98530541.4 175821.23 2759585280.0 114188761.4                                0.00  
+    0:10:49 98545405.0 175821.23 2759585280.0 114188546.6                                0.00  
+    0:10:49 98560268.5 175821.23 2759585280.0 114188331.7                                0.00  
+    0:10:49 98575132.1 175821.23 2759585280.0 114188116.9                                0.00  
+    0:10:49 98589995.6 175821.23 2759585280.0 114187902.0                                0.00  
+    0:10:49 98604859.2 175821.23 2759585280.0 114187687.1                                0.00  
+    0:10:49 98619722.8 175821.23 2759585280.0 114187472.3                                0.00  
+    0:10:49 98634586.3 175821.23 2759585280.0 114187257.4                                0.00  
+    0:10:49 98649449.9 175821.23 2759585280.0 114187042.6                                0.00  
+    0:10:49 98664313.4 175821.23 2759585280.0 114186827.7                                0.00  
+    0:10:49 98679177.0 175821.23 2759585280.0 114186612.8                                0.00  
+    0:10:49 98694040.5 175821.23 2759585280.0 114186398.0                                0.00  
+    0:10:49 98708904.1 175821.23 2759585280.0 114186183.1                                0.00  
+    0:10:49 98723767.6 175821.23 2759585280.0 114185968.3                                0.00  
+    0:10:49 98738631.2 175821.23 2759585280.0 114185753.4                                0.00  
+    0:10:49 98753494.7 175821.23 2759585280.0 114185538.6                                0.00  
+    0:10:49 98768358.3 175821.23 2759585280.0 114185323.7                                0.00  
+    0:10:49 98783221.8 175821.23 2759585280.0 114185108.8                                0.00  
+    0:10:49 98798085.4 175821.23 2759585280.0 114184894.0                                0.00  
+    0:10:50 98812948.9 175821.23 2759585280.0 114184679.1                                0.00  
+    0:10:50 98827812.5 175821.23 2759585280.0 114184464.3                                0.00  
+    0:10:50 98842676.0 175821.23 2759585280.0 114184249.4                                0.00  
+    0:10:50 98857539.6 175821.23 2759585280.0 114184034.5                                0.00  
+    0:10:50 98872403.1 175821.23 2759585280.0 114183819.7                                0.00  
+    0:10:50 98887266.7 175821.23 2759585280.0 114183604.8                                0.00  
+    0:10:50 98902130.2 175821.23 2759585280.0 114183390.0                                0.00  
+    0:10:50 98916993.8 175821.23 2759585280.0 114183175.1                                0.00  
+    0:10:50 98931857.3 175821.23 2759585280.0 114182960.2                                0.00  
+    0:10:50 98946720.9 175821.23 2759585280.0 114182745.4                                0.00  
+    0:10:50 98961584.4 175821.23 2759585280.0 114182530.5                                0.00  
+    0:10:50 98976448.0 175821.23 2759585280.0 114182315.7                                0.00  
+    0:10:50 98991311.5 175821.23 2759585280.0 114182100.8                                0.00  
+    0:10:50 99006175.1 175821.23 2759585280.0 114181885.9                                0.00  
+    0:10:50 99021038.6 175821.23 2759585280.0 114181671.1                                0.00  
+    0:10:50 99035902.2 175821.23 2759585280.0 114181456.2                                0.00  
+    0:10:50 99050765.8 175821.23 2759585280.0 114181241.4                                0.00  
+    0:10:50 99065629.3 175821.23 2759585280.0 114181026.5                                0.00  
+    0:10:50 99080492.9 175821.23 2759585280.0 114180811.7                                0.00  
+    0:11:07 99403941.4 175821.23 2522175232.0 32695995.2                                0.00  
+    0:11:14 100393379.5      0.00       3.1   73765.8                                0.00  
+    0:11:17 101204156.5      0.00       3.1   53755.3                                0.00  
+    0:11:21 102014933.5      0.00       3.1   33744.9                                0.00  
+    0:11:24 102825710.5      0.00       3.1   13734.4                                0.00  
+    0:13:04 96614303.5      0.00       0.0      99.0                                0.00  
+    0:13:17 96614303.5      0.00       0.0      99.0                                0.00  
+    0:13:17 96614303.5      0.00       0.0      99.0                                0.00  
+    0:13:31 96614303.5      0.00       0.0      99.0                                0.00  
+    0:13:39 96614303.5      0.00       0.0      99.0                                0.00  
+    0:14:39 82779932.3      0.00       0.0       5.3                                0.00  
+    0:15:04 82479044.7      0.00       0.0       5.3                                0.00  
+    0:15:24 82479044.7      0.00       0.0       5.3                                0.00  
+    0:15:27 82479044.7      0.00       0.0       5.3                                0.00  
+    0:15:34 82479044.7      0.00       0.0       5.3                                0.00  
+    0:15:34 82479044.7      0.00       0.0       5.3                                0.00  
+    0:15:38 82479094.5      0.00       0.0       0.0                                0.00  
+    0:15:41 82479094.5      0.00       0.0       0.0                                0.00  
+    0:15:42 82479094.5      0.00       0.0       0.0                                0.00  
+    0:15:42 82479094.5      0.00       0.0       0.0                                0.00  
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                                  
+   ELAPSED            WORST NEG   SETUP    DESIGN                              MIN DELAY 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT             COST    
+  --------- --------- --------- --------- --------- ------------------------- -----------
+    0:15:43 82479094.5      0.00       0.0       0.0                                0.00  
+    0:15:44 82479094.5      0.00       0.0       0.0                                0.00  
+    0:16:01 82411047.2      0.00       0.0       4.4                                0.00  
+
+
+  Beginning Design Rule Fixing  (min_path)  (max_transition)
+  ----------------------------
+
+                                  TOTAL                                                  
+   ELAPSED            WORST NEG   SETUP    DESIGN                              MIN DELAY 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT             COST    
+  --------- --------- --------- --------- --------- ------------------------- -----------
+    0:16:38 82411047.2      0.00       0.0       4.4                               -7.14  
+    0:16:53 82411063.8      0.00       0.0       0.0                               -7.14  
+
+
+  Beginning Critical Range Optimization
+  -------------------------------------
+
+                                  TOTAL                                                  
+   ELAPSED            WORST NEG   SETUP    DESIGN                              MIN DELAY 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT             COST    
+  --------- --------- --------- --------- --------- ------------------------- -----------
+    0:16:53 82411063.8      0.00       0.0       0.0                               -7.14  
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                                  
+   ELAPSED            WORST NEG   SETUP    DESIGN                              MIN DELAY 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT             COST    
+  --------- --------- --------- --------- --------- ------------------------- -----------
+    0:16:57 82411063.8      0.00       0.0       0.0                               -7.14  
+    0:17:05 82411063.8      0.00       0.0       0.0                               -7.14  
+    0:18:19 82333054.9      0.00       0.0       0.0                               -7.14  
+    0:18:30 82266235.3      0.00       0.0       0.0                               -7.14  
+    0:18:44 82226372.4      0.00       0.0       0.0                               -7.14  
+    0:18:58 82208929.3      0.00       0.0       0.0                               -7.14  
+    0:19:06 82205744.2      0.00       0.0       0.0                               -7.14  
+    0:19:09 82205354.4      0.00       0.0       0.0                               -7.14  
+    0:19:11 82205022.6      0.00       0.0       0.0                               -7.14  
+    0:19:14 82204632.8      0.00       0.0       0.0                               -7.14  
+    0:19:16 82204292.7      0.00       0.0       0.0                               -7.14  
+    0:19:19 82203960.9      0.00       0.0       0.0                               -7.14  
+    0:19:21 82203571.1      0.00       0.0       0.0                               -7.14  
+    0:19:24 82203239.3      0.00       0.0       0.0                               -7.14  
+    0:19:26 82202907.5      0.00       0.0       0.0                               -7.14  
+    0:19:28 82202567.4      0.00       0.0       0.0                               -7.14  
+    0:19:30 82202177.6      0.00       0.0       0.0                               -7.14  
+    0:19:33 82201845.8      0.00       0.0       0.0                               -7.14  
+    0:19:33 82201845.8      0.00       0.0       0.0                               -7.14  
+    0:19:42 82201845.8      0.00       0.0       0.0                               -7.14  
+    0:19:50 82198801.9      0.00       0.0       0.0                               -7.14  
+    0:19:51 82198801.9      0.00       0.0       0.0                               -7.14  
+    0:19:51 82198801.9      0.00       0.0       0.0                               -7.14  
+    0:19:55 82198801.9      0.00       0.0       0.0                               -7.14  
+    0:19:55 82198801.9      0.00       0.0       0.0                               -7.14  
+    0:19:55 82198801.9      0.00       0.0       0.0                               -7.14  
+    0:19:57 82200776.0      0.00       0.0       0.0 lbuf/clause_in_blocked_reg[cla][0][4]/CLRB     -2.95  
+    0:19:58 82202169.5      0.00       0.0       0.0                                0.00  
+
+
+  Beginning Critical Range Optimization
+  -------------------------------------
+
+                                  TOTAL                                                  
+   ELAPSED            WORST NEG   SETUP    DESIGN                              MIN DELAY 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT             COST    
+  --------- --------- --------- --------- --------- ------------------------- -----------
+    0:19:58 82202169.5      0.00       0.0       0.0                                0.00  
+    0:20:27 82202169.5      0.00       0.0       0.0                                0.00  
+Loading db file '/afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'top' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'eng_array[23].eng/clk': 263696 load(s), 1 driver(s)
+Writing verilog file '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.vg'.
+Warning: Verilog 'assign' or 'tran' statements are written out. (VO-4)
+Warning: Verilog writer has added 1 nets to module top using SYNOPSYS_UNCONNECTED_ as prefix.  Please use the change_names command to make the correct changes before invoking the verilog writer.  (VO-11)
+Writing ddc file './top.ddc'.
+Removing design 'proc'
+Removing design 'proc_DW01_inc_0'
+Removing design 'proc_DW01_inc_5'
+Removing design 'proc_DW01_inc_6'
+Removing design 'proc_DW01_inc_7'
+Removing design 'top'
+Removing design 'top_DW01_inc_1'
+Removing design 'top_DW01_inc_8_DW01_inc_9'
+Removing design 'top_DW01_inc_10_DW01_inc_11'
+Removing design 'top_DW01_inc_11_DW01_inc_12'
+Removing library 'gtech'
+Removing library 'lec25dscc25_TT'
+Removing library 'standard.sldb'
+Loading db file '/afs/umich.edu/class/eecs470/lib/synopsys/lec25dscc25_TT.db'
+Loading db file '/usr/caen/synopsys-synth-2021.06-SP1/libraries/syn/gtech.db'
+Loading db file '/usr/caen/synopsys-synth-2021.06-SP1/libraries/syn/standard.sldb'
+  Loading link library 'lec25dscc25_TT'
+  Loading link library 'gtech'
+Loading verilog file '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.vg'
+Detecting input file type automatically (-rtl or -netlist).
+Running DC verilog reader
+Performing 'read' command.
+Compiling source file /afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/top.vg
+Reading with netlist reader (equivalent to -netlist option).
+Verilog netlist reader completed successfully.
+Current design is now '/afs/umich.edu/user/k/y/kyleku/570/github/eecs570_final/src/lookup/proc_DW01_inc_0.db:proc_DW01_inc_0'
+Loaded 10 designs.
+Current design is 'proc_DW01_inc_0'.
+Current design is 'top'.
+
+Memory usage for this session 3101 Mbytes.
+Memory usage for this session including child processes 3101 Mbytes.
+CPU usage for this session 1461 seconds ( 0.41 hours ).
+Elapsed time for this session 1478 seconds ( 0.41 hours ).
+
+Thank you...

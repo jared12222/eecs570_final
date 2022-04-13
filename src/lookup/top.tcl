@@ -14,16 +14,19 @@
 #set headers [getenv HEADERS]
 
 #$(info $(simfiles)
+set search_path [list "./" "/afs/umich.edu/class/eecs470/lib/synopsys/"]
 
-#read_file -f sverilog [list "sys_def.sv" "top.sv" "proc.sv" "./bcp/bcp_pe.sv" "./latency_buffer/L_buffer_singleload.sv" "./cla_queue/cla_queue.sv" "./uc/queue.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_mstack.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+
 read_file -f ddc [list "proc.ddc"]
 set_dont_touch proc
-analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
-elaborate top -library work
+read_file -f sverilog [list "sys_def.sv" "top.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+
+#analyze -library work -f sverilog [list "sys_def.sv" "top.sv" "./uc/uc_arbiter_mstack.sv" "./latency_buffer/L_buffer_singleload.sv" "./uc/uc_arbiter.sv" "./uc/uc_arbiter_wrapper.sv" "./cla_queue/gst.sv"]
+#elaborate top -library work
 set design_name top
 set clock_name clk
 set reset_name rst_n
-set CLK_PERIOD 20
+set CLK_PERIOD 50
 
 
 
@@ -34,7 +37,6 @@ set CLK_PERIOD 20
 #/* when synthesizing your final project.                   */
 #/***********************************************************/
 set SYN_DIR ./
-set search_path "/afs/umich.edu/class/eecs470/lib/synopsys/"
 set target_library "lec25dscc25_TT.db"
 set link_library [concat  "*" $target_library]
 
