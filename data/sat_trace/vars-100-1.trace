@@ -1,0 +1,206 @@
+bcp_result UNDEFINE
+
+iter 0
+stack_ptr 1
+stack_size 2
+init_uc -100
+num_of_clause 9
+bcp_result UNDEFINE
+
+iter 1
+stack_ptr 3
+stack_size 4
+init_uc -99
+num_of_clause 9
+bcp_result UNDEFINE
+
+iter 2
+stack_ptr 5
+stack_size 6
+init_uc -98
+num_of_clause 9
+bcp_result UNDEFINE
+
+iter 3
+stack_ptr 7
+stack_size 8
+init_uc -97
+num_of_clause 8
+bcp_result UNDEFINE
+
+iter 4
+stack_ptr 9
+stack_size 10
+init_uc -96
+num_of_clause 2
+bcp_result UNDEFINE
+
+iter 5
+stack_ptr 11
+stack_size 12
+init_uc -95
+num_of_clause 7
+bcp_result UNDEFINE
+
+iter 6
+stack_ptr 13
+stack_size 14
+init_uc -94
+num_of_clause 4
+bcp_result UNDEFINE
+
+iter 7
+stack_ptr 15
+stack_size 16
+init_uc -93
+num_of_clause 13
+bcp_result UNDEFINE
+
+iter 8
+stack_ptr 17
+stack_size 18
+init_uc -92
+num_of_clause 7
+bcp_result UNDEFINE
+
+iter 9
+stack_ptr 19
+stack_size 20
+init_uc -91
+num_of_clause 12
+bcp_result UNDEFINE
+
+iter 10
+stack_ptr 21
+stack_size 22
+init_uc -90
+num_of_clause 3
+bcp_result UNDEFINE
+
+iter 11
+stack_ptr 23
+stack_size 24
+init_uc -89
+num_of_clause 5
+bcp_result UNDEFINE
+
+iter 12
+stack_ptr 25
+stack_size 26
+init_uc -88
+num_of_clause 6
+iter 13
+stack_ptr 26
+stack_size 27
+init_uc 4
+num_of_clause 6
+iter 14
+stack_ptr 27
+stack_size 28
+init_uc 15
+num_of_clause 6
+bcp_result UNDEFINE
+
+iter 15
+stack_ptr 29
+stack_size 30
+init_uc -87
+num_of_clause 4
+bcp_result UNDEFINE
+
+iter 16
+stack_ptr 31
+stack_size 32
+init_uc -86
+num_of_clause 8
+bcp_result UNDEFINE
+
+iter 17
+stack_ptr 33
+stack_size 34
+init_uc -85
+num_of_clause 11
+iter 18
+stack_ptr 34
+stack_size 38
+init_uc 74
+num_of_clause 3
+iter 19
+stack_ptr 35
+stack_size 39
+init_uc 82
+num_of_clause 5
+iter 20
+stack_ptr 36
+stack_size 40
+init_uc 77
+num_of_clause 6
+iter 21
+stack_ptr 37
+stack_size 42
+init_uc -21
+num_of_clause 2
+iter 22
+stack_ptr 38
+stack_size 42
+init_uc 31
+num_of_clause 14
+iter 23
+stack_ptr 39
+stack_size 45
+init_uc 19
+num_of_clause 8
+iter 24
+stack_ptr 40
+stack_size 47
+init_uc 72
+num_of_clause 11
+iter 25
+stack_ptr 41
+stack_size 50
+init_uc -61
+num_of_clause 5
+iter 26
+stack_ptr 42
+stack_size 50
+init_uc -80
+num_of_clause 6
+iter 27
+stack_ptr 43
+stack_size 50
+init_uc 49
+num_of_clause 4
+iter 28
+stack_ptr 44
+stack_size 50
+init_uc 78
+num_of_clause 5
+iter 29
+stack_ptr 45
+stack_size 50
+init_uc 56
+num_of_clause 5
+iter 30
+stack_ptr 46
+stack_size 50
+init_uc -75
+num_of_clause 8
+iter 31
+stack_ptr 47
+stack_size 51
+init_uc 76
+num_of_clause 8
+iter 32
+stack_ptr 48
+stack_size 51
+init_uc 11
+num_of_clause 5
+iter 33
+stack_ptr 49
+stack_size 52
+init_uc -65
+num_of_clause 6
+bcp_result Conflict
+
+SATISFIABLE
+Overall_Comp_time: 4308, First_Conflict_Time: 112 us
