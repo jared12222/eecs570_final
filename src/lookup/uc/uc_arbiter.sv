@@ -21,7 +21,10 @@ module uc_arbiter (
     output logic                   uca2eng_push,
     
     output logic [`NUM_ENGINE-1:0] engmask,
-    output logic                   conflict
+    output logic                   conflict,
+    // If UC Arbiter stops at IDLE, it consitutes as one of the
+    // prereqs for stalling the engine
+    output logic                   stall
 );
 
 /*
@@ -58,6 +61,8 @@ assign uc_polarity = data[$clog2(`LIT_IDX_MAX)];
 assign uc_idx = uc_polarity? 
     ~data[$clog2(`LIT_IDX_MAX)-1:0] + 1 : 
     data[$clog2(`LIT_IDX_MAX)-1:0];
+
+assign stall = (curr_state == UCARB_IDLE && mem2uca_valid == 1'b0);
 
 uc_queue uc_queue (
     .clk(clk),

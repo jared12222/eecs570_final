@@ -99,7 +99,9 @@ module L_buffer_singleload (
 			ptr_in_blocked  					<= ptr_in;
 			load_clause_in_blocked 				<= load_clause_in; 
 			load_ptr_in_blocked 				<= load_ptr_in;
+			`ifndef ONE_ENGINE
 			load_change_engine_in_blocked  		<= load_change_engine_in;
+			`endif
 			counter                             <= next_counter;
 			ptr_buffer                          <= next_ptr_buffer;
 		end

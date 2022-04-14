@@ -29,7 +29,8 @@ module uc_arbiter_wrapper (
     output lit_t                   uca2eng_lit,
     output logic                   uca2eng_push,
     output logic [`NUM_ENGINE-1:0] uca2eng_pop,
-    output logic conflict
+    output logic conflict,
+    output logic stall
 );
 
 /*
@@ -68,7 +69,8 @@ uc_arbiter uca(
     .uca2eng_lit(uca2eng_lit),
     .uca2eng_push(uca2eng_push),
     .engmask(engmask),
-    .conflict(conflict)
+    .conflict(conflict),
+    .stall(stall)
 );
 
 always_comb begin

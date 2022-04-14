@@ -58,7 +58,7 @@ ptr_t  clq2bcp_init_ptr;
 node_t clq2bcp_node_out;
 
 assign bcp_halt = UCQ_in_full | proc_halt;
-assign stall = bcp_stall;
+assign stall = bcp_stall && !ucarb2UCQ_out_push;
 
 bcp_pe bcp_pe(
     .clk(clk),

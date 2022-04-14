@@ -151,7 +151,7 @@ int output_init_uc_trace(){
         trace_input_file >> tmp;
     }
     if(tmp == "Conflict"){
-        return -1;
+        return 0;
     }else{
         trace_input_file >> res;
         return res;

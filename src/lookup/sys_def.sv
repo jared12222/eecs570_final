@@ -11,7 +11,7 @@ typedef logic signed [$clog2(`LIT_IDX_MAX):0] lit_t;
 typedef lit_t [`CLA_LENGTH-1:0] cla_t;
 
 // Unit Clause
-`define NUM_ENGINE 24
+`define NUM_ENGINE 16
 `define MAX_UC 64
 `define UCQ_SIZE 16
 
@@ -24,7 +24,7 @@ typedef enum logic [1:0] {
 } uc_arb_t;
 
 // Clause Queue
-`define CLQ_DEPTH 64
+`define CLQ_DEPTH 2048
 
 // Pointer for a given literal
 typedef logic [$clog2(`CLQ_DEPTH)-1:0] ptr_t;
@@ -57,7 +57,9 @@ typedef enum logic [1:0] {
     BCP_PROC  = 2'b01
 } bcp_state_t;
 
-`define TOTAL_CLAUSE 512
+`define TOTAL_CLAUSE 2048
 `define MAX_ITER 6000
 
 `timescale 1ns/1ns
+
+// `define ONE_ENGINE

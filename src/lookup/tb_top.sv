@@ -147,6 +147,7 @@ task import_CLQ_to_engine();
             change_eng = 0;
         end
     end
+    @(negedge clk);
     node_in_valid = 0;
 
 endtask
@@ -166,12 +167,14 @@ endtask
 int num;
 int max_iter=0;
 int uc_idx = 0;
+logic prev_stall = 0;
 task uc_handler();
-    logic prev_stall = 0;
     @(negedge clk);
     halt = 0;
     while(uc_idx < max_iter) begin
         @(negedge clk);
+        if(conflict)
+            break;
         if(stall & prev_stall==0) begin
             mem2uca = init_uc[uc_idx];
             mem2uca_done  = 1;
@@ -185,6 +188,10 @@ task uc_handler();
         end
         prev_stall = stall;
     end
+    @(negedge clk);
+    mem2uca_done  = 0;
+    mem2uca_valid = 0;
+    mem2uca = 0;
 endtask
 
 task import_trace_to_buffer();
@@ -194,7 +201,7 @@ task import_trace_to_buffer();
         // output_iter_trace
         num = output_init_uc_trace();
         $display("Trace iter trace %d, num = %d", i, num);
-        if(num == -1) begin
+        if(num == 0) begin
             break;
         end
         init_uc[i]  = num;
@@ -239,8 +246,18 @@ initial begin
     join
     start_cnt = clk_cnt;
     uc_handler();
+    // if (!conflict) begin
+    //     @(posedge conflict);
+    // end
+    // end_cnt = clk_cnt;
+    // #(PERIOD*10);
+    // $display("Start: %d", start_cnt);
+    // $display("End: %d", end_cnt);
+    // $display("Proc cycle: %d", end_cnt - start_cnt);
+    // $finish;
+end
 
-    @(posedge conflict);
+always @(posedge conflict) begin
     end_cnt = clk_cnt;
     #(PERIOD*10);
     $display("Start: %d", start_cnt);

@@ -45,6 +45,7 @@ logic   [`NUM_ENGINE-1:0] proc_node_in_valid;
 dummy_ptr_t               proc_dummy_ptrs;
 logic   [`NUM_ENGINE-1:0] proc_dummy_ptr_valid;
 logic                     ucarb_conflict;
+logic                     ucarb_stall;
 
 cla_t   [`NUM_ENGINE-1:0] bcp2gst_curr_cla;
 logic   [`NUM_ENGINE-1:0] bcp2gst_curr_cla_valid;
@@ -52,7 +53,7 @@ bcp_state_t [`NUM_ENGINE-1:0] bcp2gst_curr_state;
 
 lit_state_t [`NUM_ENGINE-1:0][`CLA_LENGTH-1:0] gst2bcp_lit_state;
 assign conflict  = |proc_conflict | ucarb_conflict;
-assign stall     = &proc_stall && &UCQ_in_empty;
+assign stall     = &proc_stall && &UCQ_in_empty && ucarb_stall;
 assign proc_halt = halt | (&UCQ_in_empty && &proc_stall);
 
 genvar i;
@@ -132,7 +133,8 @@ uc_arbiter_wrapper ucarb(
 
     .uca2gst_lit(uca2gst_lit),
     .uca2gst_lit_valid(uca2gst_lit_valid),
-    .conflict(ucarb_conflict)
+    .conflict(ucarb_conflict),
+    .stall(ucarb_stall)
 );
 
 L_buffer_singleload lbuf(
