@@ -3,7 +3,7 @@ g++ -o preprocess preprocess.cpp -std=c++11
 echo -e "${BIWhite}Generating link list data...${Color_Off}"
 
 input_file_dir="/home/wftseng/li-sat-solver/sample_problems"
-output_bcp_trace="/home/wftseng/eecs570_final/data/preprocessed_data/"
+output_bcp_trace="/home/wftseng/eecs570_final/data/preprocessed_data_sorted/"
 
 for i in 1 2 4 8 16
 do

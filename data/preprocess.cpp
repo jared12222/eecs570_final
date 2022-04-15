@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <algorithm>
 
-// #define SORT
+#define SORT
 
 using namespace std;
 
@@ -85,26 +85,30 @@ int cal_next_idx_header(vector<vector<int> > clauses, int start, int var){
 
 }
 
-bool compare (const vector<int> &clause_a, const vector<int> &clause_b)
+bool compare_0 (const vector<int> &clause_a, const vector<int> &clause_b)
 {
-    // cout<<"clause_a size = "<<clause_a.size()<<" clause_b size = "<<clause_b.size()<<endl; 
-//   for(int i=0; i<clause_a.size(); ++i){
-//     cout<<"i = "<<i<<endl;
-//     if(clause_a[i] < clause_b[i])
-//         return true;
-//   }
-//   return false;
-
-    // if(clause_a[0] < clause_b[0]){
-    //     cout<<"idx = 0"<<endl;
-    //     return true;
-    // }else if(clause_a[1] < clause_b[1]){
-    //     cout<<"idx = 1"<<endl;
-    //     return true;
-    // }else{
-    //     return false;
-    // }
     return clause_a[0] < clause_b[0];
+}
+
+bool compare_1 (const vector<int> &clause_a, const vector<int> &clause_b)
+{
+    return clause_a[1] < clause_b[1];
+}
+
+bool compare_2 (const vector<int> &clause_a, const vector<int> &clause_b)
+{
+    return clause_a[2] < clause_b[2];
+}
+
+int next_idx(vector<vector<int> > clauses, int start, int dimension){
+    int init = clauses[start][dimension];
+    
+    for(int i=start+1; i<clauses.size(); ++i){
+        if(clauses[i][dimension] != init){
+            return i;
+        }
+    }
+    return clauses.size();
 }
 
 int main(int argc, char *argv[]){
@@ -161,7 +165,19 @@ int main(int argc, char *argv[]){
     // sorting //
     #ifdef SORT
         cout<<"start sort"<<endl;
-        sort(clauses.begin(), clauses.end(), compare);
+        sort(clauses.begin(), clauses.end(), compare_0);
+        cout<<"finish 1st sort"<<endl;
+        // sort(clauses.begin()+0, clauses.begin()+2, compare_1);
+        for(int i=0; i<clauses.size(); ++i){
+            int end_idx = next_idx(clauses, i, 0);
+            sort(clauses.begin()+i, clauses.begin()+end_idx, compare_1);
+        }
+        cout<<"finish 2nd sort"<<endl;
+        for(int i=0; i<clauses.size(); ++i){
+            int end_idx = next_idx(clauses, i, 1);
+            sort(clauses.begin()+i, clauses.begin()+end_idx, compare_2);
+        }
+
         cout<<"end sort"<<endl;
     #endif
     // sorting //
